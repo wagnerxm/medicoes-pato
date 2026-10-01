@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Medições PATO — BR-226/RN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap">
+<style>
+/* ── Tokens: dark é o padrão (painel de controle); claro via data-theme="light" ── */
+:root{
+  color-scheme:dark;
+  --bg:#0A0E17;--card:#111827;--bd:#1F2A3C;--bdl:#172033;
+  --tx:#E8EEF7;--tx2:#9AA8BE;--tx3:#6B7A93;
+  --ac:#0D9488;--ac2:#06B6D4;--act:#2DD4BF;--acbg:rgba(13,148,136,.12);
+  --glass:rgba(17,24,39,.62);--hdr-bg:rgba(10,14,23,.72);
+  --kpi-bd:rgba(13,148,136,.15);--kpi-glow:0 0 0 1px rgba(13,148,136,.04),0 0 18px rgba(13,148,136,.07);
+  --ok:#34D399;--wrn:#FBBF24;
+  --road:#2D3748;--road-edge:#374151;--shldr:#1A2332;--grass:#064E3B;--center:#FBBF24;
+  --edge-ln:rgba(255,255,255,.16);
+  --mm-bg:#070A12;
+  --sh:0 1px 2px rgba(0,0,0,.35);
+  --sh2:0 0 0 1px rgba(13,148,136,.25),0 0 24px rgba(13,148,136,.18),0 20px 50px rgba(0,0,0,.55);
+  --c0:#A78BFA;--c1:#2DD4BF;--c2:#38BDF8;--c3:#818CF8;--c4:#FCD34D;
+  --c5:#34D399;--c6:#F472B6;--c7:#FB923C;--c8:#A1A1AA;
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#F0F4F8;--card:#FFFFFF;--bd:#DDE5EE;--bdl:#EAF0F6;
+  --tx:#0F172A;--tx2:#475569;--tx3:#64748B;
+  --ac:#0D9488;--ac2:#06B6D4;--act:#0F766E;--acbg:rgba(13,148,136,.08);
+  --glass:rgba(255,255,255,.9);--hdr-bg:rgba(255,255,255,.8);
+  --kpi-bd:#DDE5EE;--kpi-glow:0 1px 3px rgba(15,23,42,.06),0 4px 14px rgba(15,23,42,.04);
+  --ok:#059669;--wrn:#D97706;
+  --road:#94A3B8;--road-edge:#9CA3AF;--shldr:#78716C;--grass:#6EE7B7;--center:#EAB308;
+  --edge-ln:rgba(255,255,255,.55);
+  --mm-bg:#E6ECF3;
+  --sh:0 1px 3px rgba(15,23,42,.06),0 2px 8px rgba(15,23,42,.04);
+  --sh2:0 20px 50px rgba(15,23,42,.14),0 4px 12px rgba(15,23,42,.06);
+  --c0:#7C3AED;--c1:#0D9488;--c2:#0284C7;--c3:#4F46E5;--c4:#CA8A04;
+  --c5:#059669;--c6:#DB2777;--c7:#EA580C;--c8:#52525B;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scrollbar-color:var(--ac) var(--bg);scrollbar-width:thin;}
+body{background:var(--bg);color:var(--tx);font-family:'Outfit','Segoe UI',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.5;font-variant-numeric:tabular-nums;}
+/* Fundo "espaço profundo": brilho teal bem sutil no topo (só no tema escuro) */
+:root:not([data-theme="light"]) body{background:radial-gradient(1200px 380px at 50% -120px,rgba(13,148,136,.10),transparent 70%),var(--bg);background-attachment:fixed;}
+.mono{font-family:'Space Mono',ui-monospace,monospace;}
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--ac);border-radius:5px;border:2px solid var(--bg);}
+::-webkit-scrollbar-thumb:hover{background:var(--ac2);}
+
+/* ── Header: vidro escuro + linha teal brilhante no topo (sem barra) ── */
+.hdr{position:sticky;top:0;z-index:50;background:var(--hdr-bg);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border-bottom:1px solid var(--bd);padding:.7rem 1.25rem .6rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;}
+.hdr::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ac),var(--ac2) 60%,var(--ac));box-shadow:0 0 8px var(--ac);}
+.hdr-l{display:flex;align-items:center;gap:.7rem;}
+.badge{background:var(--ac);color:#fff;font-size:.62rem;font-weight:700;padding:.22rem .65rem;border-radius:4px;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 0 12px rgba(13,148,136,.3);}
+.hdr h1{font-size:1.15rem;font-weight:700;letter-spacing:-.01em;line-height:1.2;}
+.hdr .uf{font-weight:400;color:var(--tx2);}
+.meta{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--tx3);}
+.meta .sep{margin:0 .2rem;opacity:.5;}
+.hdr-r{display:flex;align-items:center;gap:.5rem;}
+.tag{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--act);background:var(--acbg);border:1px solid var(--kpi-bd);padding:.2rem .55rem;border-radius:4px;}
+.th-btn{background:transparent;border:1px solid var(--bd);color:var(--tx2);padding:.3rem .7rem;border-radius:4px;font-size:.66rem;cursor:pointer;font-family:inherit;font-weight:600;letter-spacing:.04em;text-transform:uppercase;transition:all .15s;}
+.th-btn:hover{border-color:var(--ac);color:var(--act);box-shadow:0 0 10px rgba(13,148,136,.25);}
+.th-btn:focus-visible,.cb:focus-visible,.chip:focus-visible{outline:2px solid var(--ac2);outline-offset:2px;}
+
+/* ── Wrap ── */
+.wrap{max-width:1440px;margin:0 auto;padding-inline:1.25rem;}
+
+/* ── KPI: vidro escuro com brilho de borda ── */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:.7rem;margin:1.1rem 0;}
+.kpi{position:relative;background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--kpi-bd);border-radius:8px;padding:.85rem 1rem;box-shadow:var(--kpi-glow);overflow:hidden;}
+.kpi::after{content:'';position:absolute;left:0;top:0;width:36px;height:2px;background:var(--ac);box-shadow:0 0 8px var(--ac);}
+.kpi-val{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;letter-spacing:-.03em;line-height:1.15;}
+.kpi-val small{font-size:.55em;font-weight:400;color:var(--tx2);}
+.kpi-lab{font-size:.6rem;color:var(--tx3);font-weight:600;margin-top:.2rem;text-transform:uppercase;letter-spacing:.1em;}
+.kpi-sub{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--ac2);margin-top:.15rem;}
+.kpi-bar{margin-top:.5rem;height:4px;background:var(--bdl);border-radius:2px;overflow:hidden;}
+.kpi-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:2px;box-shadow:0 0 8px rgba(6,182,212,.5);transition:width .5s ease;}
+.kpi-pct{font-size:.5rem;color:var(--tx3);margin-top:.2rem;text-align:right;font-family:'Space Mono',monospace;}
+
+/* ── Seção da estrada (largura total) ── */
+.road-sec{background:var(--card);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);margin-bottom:1rem;box-shadow:var(--sh);}
+.road-bar{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem;border-bottom:1px solid var(--bdl);flex-wrap:wrap;gap:.4rem;}
+.road-bar h2,.sec-h h2{font-size:.64rem;font-weight:600;text-transform:uppercase;letter-spacing:.16em;color:var(--tx3);display:flex;align-items:center;gap:.5rem;}
+.road-bar h2::before,.sec-h h2::before{content:'';width:6px;height:6px;border-radius:1px;background:var(--ac);box-shadow:0 0 8px var(--ac);}
+.ctrls{display:flex;align-items:center;gap:.25rem;flex-wrap:wrap;}
+.cb{background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:.22rem .6rem;font-size:.62rem;font-weight:600;color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .12s;}
+.cb:hover{border-color:var(--ac);color:var(--act);}
+.cb.on{background:var(--ac);border-color:var(--ac);color:#fff;box-shadow:0 0 10px rgba(13,148,136,.35);}
+.cb-sep{width:1px;height:16px;background:var(--bd);margin:0 .2rem;}
+.zlab{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--tx3);padding:0 .25rem;min-width:64px;text-align:center;}
+
+/* ── Container de scroll ── */
+.road-wrap{position:relative;}
+.road-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--ac) var(--mm-bg);}
+.road-scroll::-webkit-scrollbar{height:10px;}
+.road-scroll::-webkit-scrollbar-track{background:var(--mm-bg);}
+.road-scroll::-webkit-scrollbar-thumb{background:var(--ac);border-radius:5px;border:2px solid var(--mm-bg);}
+.road-scroll::-webkit-scrollbar-thumb:hover{background:var(--ac2);}
+
+/* Pílula de KM flutuante: teal cheio com brilho */
+.km-pill{position:absolute;top:8px;left:8px;z-index:20;background:var(--ac);color:#fff;font-family:'Space Mono',monospace;font-size:.62rem;font-weight:700;padding:.18rem .65rem;border-radius:999px;pointer-events:none;box-shadow:0 0 14px rgba(13,148,136,.55);}
+
+/* ── Faixa da estrada (100px) ── */
+.road-canvas{position:relative;}
+.rv{position:relative;height:100px;background:linear-gradient(180deg,var(--grass) 12px,var(--shldr) 12px 17px,var(--road-edge) 17px 19px,var(--road) 19px 81px,var(--road-edge) 81px 83px,var(--shldr) 83px 88px,var(--grass) 88px);}
+.rv::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:2;background:linear-gradient(var(--edge-ln),var(--edge-ln)) 0 17px/100% 1px no-repeat,linear-gradient(var(--edge-ln),var(--edge-ln)) 0 82px/100% 1px no-repeat;}
+.rv::after{content:'';position:absolute;top:49px;left:0;right:0;height:2px;z-index:2;background:repeating-linear-gradient(to right,var(--center) 0 6px,transparent 6px 14px);}
+.rv-guide{position:absolute;top:0;height:100%;width:0;border-left:1px dashed var(--ac2);opacity:.14;z-index:1;}
+.sg{position:absolute;top:19px;height:62px;border-radius:2px;cursor:pointer;transition:filter .1s,opacity .1s,box-shadow .12s;min-width:3px;opacity:.9;z-index:3;}
+.sg:hover{opacity:1;filter:brightness(1.12);z-index:8;box-shadow:0 0 14px var(--sc,var(--ac)),0 0 3px var(--sc,var(--ac));}
+.sg.act{opacity:1;z-index:9;outline:2px solid var(--ac2);outline-offset:1px;box-shadow:0 0 16px var(--sc,var(--ac));}
+
+/* ── Régua ── */
+.rl{position:relative;height:40px;border-top:1.5px solid var(--ac);background:var(--card);}
+.rk-km{position:absolute;top:0;height:100%;border-left:1.5px solid var(--ac);}
+.rk-km .lb{position:absolute;top:2px;left:4px;font-family:'Space Mono',monospace;font-size:.55rem;font-weight:700;color:var(--act);white-space:nowrap;}
+.rk-km .est{position:absolute;bottom:2px;left:4px;font-family:'Space Mono',monospace;font-size:.46rem;color:var(--tx3);white-space:nowrap;}
+.rk-e{position:absolute;top:0;border-left:1px solid var(--bd);}
+.rk-e.h{height:50%;}
+.rk-e.q{height:30%;}
+.rk-e.t{height:18%;}
+.rk-e span{position:absolute;bottom:1px;left:3px;font-family:'Space Mono',monospace;font-size:.42rem;color:var(--tx3);white-space:nowrap;}
+
+/* ── Card flutuante: vidro escuro, acento teal, borda com brilho ── */
+.fc{display:none;position:fixed;z-index:1000;background:var(--glass);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border:1px solid rgba(13,148,136,.4);border-radius:8px;width:330px;max-width:calc(100vw - 24px);box-shadow:var(--sh2);overflow:hidden;}
+:root[data-theme="light"] .fc{background:rgba(255,255,255,.96);border-color:var(--bd);}
+.fc.sh{display:block;animation:fcIn .14s ease;}
+@keyframes fcIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.fc-bar{height:2px;box-shadow:0 0 10px currentColor;}
+.fc-hd{padding:.6rem .85rem .15rem;display:flex;align-items:baseline;justify-content:space-between;gap:.4rem;}
+.fc-cat{font-weight:700;font-size:.82rem;}
+.fc-mc{font-size:.55rem;color:var(--act);font-family:'Space Mono',monospace;flex-shrink:0;}
+.fc-desc{padding:0 .85rem .4rem;font-size:.68rem;color:var(--tx2);}
+.fc-grid{display:grid;grid-template-columns:auto 1fr;border-top:1px solid var(--bdl);}
+.fc-grid>div{padding:.18rem .85rem;font-size:.65rem;}
+.fc-l{color:var(--tx3);white-space:nowrap;}
+.fc-v{font-weight:700;text-align:right;font-family:'Space Mono',monospace;font-size:.6rem!important;}
+.fc-v.tx{font-family:'Outfit',sans-serif;font-weight:500;font-size:.65rem!important;}
+.fc-sep{grid-column:1/-1;height:0;border-bottom:1px solid var(--bdl);padding:0!important;}
+
+/* ── Minimapa (14px) ── */
+.mm-w{padding:.5rem 1rem .55rem;border-top:1px solid var(--bdl);}
+.mm{position:relative;height:14px;background:var(--mm-bg);border:1px solid var(--bd);border-radius:3px;overflow:hidden;cursor:pointer;}
+.mm canvas{position:absolute;inset:0;width:100%;height:100%;}
+.mv{position:absolute;top:0;height:100%;border:1.5px solid var(--ac2);border-radius:2px;background:var(--acbg);box-shadow:0 0 8px rgba(6,182,212,.4);pointer-events:none;}
+
+/* ── Chips: quase quadrados, borda teal fina quando ativos ── */
+.chips{display:flex;flex-wrap:wrap;gap:.3rem;padding:.55rem 1rem .65rem;border-top:1px solid var(--bdl);}
+.chip{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .55rem;border-radius:4px;font-size:.64rem;font-weight:500;cursor:pointer;transition:all .12s;background:var(--bg);border:1px solid var(--ac);color:var(--tx);user-select:none;}
+.chip:hover{box-shadow:0 0 8px rgba(13,148,136,.3);}
+.chip.off{opacity:.35;border-color:var(--bd);color:var(--tx2);}
+.chip-d{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+.chip-n{font-family:'Space Mono',monospace;font-size:.52rem;color:var(--tx3);margin-left:.05rem;}
+
+/* ── Seção (tabela) ── */
+.sec{background:var(--card);border:1px solid var(--bd);border-radius:8px;margin-bottom:1rem;box-shadow:var(--sh);overflow:hidden;}
+.sec-h{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;border-bottom:1px solid var(--bd);flex-wrap:wrap;gap:.3rem;}
+.sec-h .cnt{font-family:'Space Mono',monospace;font-size:.56rem;color:var(--tx3);}
+
+/* ── Tabela: linhas escuras, hover teal, sem zebra ── */
+.tw{overflow-x:auto;overflow-y:auto;max-height:460px;scrollbar-color:var(--ac) var(--bg);}
+table{width:100%;border-collapse:collapse;font-size:.68rem;}
+thead{position:sticky;top:0;z-index:5;}
+th{background:var(--card);box-shadow:inset 0 -1px 0 var(--ac);padding:.5rem .6rem;text-align:left;font-weight:600;color:var(--tx3);font-size:.56rem;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;cursor:pointer;user-select:none;transition:color .1s;}
+th:hover,th.sorted{color:var(--act);}
+th .arrow{font-size:.48rem;margin-left:.15rem;}
+td{padding:.36rem .6rem;border-bottom:1px solid var(--bdl);white-space:nowrap;font-size:.64rem;background:var(--card);}
+tbody tr{transition:background .06s;}
+tbody tr:hover td,tbody tr.hi td{background:var(--acbg);}
+tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 0 var(--ac);}
+.t-cat{display:inline-flex;align-items:center;gap:.35rem;font-weight:500;}
+.t-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0;}
+.t-mono{font-family:'Space Mono',monospace;font-size:.6rem;}
+.t-side{font-family:'Space Mono',monospace;font-size:.52rem;padding:.08rem .32rem;border-radius:3px;font-weight:700;background:var(--bdl);color:var(--tx2);border:1px solid var(--bd);}
+.t-right{text-align:right;}
+
+.ft{padding:1rem;text-align:center;font-size:.62rem;color:var(--tx3);}
+.ft span{margin:0 .3rem;opacity:.5;}
+
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:640px){
+  .wrap{padding-inline:12px;}
+  .hdr{padding:.6rem 16px .5rem;}
+  .hdr h1{font-size:1rem;}
+  .kpis{grid-template-columns:1fr 1fr;}
+  .kpi-val{font-size:1.1rem;}
+  .fc{width:calc(100vw - 16px)!important;}
+  .road-bar{padding:.45rem 12px;}
+  .mm-w{padding:.4rem 12px;}
+  .chips{padding:.4rem 12px;}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-l">
+    <span class="badge">PATO</span>
+    <div>
+      <h1>BR-226<span class="uf">/RN</span></h1>
+      <p class="meta">SR/RN 515/2024 <span class="sep">&middot;</span> km 290+420 &rarr; 420+820</p>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <span class="tag">130,70 km</span>
+    <button class="th-btn" onclick="tTh()" aria-label="Alternar tema claro/escuro">Tema</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="kpis">
+    <div class="kpi">
+      <div class="kpi-val">R$ 42,93<small> M</small></div>
+      <div class="kpi-lab">Valor Contratual</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val">R$ 16,57<small> M</small></div>
+      <div class="kpi-lab">Valor Executado</div>
+      <div class="kpi-sub">MC 15–24</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val">38,60<small>%</small></div>
+      <div class="kpi-lab">Execução Financeira</div>
+      <div class="kpi-bar"><div class="kpi-fill" style="width:38.6%"></div></div>
+      <div class="kpi-pct">R$ 16.570.059 / R$ 42.930.000</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val">130,70<small> km</small></div>
+      <div class="kpi-lab">Extensão Contratual</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val" id="kpiSegs">&mdash;</div>
+      <div class="kpi-lab">Segmentos</div>
+      <div class="kpi-sub" id="kpiCatN"></div>
+    </div>
+  </div>
+</div>
+
+<section class="road-sec">
+  <div class="road-bar">
+    <h2>Mapa Linear de Execução</h2>
+    <div class="ctrls">
+      <button class="cb" onclick="zO()" title="Zoom −">−</button>
+      <span class="zlab" id="zLab"></span>
+      <button class="cb" onclick="zI()" title="Zoom +">+</button>
+      <div class="cb-sep"></div>
+      <button class="cb on" id="bf" onclick="fW()">Obra</button>
+      <button class="cb" id="ba" onclick="fA()">Tudo</button>
+      <div class="cb-sep"></div>
+      <button class="cb" id="fD" onclick="fS('D')">Lado D</button>
+      <button class="cb" id="fE" onclick="fS('E')">Lado E</button>
+    </div>
+  </div>
+  <div class="road-wrap">
+    <div class="km-pill" id="kmPill">km 290</div>
+    <div class="road-scroll" id="roadScroll">
+      <div class="road-canvas" id="roadCanvas">
+        <div class="rv" id="rv"></div>
+        <div class="rl" id="rl"></div>
+      </div>
+    </div>
+  </div>
+  <div class="mm-w"><div class="mm" id="mm"><canvas id="mc"></canvas><div class="mv" id="mv"></div></div></div>
+  <div class="chips" id="chips"></div>
+</section>
+
+<div class="wrap">
+  <div class="sec">
+    <div class="sec-h">
+      <h2>Detalhamento dos Segmentos</h2>
+      <span class="cnt" id="tCount"></span>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th data-k="i" style="width:32px">#</th>
+          <th data-k="cat">Categoria</th>
+          <th data-k="mc">MC</th>
+          <th data-k="item">Item</th>
+          <th data-k="km0">KM Início</th>
+          <th data-k="km1">KM Fim</th>
+          <th data-k="ext" class="t-right">Ext. (m)</th>
+          <th data-k="larg" class="t-right">Larg. (m)</th>
+          <th data-k="esp" class="t-right">Esp. (cm)</th>
+          <th data-k="side">Lado</th>
+          <th data-k="ton" class="t-right">Ton. (T)</th>
+        </tr></thead>
+        <tbody id="tb"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ft">
+    Dados extraídos das Memórias de Cálculo (MC 15, 18, 20, 23, 24)
+    <span>&middot;</span> Contrato SR/RN 515/2024 — BR-226/RN
+    <span>&middot;</span> PATO
+  </div>
+</div>
+
+<div class="fc" id="ic"></div>
+
+<script>
+/* ═══════════ Dados ═══════════ */
+const E2K=(e,f=0)=>(e*20+f)/1000;
+const KM0=290,KM1=421,LEN=KM1-KM0;
+const fm=(n,d=0)=>n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+function fK(km){const w=Math.floor(km),f=Math.round((km-w)*1000);return w+'+'+String(f).padStart(3,'0');}
+
+const CATS=[
+  {id:'terraplenagem',nm:'Terraplenagem',v:'--c0',p:0},
+  {id:'drenagem',nm:'Drenagem',v:'--c1',p:1},
+  {id:'base',nm:'Sub-base / Base',v:'--c2',p:2},
+  {id:'reciclagem',nm:'Reciclagem',v:'--c3',p:3},
+  {id:'fresagem',nm:'Fresagem',v:'--c4',p:4},
+  {id:'imprimacao',nm:'Imprimação',v:'--c5',p:5},
+  {id:'pintura',nm:'Pintura Ligação',v:'--c6',p:6},
+  {id:'pmf',nm:'PMF / Tapa-buraco',v:'--c7',p:7},
+  {id:'cbuq',nm:'CBUQ',v:'--c8',p:8},
+];
+const CM={};CATS.forEach(c=>CM[c.id]=c);
+function gc(c){return getComputedStyle(document.documentElement).getPropertyValue(c.v).trim();}
+
+const SEGS=[
+{cat:'terraplenagem',mc:20,s:16732,sf:0,e:16738,ef:0,side:'E',desc:'Recomposição manual de aterro',item:'8.3'},
+{cat:'terraplenagem',mc:20,s:16839,sf:0,e:16839,ef:10,side:'D',desc:'Recomposição manual de aterro',item:'8.3'},
+{cat:'reciclagem',mc:15,s:16661,sf:0,e:16745,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem',mc:18,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem',mc:18,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem',mc:18,s:15895,sf:0,e:15923,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem',mc:18,s:16245,sf:0,e:16295,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem',mc:18,s:16303,sf:0,e:16354,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem',mc:18,s:16378,sf:0,e:16425,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem',mc:18,s:16521,sf:0,e:16535,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem',mc:18,s:16566,sf:0,e:16583,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem',mc:20,s:14521,sf:0,e:14525,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem',mc:20,s:16915,sf:0,e:16921,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem',mc:20,s:16933,sf:0,e:16937,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem',mc:20,s:16939,sf:0,e:16949,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'base',mc:15,s:16885,sf:0,e:16885,ef:10,side:'E',desc:'BGS p/ base de remendo',item:'3.2',larg:3.50,esp:0.15},
+{cat:'base',mc:15,s:16742,sf:0,e:16742,ef:10,side:'D',desc:'BGS p/ base de remendo',item:'3.2',larg:3.50,esp:0.15},
+{cat:'base',mc:20,s:14511,sf:0,e:14521,ef:0,side:'D/E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:7.00,esp:0.15},
+{cat:'base',mc:20,s:15201,sf:0,e:15201,ef:10,side:'E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:3.50,esp:0.15},
+{cat:'base',mc:20,s:15914,sf:0,e:15923,ef:0,side:'D/E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:7.00,esp:0.15},
+{cat:'base',mc:20,s:16300,sf:0,e:16392,ef:0,side:'D/E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:7.00,esp:0.15},
+{cat:'base',mc:20,s:16775,sf:0,e:16840,ef:0,side:'D/E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:7.00,esp:0.15},
+{cat:'base',mc:20,s:16885,sf:0,e:16885,ef:10,side:'E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:3.50,esp:0.15},
+{cat:'base',mc:20,s:16936,sf:0,e:16941,ef:0,side:'E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:3.50,esp:0.15},
+{cat:'fresagem',mc:15,s:16610,sf:0,e:16630,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem',mc:15,s:16661,sf:0,e:16690,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem',mc:15,s:16690,sf:0,e:16715,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem',mc:18,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem',mc:18,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem',mc:18,s:15895,sf:0,e:15923,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem',mc:18,s:16245,sf:0,e:16270,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem',mc:18,s:16270,sf:0,e:16295,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'imprimacao',mc:15,s:16661,sf:0,e:16685,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mc:15,s:16685,sf:0,e:16745,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mc:18,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mc:18,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mc:18,s:15895,sf:0,e:15923,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mc:18,s:16245,sf:0,e:16583,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mc:20,s:14512,sf:0,e:14516,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mc:20,s:16915,sf:0,e:16921,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mc:20,s:16933,sf:0,e:16937,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mc:20,s:16939,sf:0,e:16949,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'pintura',mc:15,s:16661,sf:0,e:16745,ef:0,side:'D',desc:'Pintura de ligação',item:'16.10',larg:3.60},
+{cat:'pintura',mc:15,s:16661,sf:0,e:16745,ef:0,side:'E',desc:'Pintura de ligação',item:'16.10',larg:3.60},
+{cat:'pintura',mc:18,s:15895,sf:0,e:15903,ef:18,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
+{cat:'pintura',mc:18,s:16245,sf:0,e:16583,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
+{cat:'pintura',mc:18,s:16745,sf:0,e:16755,ef:0,side:'D/E',desc:'Pintura de ligação (trevo Patu)',item:'16.10',larg:7.00},
+{cat:'pintura',mc:20,s:14512,sf:0,e:14590,ef:0,side:'D',desc:'Pintura de ligação',item:'16.10',larg:3.60},
+{cat:'pintura',mc:20,s:14550,sf:0,e:14590,ef:0,side:'E',desc:'Pintura de ligação',item:'16.10',larg:3.60},
+{cat:'pintura',mc:20,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
+{cat:'pintura',mc:20,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
+{cat:'pintura',mc:20,s:16540,sf:0,e:16661,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
+{cat:'pintura',mc:20,s:16936,sf:0,e:16950,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
+{cat:'cbuq',mc:15,s:16661,sf:0,e:16745,ef:0,side:'D',desc:'CBUQ Faixa C',item:'16.7',larg:3.60,esp:0.05},
+{cat:'cbuq',mc:15,s:16661,sf:0,e:16745,ef:0,side:'E',desc:'CBUQ Faixa C',item:'16.7',larg:3.60,esp:0.05},
+{cat:'cbuq',mc:18,s:15895,sf:0,e:15903,ef:18,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:207.758,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:18,s:16245,sf:0,e:16269,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:417.326,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:18,s:16269,sf:0,e:16295,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:445.910,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:18,s:16303,sf:0,e:16330,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:463.061,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:18,s:16330,sf:0,e:16354,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:417.326,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:18,s:16378,sf:0,e:16394,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:278.218,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:18,s:16400,sf:8,e:16425,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:427.760,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:18,s:16521,sf:0,e:16535,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:243.440,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:18,s:16566,sf:0,e:16583,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:295.606,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:18,s:16745,sf:0,e:16755,ef:0,side:'D/E',desc:'CBUQ Faixa C (trevo Patu)',item:'16.7',ton:240.143,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:20,s:14512,sf:0,e:14516,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:141.014,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:20,s:14516,sf:0,e:14590,ef:0,side:'D',desc:'CBUQ Faixa C',item:'16.7',ton:391.315,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:20,s:14550,sf:0,e:14590,ef:0,side:'E',desc:'CBUQ Faixa C',item:'16.7',ton:211.522,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:20,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:640.996,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:20,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:850.374,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:20,s:15904,sf:2,e:15913,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:207.758,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:20,s:16540,sf:5,e:16565,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:247.609,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:20,s:16593,sf:0,e:16611,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:180.079,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:20,s:16630,sf:0,e:16661,ef:15,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:317.640,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:20,s:16936,sf:12,e:16950,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:265.071,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:16933,sf:0,e:16936,ef:12,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:84.037,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:16921,sf:7,e:16933,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:119.049,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:16915,sf:0,e:16921,ef:7,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:154.282,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:16747,sf:0,e:16915,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:1692.744,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:16535,sf:10,e:16540,ef:5,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:48.879,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:16425,sf:1,e:16521,ef:8,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:991.465,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:16393,sf:10,e:16399,ef:13,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:63.285,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:16353,sf:3,e:16377,ef:11,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:251.082,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:16294,sf:0,e:16302,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:82.322,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:16225,sf:0,e:16243,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:308.707,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:16106,sf:0,e:16221,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:1972.296,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:16076,sf:7,e:16106,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:305.106,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:15923,sf:0,e:16070,ef:6,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:1515.752,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:15864,sf:0,e:15894,ef:5,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:311.280,larg:7.00,esp:0.05},
+{cat:'cbuq',mc:23,s:15820,sf:10,e:15864,ef:0,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:223.813,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:23,s:15810,sf:0,e:15864,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:277.836,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:23,s:15783,sf:0,e:15800,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:87.467,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:23,s:15810,sf:0,e:15820,ef:10,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:54.024,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:23,s:15773,sf:5,e:15800,ef:0,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:137.632,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:23,s:15693,sf:10,e:15783,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:460.488,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:23,s:15695,sf:10,e:15773,ef:5,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:400.033,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:23,s:15689,sf:12,e:15693,ef:10,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:20.066,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:23,s:15628,sf:0,e:15685,ef:5,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:294.558,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:23,s:15689,sf:12,e:15695,ef:10,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:30.356,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:23,s:15561,sf:8,e:15685,ef:5,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:637.223,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:23,s:15566,sf:0,e:15628,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:318.997,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:23,s:15532,sf:15,e:15561,ef:8,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:147.408,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:23,s:15492,sf:0,e:15566,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:380.739,larg:3.60,esp:0.05},
+{cat:'cbuq',mc:24,s:15423,sf:0,e:15532,ef:0,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:560.818,larg:3.60,esp:0.05},
+{cat:'pmf',mc:15,s:16733,sf:0,e:16736,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'pmf',mc:15,s:16078,sf:0,e:16078,ef:10,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'pmf',mc:15,s:14510,sf:0,e:14518,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'pmf',mc:15,s:14667,sf:0,e:14667,ef:10,side:'D',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'pmf',mc:15,s:15302,sf:0,e:15302,ef:10,side:'D',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'pmf',mc:15,s:15919,sf:0,e:15919,ef:10,side:'E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'pmf',mc:15,s:16711,sf:0,e:16711,ef:10,side:'E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'pmf',mc:15,s:16896,sf:0,e:16896,ef:10,side:'D',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'pmf',mc:15,s:18569,sf:0,e:18599,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'pmf',mc:20,s:14518,sf:0,e:14581,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'pmf',mc:20,s:14887,sf:0,e:14994,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'pmf',mc:20,s:16300,sf:0,e:16392,ef:0,side:'D/E',desc:'Remendo profundo c/ CBUQ',item:'3.3'},
+{cat:'pmf',mc:20,s:16534,sf:0,e:16658,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'pmf',mc:20,s:16775,sf:0,e:16840,ef:0,side:'D/E',desc:'Remendo profundo c/ CBUQ',item:'3.3'},
+{cat:'pmf',mc:20,s:16924,sf:0,e:16943,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'drenagem',mc:18,s:16701,sf:0,e:16735,ef:0,side:'D/E',desc:'Meio-fio, linha d\'água, descida d\'água',item:'8.9-8.22'},
+{cat:'drenagem',mc:18,s:16409,sf:0,e:16415,ef:0,side:'E',desc:'Cabeça de ponte',item:'8.15'},
+{cat:'drenagem',mc:20,s:16681,sf:0,e:16683,ef:0,side:'D',desc:'Escavação manual / concreto',item:'8.9'},
+{cat:'drenagem',mc:20,s:16839,sf:0,e:16840,ef:0,side:'D/E',desc:'Escavação manual / concreto',item:'8.9'},
+{cat:'drenagem',mc:20,s:16936,sf:0,e:16936,ef:10,side:'E',desc:'Escavação manual / concreto',item:'8.9'},
+];
+
+SEGS.forEach((s,i)=>{
+  const a=E2K(s.s,s.sf||0),b=E2K(s.e,s.ef||0);
+  s.km0=Math.min(a,b);s.km1=Math.max(a,b);
+  if(s.km1-s.km0<0.04)s.km1=s.km0+0.04;
+  s.ext=(s.km1-s.km0)*1000;
+  s._i=i;
+});
+SEGS.sort((a,b)=>CM[a.cat].p-CM[b.cat].p);
+
+const MCP={9:'Mai/2025',15:'Nov/2025',18:'Fev/2026',20:'Mar-Abr/2026',23:'Abr-Jul/2026',24:'Ago/2026'};
+
+/* ═══════════ Estado ═══════════ */
+let pk=500,sf=null,asg=null;
+const hid=new Set();
+const scrollEl=document.getElementById('roadScroll');
+
+/* ═══════════ KPIs ═══════════ */
+document.getElementById('kpiSegs').textContent=fm(SEGS.length);
+const cats=new Set(SEGS.map(s=>s.cat));
+document.getElementById('kpiCatN').textContent=cats.size+' categorias';
+
+/* ═══════════ Render ═══════════ */
+function render(){
+  const canvas=document.getElementById('roadCanvas');
+  const W=LEN*pk;
+  canvas.style.width=W+'px';
+
+  const rv=document.getElementById('rv');
+  rv.innerHTML='';
+
+  const vis=SEGS.filter(seg=>{
+    if(hid.has(seg.cat))return false;
+    if(sf==='D'&&seg.side==='E')return false;
+    if(sf==='E'&&seg.side==='D')return false;
+    return true;
+  });
+
+  /* Guias verticais nos KMs */
+  const visKm=scrollEl.clientWidth/pk;
+  const gridStep=visKm>80?20:visKm>40?10:visKm>15?5:visKm>5?2:1;
+  const gridStart=Math.ceil(KM0/gridStep)*gridStep;
+  for(let km=gridStart;km<=KM1;km+=gridStep){
+    const x=(km-KM0)*pk;
+    const ln=document.createElement('div');
+    ln.className='rv-guide';ln.style.left=x+'px';
+    rv.appendChild(ln);
+  }
+
+  /* Segmentos */
+  vis.forEach(seg=>{
+    const c=CM[seg.cat];
+    const x=(seg.km0-KM0)*pk;
+    const w=Math.max((seg.km1-seg.km0)*pk,3);
+    const el=document.createElement('div');
+    el.className='sg'+(seg===asg?' act':'');
+    el.dataset.i=seg._i;
+    el.style.cssText=`left:${x}px;width:${w}px;background:${gc(c)};--sc:${gc(c)};`;
+    el.onpointerenter=()=>showCard(seg);
+    el.onpointerleave=hideCard;
+    el.onclick=()=>selectSeg(seg);
+    rv.appendChild(el);
+  });
+
+  /* Régua */
+  const rl=document.getElementById('rl');
+  rl.innerHTML='';
+
+  const kmStep=visKm>100?20:visKm>50?10:visKm>20?5:visKm>8?2:1;
+  const kmStart=Math.ceil(KM0/kmStep)*kmStep;
+  for(let km=kmStart;km<=KM1;km+=kmStep){
+    const x=(km-KM0)*pk;
+    const d=document.createElement('div');
+    d.className='rk-km';d.style.left=x+'px';
+    const lb=document.createElement('span');lb.className='lb';lb.textContent='km '+km;
+    const est=document.createElement('span');est.className='est';
+    est.textContent='Est '+(km*1000/20).toLocaleString('pt-BR');
+    d.appendChild(lb);d.appendChild(est);rl.appendChild(d);
+  }
+
+  if(visKm<20){
+    const estPx=pk*0.02;
+    const estIv=estPx>60?1:estPx>30?2:estPx>14?5:estPx>6?10:25;
+    const e0=Math.ceil((KM0*1000/20)/estIv)*estIv;
+    const e1=Math.floor(KM1*1000/20);
+    for(let e=e0;e<=e1;e+=estIv){
+      if(e%50===0)continue;
+      const km=e*20/1000;
+      const x=(km-KM0)*pk;
+      const d=document.createElement('div');
+      const cls=e%25===0?'h':e%10===0?'q':'t';
+      d.className='rk-e '+cls;d.style.left=x+'px';
+      if(estPx>18){const sp=document.createElement('span');sp.textContent=e;d.appendChild(sp);}
+      rl.appendChild(d);
+    }
+  }
+
+  rMM();
+  updateKmInd();
+  document.getElementById('zLab').textContent=fm(visKm,1)+' km';
+  document.getElementById('tCount').textContent=vis.length+' de '+SEGS.length+' segmentos';
+}
+
+/* ═══════════ KM Indicator ═══════════ */
+function updateKmInd(){
+  const km=KM0+scrollEl.scrollLeft/pk;
+  document.getElementById('kmPill').textContent='km '+fK(Math.max(KM0,Math.min(km,KM1)));
+}
+
+/* ═══════════ Info Card ═══════════ */
+let ht=null;
+function hideCardNow(){
+  clearTimeout(ht);asg=null;
+  document.getElementById('ic').classList.remove('sh');
+  document.querySelectorAll('.sg.act').forEach(el=>el.classList.remove('act'));
+}
+function hideCard(){ht=setTimeout(hideCardNow,250);}
+
+function posCard(seg){
+  const el=document.querySelector(`.sg[data-i="${seg._i}"]`);
+  if(!el)return;
+  const card=document.getElementById('ic');
+  const r=el.getBoundingClientRect();
+  const sr=scrollEl.getBoundingClientRect();
+  const cW=Math.min(330,window.innerWidth-24);
+  card.style.width=cW+'px';
+  const cx=r.left+r.width/2;
+  let cl=cx-cW/2;
+  cl=Math.max(8,Math.min(cl,window.innerWidth-cW-8));
+  card.style.left=cl+'px';
+  const cH=card.offsetHeight||280;
+  let ct=sr.top-cH-8;
+  if(ct<60)ct=sr.bottom+8;
+  card.style.top=ct+'px';
+}
+
+function showCard(seg){
+  clearTimeout(ht);asg=seg;
+  const c=CM[seg.cat],co=gc(c);
+  const sl=seg.side==='D/E'?'Ambos':seg.side==='D'?'Direito':'Esquerdo';
+  const eI=Math.min(seg.s,seg.e),eF=Math.max(seg.s,seg.e);
+  let grid='';
+  const r=(l,v,t)=>`<div class="fc-l">${l}</div><div class="fc-v${t?' tx':''}">${v}</div>`;
+  const sep='<div class="fc-sep"></div>';
+  grid+=r('KM',`${fK(seg.km0)} → ${fK(seg.km1)}`);
+  grid+=r('Estacas',`${fm(eI)} → ${fm(eF)}`);
+  grid+=r('Extensão',`${fm(seg.ext,0)} m`);
+  grid+=sep;
+  if(seg.larg)grid+=r('Largura',`${fm(seg.larg,2)} m`);
+  if(seg.esp)grid+=r('Espessura',`${fm(seg.esp*100,1)} cm`);
+  grid+=r('Lado',sl,true);
+  if(seg.ton){grid+=sep;grid+=r('Tonelagem',`${fm(seg.ton,3)} T`);}
+  if(seg.larg&&seg.ext>0)grid+=r('Área',`${fm(seg.ext*seg.larg,1)} m²`);
+  if(seg.larg&&seg.esp&&seg.ext>0)grid+=r('Volume',`${fm(seg.ext*seg.larg*seg.esp,1)} m³`);
+
+  const card=document.getElementById('ic');
+  card.innerHTML=`<div class="fc-bar" style="background:${co};color:${co}"></div>
+    <div class="fc-hd"><span class="fc-cat">${c.nm}</span><span class="fc-mc">MC ${seg.mc} · Item ${seg.item}</span></div>
+    <div class="fc-desc">${seg.desc}</div>
+    <div class="fc-grid">${r('Período',MCP[seg.mc]||'—',true)}${sep}${grid}</div>`;
+  card.classList.add('sh');
+  card.onpointerenter=()=>clearTimeout(ht);
+  card.onpointerleave=hideCard;
+  posCard(seg);
+  document.querySelectorAll('.sg.act').forEach(el=>el.classList.remove('act'));
+  const el2=document.querySelector(`.sg[data-i="${seg._i}"]`);
+  if(el2)el2.classList.add('act');
+}
+
+/* ═══════════ Minimapa ═══════════ */
+function rMM(){
+  const cv=document.getElementById('mc'),wr=document.getElementById('mm');
+  const rc=wr.getBoundingClientRect();
+  cv.width=rc.width*2;cv.height=rc.height*2;
+  const cx=cv.getContext('2d');cx.scale(2,2);
+  const W=rc.width,H=rc.height;
+  cx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--mm-bg').trim();
+  cx.fillRect(0,0,W,H);
+  cx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--road').trim();
+  cx.fillRect(0,H*.2,W,H*.6);
+  CATS.forEach(cat=>{
+    if(hid.has(cat.id))return;
+    cx.fillStyle=gc(cat);cx.globalAlpha=0.9;
+    SEGS.filter(s=>s.cat===cat.id).forEach(s=>{
+      if(sf==='D'&&s.side==='E')return;
+      if(sf==='E'&&s.side==='D')return;
+      cx.fillRect(((s.km0-KM0)/LEN)*W,H*.1,Math.max(((s.km1-s.km0)/LEN)*W,.5),H*.8);
+    });
+  });
+  cx.globalAlpha=1;
+  updateMMView();
+}
+function updateMMView(){
+  const totalW=LEN*pk;
+  const vpW=scrollEl.clientWidth;
+  const mv=document.getElementById('mv');
+  mv.style.left=(scrollEl.scrollLeft/totalW*100)+'%';
+  mv.style.width=(vpW/totalW*100)+'%';
+}
+
+/* ═══════════ Scroll / Zoom ═══════════ */
+scrollEl.addEventListener('scroll',()=>{
+  updateKmInd();
+  updateMMView();
+  if(asg){
+    const el=document.querySelector(`.sg[data-i="${asg._i}"]`);
+    if(el){
+      const r=el.getBoundingClientRect();
+      const sr=scrollEl.getBoundingClientRect();
+      if(r.right<sr.left-50||r.left>sr.right+50)hideCardNow();
+      else posCard(asg);
+    }
+  }
+});
+
+scrollEl.addEventListener('wheel',e=>{
+  if(e.ctrlKey||e.metaKey){
+    e.preventDefault();
+    const rect=scrollEl.getBoundingClientRect();
+    const mx=e.clientX-rect.left;
+    const mouseKm=KM0+(scrollEl.scrollLeft+mx)/pk;
+    const f=e.deltaY>0?0.8:1.25;
+    const vpW=scrollEl.clientWidth;
+    const minPk=vpW/(LEN+4);
+    pk=Math.max(minPk,Math.min(pk*f,3000));
+    render();
+    scrollEl.scrollLeft=(mouseKm-KM0)*pk-mx;
+  } else {
+    e.preventDefault();
+    scrollEl.scrollLeft+=e.deltaY+e.deltaX;
+  }
+},{passive:false});
+
+function zI(){
+  const vpW=scrollEl.clientWidth;
+  const centerKm=KM0+(scrollEl.scrollLeft+vpW/2)/pk;
+  pk=Math.min(pk*1.5,3000);
+  render();
+  scrollEl.scrollLeft=(centerKm-KM0)*pk-vpW/2;
+}
+function zO(){
+  const vpW=scrollEl.clientWidth;
+  const centerKm=KM0+(scrollEl.scrollLeft+vpW/2)/pk;
+  const minPk=vpW/(LEN+4);
+  pk=Math.max(pk/1.5,minPk);
+  render();
+  scrollEl.scrollLeft=(centerKm-KM0)*pk-vpW/2;
+}
+
+function fW(){
+  const s=SEGS.filter(s=>!hid.has(s.cat)&&(sf?s.side!==({D:'E',E:'D'}[sf]):true));
+  if(!s.length)return fA();
+  const minKm=Math.min(...s.map(s=>s.km0))-2;
+  const maxKm=Math.max(...s.map(s=>s.km1))+2;
+  const vpW=scrollEl.clientWidth;
+  pk=vpW/(maxKm-minKm);
+  render();
+  scrollEl.scrollLeft=(minKm-KM0)*pk;
+  document.getElementById('bf').classList.add('on');
+  document.getElementById('ba').classList.remove('on');
+}
+function fA(){
+  const vpW=scrollEl.clientWidth;
+  pk=vpW/(LEN+4);
+  render();
+  scrollEl.scrollLeft=0;
+  document.getElementById('ba').classList.add('on');
+  document.getElementById('bf').classList.remove('on');
+}
+
+/* Minimap click */
+document.getElementById('mm').addEventListener('click',e=>{
+  const r=e.currentTarget.getBoundingClientRect();
+  const frac=(e.clientX-r.left)/r.width;
+  const targetKm=KM0+frac*LEN;
+  const vpW=scrollEl.clientWidth;
+  scrollEl.scrollTo({left:(targetKm-KM0)*pk-vpW/2,behavior:'smooth'});
+});
+
+/* ═══════════ Filtros ═══════════ */
+function tC(id){
+  if(hid.has(id))hid.delete(id);else hid.add(id);
+  document.querySelector(`.chip[data-cat="${id}"]`).classList.toggle('off');
+  render();buildTable();
+}
+function fS(s){
+  sf=sf===s?null:s;
+  document.getElementById('fD').classList.toggle('on',sf==='D');
+  document.getElementById('fE').classList.toggle('on',sf==='E');
+  render();buildTable();
+}
+
+/* ═══════════ Chips ═══════════ */
+(function(){
+  const el=document.getElementById('chips');
+  CATS.forEach(c=>{
+    const n=SEGS.filter(s=>s.cat===c.id).length;
+    if(!n)return;
+    const d=document.createElement('div');
+    d.className='chip';d.dataset.cat=c.id;d.onclick=()=>tC(c.id);
+    d.innerHTML=`<span class="chip-d" style="background:${gc(c)}"></span>${c.nm}<span class="chip-n">${n}</span>`;
+    el.appendChild(d);
+  });
+})();
+
+/* ═══════════ Tabela ═══════════ */
+let sortKey='km0',sortDir=1;
+
+function buildTable(){
+  const tb=document.getElementById('tb');
+  let rows=SEGS.filter(s=>{
+    if(hid.has(s.cat))return false;
+    if(sf==='D'&&s.side==='E')return false;
+    if(sf==='E'&&s.side==='D')return false;
+    return true;
+  });
+  rows.sort((a,b)=>{
+    let va,vb;
+    switch(sortKey){
+      case'i':va=a._i;vb=b._i;break;
+      case'cat':va=CM[a.cat].p;vb=CM[b.cat].p;break;
+      case'mc':va=a.mc;vb=b.mc;break;
+      case'item':va=a.item;vb=b.item;break;
+      case'km0':va=a.km0;vb=b.km0;break;
+      case'km1':va=a.km1;vb=b.km1;break;
+      case'ext':va=a.ext;vb=b.ext;break;
+      case'larg':va=a.larg||0;vb=b.larg||0;break;
+      case'esp':va=a.esp||0;vb=b.esp||0;break;
+      case'side':va=a.side;vb=b.side;break;
+      case'ton':va=a.ton||0;vb=b.ton||0;break;
+      default:va=a.km0;vb=b.km0;
+    }
+    if(typeof va==='string')return va.localeCompare(vb)*sortDir;
+    return(va-vb)*sortDir;
+  });
+  tb.innerHTML='';
+  rows.forEach((s,i)=>{
+    const c=CM[s.cat],co=gc(c);
+    const tr=document.createElement('tr');
+    tr.dataset.idx=s._i;
+    tr.onpointerenter=()=>{showCard(s);tr.classList.add('hi');};
+    tr.onpointerleave=()=>{hideCard();tr.classList.remove('hi');};
+    tr.onclick=()=>selectSeg(s);
+    tr.innerHTML=`
+      <td class="t-mono" style="color:var(--tx3)">${i+1}</td>
+      <td><span class="t-cat"><span class="t-dot" style="background:${co}"></span>${c.nm}</span></td>
+      <td class="t-mono">${s.mc}</td>
+      <td class="t-mono">${s.item}</td>
+      <td class="t-mono">${fK(s.km0)}</td>
+      <td class="t-mono">${fK(s.km1)}</td>
+      <td class="t-mono t-right">${fm(s.ext,0)}</td>
+      <td class="t-mono t-right">${s.larg?fm(s.larg,2):'—'}</td>
+      <td class="t-mono t-right">${s.esp?fm(s.esp*100,1):'—'}</td>
+      <td><span class="t-side">${s.side}</span></td>
+      <td class="t-mono t-right">${s.ton?fm(s.ton,3):'—'}</td>`;
+    tb.appendChild(tr);
+  });
+  document.getElementById('tCount').textContent=rows.length+' de '+SEGS.length+' segmentos';
+}
+
+function hiRow(seg){
+  document.querySelectorAll('#tb tr.hi').forEach(r=>r.classList.remove('hi'));
+  if(seg){
+    const tr=document.querySelector(`#tb tr[data-idx="${seg._i}"]`);
+    if(tr){tr.classList.add('hi');tr.scrollIntoView({block:'nearest',behavior:'smooth'});}
+  }
+}
+
+function selectSeg(seg){
+  const mid=(seg.km0+seg.km1)/2;
+  const span=Math.max((seg.km1-seg.km0)*4,10);
+  const vpW=scrollEl.clientWidth;
+  pk=vpW/span;
+  render();
+  scrollEl.scrollTo({left:(mid-KM0)*pk-vpW/2,behavior:'smooth'});
+  setTimeout(()=>showCard(seg),300);
+  hiRow(seg);
+}
+
+/* Sorting */
+document.querySelectorAll('th[data-k]').forEach(th=>{
+  th.addEventListener('click',()=>{
+    const k=th.dataset.k;
+    if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=1;}
+    document.querySelectorAll('th').forEach(h=>{h.classList.remove('sorted');h.querySelector('.arrow')?.remove();});
+    th.classList.add('sorted');
+    const ar=document.createElement('span');ar.className='arrow';ar.textContent=sortDir>0?'▲':'▼';
+    th.appendChild(ar);
+    buildTable();
+  });
+});
+
+/* ═══════════ Tema ═══════════ */
+function tTh(){
+  const r=document.documentElement;
+  const cur=r.getAttribute('data-theme');
+  const nxt=cur==='light'?'dark':'light'; /* padrão (sem atributo) = escuro */
+  r.setAttribute('data-theme',nxt);
+  render();buildTable();
+  document.querySelectorAll('.chip').forEach(ch=>{
+    const cat=ch.dataset.cat;
+    ch.querySelector('.chip-d').style.background=gc(CM[cat]);
+  });
+}
+
+/* ═══════════ Boot ═══════════ */
+buildTable();
+fW();
+</script>
+</body>
+</html>
