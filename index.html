@@ -5,31 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Medições PATO — BR-226/RN</title>
 <style>
-/* ── Tokens: dark é o padrão; claro via data-theme="light" ── */
+/* ── Tokens: tema claro único ── */
 :root{
-  color-scheme:dark;
-  --bg:#0A0E17;--card:#111827;--bd:#1F2A3C;--bdl:#172033;
-  --tx:#E8EEF7;--tx2:#9AA8BE;--tx3:#6B7A93;
-  --ac:#1e40af;--ac2:#3b82f6;--act:#60a5fa;--acbg:rgba(30,64,175,.12);
-  --glass:rgba(17,24,39,.62);--hdr-bg:rgba(10,14,23,.72);
-  --kpi-bd:rgba(30,64,175,.15);--kpi-glow:0 0 0 1px rgba(30,64,175,.04),0 0 18px rgba(30,64,175,.07);
-  --ok:#34D399;--wrn:#FBBF24;
-  --road:#8898A8;--road-edge:#6B7B8D;--shldr:#1A2332;--grass:#064E3B;--center:rgba(120,130,140,.35);
-  --edge-ln:rgba(180,190,200,.2);
-  --mm-bg:#070A12;
-  --sh:0 1px 2px rgba(0,0,0,.35);
-  --sh2:0 0 0 1px rgba(30,64,175,.25),0 0 24px rgba(30,64,175,.18),0 20px 50px rgba(0,0,0,.55);
-  --c0:#2563EB;--c1:#8B5E3C;--c2:#3F4A56;--c3:#5BA8D4;--c4:#1A1A1A;
-}
-:root[data-theme="light"]{
   color-scheme:light;
   --bg:#F0F4F8;--card:#FFFFFF;--bd:#DDE5EE;--bdl:#EAF0F6;
   --tx:#0F172A;--tx2:#475569;--tx3:#64748B;
-  --ac:#1e40af;--ac2:#3b82f6;--act:#1e3a5f;--acbg:rgba(30,64,175,.08);
+  --ac:#4B5320;--ac2:#5C6B2F;--act:#3B4218;--acbg:rgba(75,83,32,.08);
   --glass:rgba(255,255,255,.9);--hdr-bg:rgba(255,255,255,.8);
   --kpi-bd:#DDE5EE;--kpi-glow:0 1px 3px rgba(15,23,42,.06),0 4px 14px rgba(15,23,42,.04);
   --ok:#059669;--wrn:#D97706;
-  --road:#B8C4D0;--road-edge:#97A5B3;--shldr:#78716C;--grass:#6EE7B7;--center:rgba(140,150,160,.3);
+  --road:#B8C4D0;--road-edge:#97A5B3;--shldr:#A0977A;--grass:#6B7D3A;--center:rgba(140,150,160,.3);
   --edge-ln:rgba(160,170,180,.25);
   --mm-bg:#E6ECF3;
   --sh:0 1px 3px rgba(15,23,42,.06),0 2px 8px rgba(15,23,42,.04);
@@ -39,8 +24,6 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scrollbar-color:var(--ac) var(--bg);scrollbar-width:thin;}
 body{background:var(--bg);color:var(--tx);font-family:Calibri,'Carlito','Segoe UI',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.5;font-variant-numeric:tabular-nums;}
-/* Brilho verde-limão bem sutil no topo (só no tema escuro) */
-:root:not([data-theme="light"]) body{background:radial-gradient(1200px 380px at 50% -120px,rgba(30,64,175,.12),transparent 70%),var(--bg);background-attachment:fixed;}
 .mono{font-family:Calibri,'Carlito','Segoe UI',sans-serif;}
 ::-webkit-scrollbar{width:10px;height:10px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
@@ -100,14 +83,19 @@ body{background:var(--bg);color:var(--tx);font-family:Calibri,'Carlito','Segoe U
 /* Pílula de KM flutuante: verde-limão cheio com brilho */
 .km-pill{position:absolute;top:8px;left:8px;z-index:20;background:var(--ac);color:#fff;font-family:Calibri,'Carlito','Segoe UI',sans-serif;font-size:.62rem;font-weight:700;padding:.18rem .65rem;border-radius:999px;pointer-events:none;box-shadow:0 0 14px rgba(30,64,175,.55);}
 
-/* ── Faixa da estrada (100px) ── */
+/* ── Faixa da estrada (160px): E em cima, D embaixo ── */
 .road-canvas{position:relative;}
-.rv{position:relative;height:100px;background:linear-gradient(180deg,var(--grass) 12px,var(--shldr) 12px 17px,var(--road-edge) 17px 19px,var(--road) 19px 81px,var(--road-edge) 81px 83px,var(--shldr) 83px 88px,var(--grass) 88px);}
-.rv::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:2;background:linear-gradient(var(--edge-ln),var(--edge-ln)) 0 17px/100% 1px no-repeat,linear-gradient(var(--edge-ln),var(--edge-ln)) 0 82px/100% 1px no-repeat;}
-.rv::after{content:'';position:absolute;top:49px;left:0;right:0;height:2px;z-index:2;background:repeating-linear-gradient(to right,var(--center) 0 6px,transparent 6px 14px);}
+.rv{position:relative;height:160px;background:linear-gradient(180deg,var(--grass) 16px,var(--shldr) 16px 22px,var(--road-edge) 22px 24px,var(--road) 24px 136px,var(--road-edge) 136px 138px,var(--shldr) 138px 144px,var(--grass) 144px);}
+.rv::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:2;background:linear-gradient(var(--edge-ln),var(--edge-ln)) 0 22px/100% 1px no-repeat,linear-gradient(var(--edge-ln),var(--edge-ln)) 0 137px/100% 1px no-repeat;}
+.rv::after{content:'';position:absolute;top:79px;left:0;right:0;height:2px;z-index:2;background:repeating-linear-gradient(to right,var(--center) 0 8px,transparent 8px 18px);}
 .rv-guide{position:absolute;top:0;height:100%;width:0;border-left:1px dashed var(--ac2);opacity:.14;z-index:1;}
-.sg{position:absolute;top:19px;height:62px;border-radius:1px;cursor:pointer;transition:filter .1s,opacity .1s,box-shadow .12s;min-width:3px;opacity:.95;z-index:3;}
-.sg::after{content:'';position:absolute;top:50%;left:0;right:0;height:2px;transform:translateY(-1px);background:repeating-linear-gradient(to right,#FBBF24 0 6px,transparent 6px 14px);opacity:.85;pointer-events:none;}
+/* Segmento D/E (ambos): pista inteira */
+.sg{position:absolute;top:24px;height:112px;border-radius:1px;cursor:pointer;transition:filter .1s,opacity .1s,box-shadow .12s;min-width:3px;opacity:.95;z-index:3;}
+/* Segmento só lado E (esquerdo): metade superior */
+.sg.sg-e{top:24px;height:55px;}
+/* Segmento só lado D (direito): metade inferior */
+.sg.sg-d{top:81px;height:55px;}
+.sg::after{content:'';position:absolute;top:50%;left:0;right:0;height:2px;transform:translateY(-1px);background:repeating-linear-gradient(to right,#FBBF24 0 8px,transparent 8px 18px);opacity:.85;pointer-events:none;}
 .sg:hover{opacity:1;filter:brightness(1.15);z-index:8;box-shadow:0 0 12px var(--sc,var(--ac));}
 .sg.act{opacity:1;z-index:9;outline:2px solid var(--ac2);outline-offset:1px;box-shadow:0 0 16px var(--sc,var(--ac));}
 
@@ -123,8 +111,7 @@ body{background:var(--bg);color:var(--tx);font-family:Calibri,'Carlito','Segoe U
 .rk-e span{position:absolute;top:4px;left:0;transform:translateX(-50%);font-family:Calibri,'Carlito','Segoe UI',sans-serif;font-size:.6rem;font-weight:600;color:var(--tx2);white-space:nowrap;}
 
 /* ── Card flutuante: vidro escuro, acento verde-limão, borda com brilho ── */
-.fc{display:none;position:fixed;z-index:1000;background:var(--glass);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border:1px solid rgba(30,64,175,.4);border-radius:8px;width:330px;max-width:calc(100vw - 24px);box-shadow:var(--sh2);overflow:hidden;}
-:root[data-theme="light"] .fc{background:rgba(255,255,255,.96);border-color:var(--bd);}
+.fc{display:none;position:fixed;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border:1px solid var(--bd);border-radius:8px;width:330px;max-width:calc(100vw - 24px);box-shadow:var(--sh2);overflow:hidden;}
 .fc.sh{display:block;animation:fcIn .14s ease;}
 @keyframes fcIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 .fc-bar{height:2px;box-shadow:0 0 10px currentColor;}
@@ -204,7 +191,6 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   </div>
   <div class="hdr-r">
     <span class="tag">130,70 km</span>
-    <button class="th-btn" onclick="tTh()" aria-label="Alternar tema claro/escuro">Tema</button>
   </div>
 </header>
 
@@ -217,7 +203,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
     <div class="kpi">
       <div class="kpi-val">R$ 16,57<small> M</small></div>
       <div class="kpi-lab">Valor Executado</div>
-      <div class="kpi-sub">MC 15–24</div>
+      <div class="kpi-sub">MP 15–24</div>
     </div>
     <div class="kpi">
       <div class="kpi-val">38,60<small>%</small></div>
@@ -276,7 +262,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
         <thead><tr>
           <th data-k="i" style="width:32px">#</th>
           <th data-k="cat">Categoria</th>
-          <th data-k="mc">MC</th>
+          <th data-k="mp">MP</th>
           <th data-k="item">Item</th>
           <th data-k="km0">KM Início</th>
           <th data-k="km1">KM Fim</th>
@@ -292,7 +278,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   </div>
 
   <div class="ft">
-    Dados extraídos das Memórias de Cálculo (MC 15, 18, 20, 23, 24)
+    Dados extraídos das Medições Parciais (MP 15, 18, 20, 23, 24)
     <span>&middot;</span> Contrato SR/RN 515/2024 — BR-226/RN
     <span>&middot;</span> PATO
   </div>
@@ -318,130 +304,130 @@ const CM={};CATS.forEach(c=>CM[c.id]=c);
 function gc(c){return getComputedStyle(document.documentElement).getPropertyValue(c.v).trim();}
 
 const SEGS=[
-{cat:'troca-solo-cbuq',mc:20,s:16732,sf:0,e:16738,ef:0,side:'E',desc:'Recomposição manual de aterro',item:'8.3'},
-{cat:'troca-solo-cbuq',mc:20,s:16839,sf:0,e:16839,ef:10,side:'D',desc:'Recomposição manual de aterro',item:'8.3'},
-{cat:'reciclagem-cbuq',mc:15,s:16661,sf:0,e:16745,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
-{cat:'reciclagem-cbuq',mc:18,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
-{cat:'reciclagem-cbuq',mc:18,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
-{cat:'reciclagem-cbuq',mc:18,s:15895,sf:0,e:15923,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
-{cat:'reciclagem-cbuq',mc:18,s:16245,sf:0,e:16295,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
-{cat:'reciclagem-cbuq',mc:18,s:16303,sf:0,e:16354,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
-{cat:'reciclagem-cbuq',mc:18,s:16378,sf:0,e:16425,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
-{cat:'reciclagem-cbuq',mc:18,s:16521,sf:0,e:16535,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
-{cat:'reciclagem-cbuq',mc:18,s:16566,sf:0,e:16583,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
-{cat:'reciclagem-cbuq',mc:20,s:14521,sf:0,e:14525,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
-{cat:'reciclagem-cbuq',mc:20,s:16915,sf:0,e:16921,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
-{cat:'reciclagem-cbuq',mc:20,s:16933,sf:0,e:16937,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
-{cat:'reciclagem-cbuq',mc:20,s:16939,sf:0,e:16949,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
-{cat:'base',mc:15,s:16885,sf:0,e:16885,ef:10,side:'E',desc:'BGS p/ base de remendo',item:'3.2',larg:3.50,esp:0.15},
-{cat:'base',mc:15,s:16742,sf:0,e:16742,ef:10,side:'D',desc:'BGS p/ base de remendo',item:'3.2',larg:3.50,esp:0.15},
-{cat:'base',mc:20,s:14511,sf:0,e:14521,ef:0,side:'D/E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:7.00,esp:0.15},
-{cat:'base',mc:20,s:15201,sf:0,e:15201,ef:10,side:'E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:3.50,esp:0.15},
-{cat:'base',mc:20,s:15914,sf:0,e:15923,ef:0,side:'D/E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:7.00,esp:0.15},
-{cat:'base',mc:20,s:16300,sf:0,e:16392,ef:0,side:'D/E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:7.00,esp:0.15},
-{cat:'base',mc:20,s:16775,sf:0,e:16840,ef:0,side:'D/E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:7.00,esp:0.15},
-{cat:'base',mc:20,s:16885,sf:0,e:16885,ef:10,side:'E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:3.50,esp:0.15},
-{cat:'base',mc:20,s:16936,sf:0,e:16941,ef:0,side:'E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:3.50,esp:0.15},
-{cat:'fresagem-cbuq',mc:15,s:16610,sf:0,e:16630,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
-{cat:'fresagem-cbuq',mc:15,s:16661,sf:0,e:16690,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
-{cat:'fresagem-cbuq',mc:15,s:16690,sf:0,e:16715,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
-{cat:'fresagem-cbuq',mc:18,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
-{cat:'fresagem-cbuq',mc:18,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
-{cat:'fresagem-cbuq',mc:18,s:15895,sf:0,e:15923,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
-{cat:'fresagem-cbuq',mc:18,s:16245,sf:0,e:16270,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
-{cat:'fresagem-cbuq',mc:18,s:16270,sf:0,e:16295,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
-{cat:'imprimacao',mc:15,s:16661,sf:0,e:16685,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
-{cat:'imprimacao',mc:15,s:16685,sf:0,e:16745,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
-{cat:'imprimacao',mc:18,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
-{cat:'imprimacao',mc:18,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
-{cat:'imprimacao',mc:18,s:15895,sf:0,e:15923,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
-{cat:'imprimacao',mc:18,s:16245,sf:0,e:16583,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
-{cat:'imprimacao',mc:20,s:14512,sf:0,e:14516,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
-{cat:'imprimacao',mc:20,s:16915,sf:0,e:16921,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
-{cat:'imprimacao',mc:20,s:16933,sf:0,e:16937,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
-{cat:'imprimacao',mc:20,s:16939,sf:0,e:16949,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
-{cat:'pintura',mc:15,s:16661,sf:0,e:16745,ef:0,side:'D',desc:'Pintura de ligação',item:'16.10',larg:3.60},
-{cat:'pintura',mc:15,s:16661,sf:0,e:16745,ef:0,side:'E',desc:'Pintura de ligação',item:'16.10',larg:3.60},
-{cat:'pintura',mc:18,s:15895,sf:0,e:15903,ef:18,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
-{cat:'pintura',mc:18,s:16245,sf:0,e:16583,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
-{cat:'pintura',mc:18,s:16745,sf:0,e:16755,ef:0,side:'D/E',desc:'Pintura de ligação (trevo Patu)',item:'16.10',larg:7.00},
-{cat:'pintura',mc:20,s:14512,sf:0,e:14590,ef:0,side:'D',desc:'Pintura de ligação',item:'16.10',larg:3.60},
-{cat:'pintura',mc:20,s:14550,sf:0,e:14590,ef:0,side:'E',desc:'Pintura de ligação',item:'16.10',larg:3.60},
-{cat:'pintura',mc:20,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
-{cat:'pintura',mc:20,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
-{cat:'pintura',mc:20,s:16540,sf:0,e:16661,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
-{cat:'pintura',mc:20,s:16936,sf:0,e:16950,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
-{cat:'cbuq',mc:15,s:16661,sf:0,e:16745,ef:0,side:'D',desc:'CBUQ Faixa C',item:'16.7',larg:3.60,esp:0.05},
-{cat:'cbuq',mc:15,s:16661,sf:0,e:16745,ef:0,side:'E',desc:'CBUQ Faixa C',item:'16.7',larg:3.60,esp:0.05},
-{cat:'cbuq',mc:18,s:15895,sf:0,e:15903,ef:18,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:207.758,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:18,s:16245,sf:0,e:16269,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:417.326,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:18,s:16269,sf:0,e:16295,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:445.910,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:18,s:16303,sf:0,e:16330,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:463.061,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:18,s:16330,sf:0,e:16354,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:417.326,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:18,s:16378,sf:0,e:16394,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:278.218,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:18,s:16400,sf:8,e:16425,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:427.760,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:18,s:16521,sf:0,e:16535,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:243.440,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:18,s:16566,sf:0,e:16583,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:295.606,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:18,s:16745,sf:0,e:16755,ef:0,side:'D/E',desc:'CBUQ Faixa C (trevo Patu)',item:'16.7',ton:240.143,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:20,s:14512,sf:0,e:14516,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:141.014,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:20,s:14516,sf:0,e:14590,ef:0,side:'D',desc:'CBUQ Faixa C',item:'16.7',ton:391.315,larg:3.60,esp:0.05},
-{cat:'cbuq',mc:20,s:14550,sf:0,e:14590,ef:0,side:'E',desc:'CBUQ Faixa C',item:'16.7',ton:211.522,larg:3.60,esp:0.05},
-{cat:'cbuq',mc:20,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:640.996,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:20,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:850.374,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:20,s:15904,sf:2,e:15913,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:207.758,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:20,s:16540,sf:5,e:16565,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:247.609,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:20,s:16593,sf:0,e:16611,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:180.079,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:20,s:16630,sf:0,e:16661,ef:15,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:317.640,larg:7.00,esp:0.05},
-{cat:'cbuq',mc:20,s:16936,sf:12,e:16950,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:265.071,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:16933,sf:0,e:16936,ef:12,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:84.037,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:16921,sf:7,e:16933,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:119.049,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:16915,sf:0,e:16921,ef:7,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:154.282,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:16747,sf:0,e:16915,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:1692.744,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:16535,sf:10,e:16540,ef:5,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:48.879,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:16425,sf:1,e:16521,ef:8,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:991.465,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:16393,sf:10,e:16399,ef:13,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:63.285,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:16353,sf:3,e:16377,ef:11,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:251.082,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:16294,sf:0,e:16302,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:82.322,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:16225,sf:0,e:16243,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:308.707,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:16106,sf:0,e:16221,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:1972.296,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:16076,sf:7,e:16106,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:305.106,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15923,sf:0,e:16070,ef:6,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:1515.752,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15864,sf:0,e:15894,ef:5,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:311.280,larg:7.00,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15820,sf:10,e:15864,ef:0,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:223.813,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15810,sf:0,e:15864,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:277.836,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15783,sf:0,e:15800,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:87.467,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15810,sf:0,e:15820,ef:10,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:54.024,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15773,sf:5,e:15800,ef:0,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:137.632,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15693,sf:10,e:15783,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:460.488,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15695,sf:10,e:15773,ef:5,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:400.033,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15689,sf:12,e:15693,ef:10,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:20.066,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15628,sf:0,e:15685,ef:5,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:294.558,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15689,sf:12,e:15695,ef:10,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:30.356,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15561,sf:8,e:15685,ef:5,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:637.223,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15566,sf:0,e:15628,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:318.997,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15532,sf:15,e:15561,ef:8,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:147.408,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:23,s:15492,sf:0,e:15566,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:380.739,larg:3.60,esp:0.05},
-{cat:'cbuq-rev',mc:24,s:15423,sf:0,e:15532,ef:0,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:560.818,larg:3.60,esp:0.05},
-{cat:'remendo-cbuq',mc:15,s:16733,sf:0,e:16736,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
-{cat:'remendo-cbuq',mc:15,s:16078,sf:0,e:16078,ef:10,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
-{cat:'remendo-cbuq',mc:15,s:14510,sf:0,e:14518,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
-{cat:'remendo-cbuq',mc:15,s:14667,sf:0,e:14667,ef:10,side:'D',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
-{cat:'remendo-cbuq',mc:15,s:15302,sf:0,e:15302,ef:10,side:'D',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
-{cat:'remendo-cbuq',mc:15,s:15919,sf:0,e:15919,ef:10,side:'E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
-{cat:'remendo-cbuq',mc:15,s:16711,sf:0,e:16711,ef:10,side:'E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
-{cat:'remendo-cbuq',mc:15,s:16896,sf:0,e:16896,ef:10,side:'D',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
-{cat:'remendo-cbuq',mc:15,s:18569,sf:0,e:18599,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
-{cat:'remendo-cbuq',mc:20,s:14518,sf:0,e:14581,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
-{cat:'remendo-cbuq',mc:20,s:14887,sf:0,e:14994,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
-{cat:'remendo-cbuq',mc:20,s:16300,sf:0,e:16392,ef:0,side:'D/E',desc:'Remendo profundo c/ CBUQ',item:'3.3'},
-{cat:'remendo-cbuq',mc:20,s:16534,sf:0,e:16658,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
-{cat:'remendo-cbuq',mc:20,s:16775,sf:0,e:16840,ef:0,side:'D/E',desc:'Remendo profundo c/ CBUQ',item:'3.3'},
-{cat:'remendo-cbuq',mc:20,s:16924,sf:0,e:16943,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
-{cat:'drenagem',mc:18,s:16701,sf:0,e:16735,ef:0,side:'D/E',desc:'Meio-fio, linha d\'água, descida d\'água',item:'8.9-8.22'},
-{cat:'drenagem',mc:18,s:16409,sf:0,e:16415,ef:0,side:'E',desc:'Cabeça de ponte',item:'8.15'},
-{cat:'drenagem',mc:20,s:16681,sf:0,e:16683,ef:0,side:'D',desc:'Escavação manual / concreto',item:'8.9'},
-{cat:'drenagem',mc:20,s:16839,sf:0,e:16840,ef:0,side:'D/E',desc:'Escavação manual / concreto',item:'8.9'},
-{cat:'drenagem',mc:20,s:16936,sf:0,e:16936,ef:10,side:'E',desc:'Escavação manual / concreto',item:'8.9'},
+{cat:'troca-solo-cbuq',mp:20,s:16732,sf:0,e:16738,ef:0,side:'E',desc:'Recomposição manual de aterro',item:'8.3'},
+{cat:'troca-solo-cbuq',mp:20,s:16839,sf:0,e:16839,ef:10,side:'D',desc:'Recomposição manual de aterro',item:'8.3'},
+{cat:'reciclagem-cbuq',mp:15,s:16661,sf:0,e:16745,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem-cbuq',mp:18,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem-cbuq',mp:18,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem-cbuq',mp:18,s:15895,sf:0,e:15923,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem-cbuq',mp:18,s:16245,sf:0,e:16295,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem-cbuq',mp:18,s:16303,sf:0,e:16354,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem-cbuq',mp:18,s:16378,sf:0,e:16425,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem-cbuq',mp:18,s:16521,sf:0,e:16535,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem-cbuq',mp:18,s:16566,sf:0,e:16583,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem-cbuq',mp:20,s:14521,sf:0,e:14525,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem-cbuq',mp:20,s:16915,sf:0,e:16921,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem-cbuq',mp:20,s:16933,sf:0,e:16937,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'reciclagem-cbuq',mp:20,s:16939,sf:0,e:16949,ef:0,side:'D/E',desc:'Reciclagem c/ adição de brita comercial',item:'16.2',larg:7.00,esp:0.20},
+{cat:'base',mp:15,s:16885,sf:0,e:16885,ef:10,side:'E',desc:'BGS p/ base de remendo',item:'3.2',larg:3.50,esp:0.15},
+{cat:'base',mp:15,s:16742,sf:0,e:16742,ef:10,side:'D',desc:'BGS p/ base de remendo',item:'3.2',larg:3.50,esp:0.15},
+{cat:'base',mp:20,s:14511,sf:0,e:14521,ef:0,side:'D/E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:7.00,esp:0.15},
+{cat:'base',mp:20,s:15201,sf:0,e:15201,ef:10,side:'E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:3.50,esp:0.15},
+{cat:'base',mp:20,s:15914,sf:0,e:15923,ef:0,side:'D/E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:7.00,esp:0.15},
+{cat:'base',mp:20,s:16300,sf:0,e:16392,ef:0,side:'D/E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:7.00,esp:0.15},
+{cat:'base',mp:20,s:16775,sf:0,e:16840,ef:0,side:'D/E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:7.00,esp:0.15},
+{cat:'base',mp:20,s:16885,sf:0,e:16885,ef:10,side:'E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:3.50,esp:0.15},
+{cat:'base',mp:20,s:16936,sf:0,e:16941,ef:0,side:'E',desc:'BGS p/ base de remendo profundo',item:'3.2',larg:3.50,esp:0.15},
+{cat:'fresagem-cbuq',mp:15,s:16610,sf:0,e:16630,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem-cbuq',mp:15,s:16661,sf:0,e:16690,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem-cbuq',mp:15,s:16690,sf:0,e:16715,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem-cbuq',mp:18,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem-cbuq',mp:18,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem-cbuq',mp:18,s:15895,sf:0,e:15923,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem-cbuq',mp:18,s:16245,sf:0,e:16270,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'fresagem-cbuq',mp:18,s:16270,sf:0,e:16295,ef:0,side:'D/E',desc:'Fresagem contínua esp. 5 cm',item:'16.12',larg:7.00,esp:0.05},
+{cat:'imprimacao',mp:15,s:16661,sf:0,e:16685,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mp:15,s:16685,sf:0,e:16745,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mp:18,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mp:18,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mp:18,s:15895,sf:0,e:15923,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mp:18,s:16245,sf:0,e:16583,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mp:20,s:14512,sf:0,e:14516,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mp:20,s:16915,sf:0,e:16921,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mp:20,s:16933,sf:0,e:16937,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'imprimacao',mp:20,s:16939,sf:0,e:16949,ef:0,side:'D/E',desc:'Imprimação c/ emulsão asfáltica',item:'16.1',larg:7.00},
+{cat:'pintura',mp:15,s:16661,sf:0,e:16745,ef:0,side:'D',desc:'Pintura de ligação',item:'16.10',larg:3.60},
+{cat:'pintura',mp:15,s:16661,sf:0,e:16745,ef:0,side:'E',desc:'Pintura de ligação',item:'16.10',larg:3.60},
+{cat:'pintura',mp:18,s:15895,sf:0,e:15903,ef:18,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
+{cat:'pintura',mp:18,s:16245,sf:0,e:16583,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
+{cat:'pintura',mp:18,s:16745,sf:0,e:16755,ef:0,side:'D/E',desc:'Pintura de ligação (trevo Patu)',item:'16.10',larg:7.00},
+{cat:'pintura',mp:20,s:14512,sf:0,e:14590,ef:0,side:'D',desc:'Pintura de ligação',item:'16.10',larg:3.60},
+{cat:'pintura',mp:20,s:14550,sf:0,e:14590,ef:0,side:'E',desc:'Pintura de ligação',item:'16.10',larg:3.60},
+{cat:'pintura',mp:20,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
+{cat:'pintura',mp:20,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
+{cat:'pintura',mp:20,s:16540,sf:0,e:16661,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
+{cat:'pintura',mp:20,s:16936,sf:0,e:16950,ef:0,side:'D/E',desc:'Pintura de ligação',item:'16.10',larg:7.00},
+{cat:'cbuq',mp:15,s:16661,sf:0,e:16745,ef:0,side:'D',desc:'CBUQ Faixa C',item:'16.7',larg:3.60,esp:0.05},
+{cat:'cbuq',mp:15,s:16661,sf:0,e:16745,ef:0,side:'E',desc:'CBUQ Faixa C',item:'16.7',larg:3.60,esp:0.05},
+{cat:'cbuq',mp:18,s:15895,sf:0,e:15903,ef:18,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:207.758,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:18,s:16245,sf:0,e:16269,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:417.326,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:18,s:16269,sf:0,e:16295,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:445.910,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:18,s:16303,sf:0,e:16330,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:463.061,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:18,s:16330,sf:0,e:16354,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:417.326,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:18,s:16378,sf:0,e:16394,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:278.218,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:18,s:16400,sf:8,e:16425,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:427.760,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:18,s:16521,sf:0,e:16535,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:243.440,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:18,s:16566,sf:0,e:16583,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:295.606,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:18,s:16745,sf:0,e:16755,ef:0,side:'D/E',desc:'CBUQ Faixa C (trevo Patu)',item:'16.7',ton:240.143,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:20,s:14512,sf:0,e:14516,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:141.014,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:20,s:14516,sf:0,e:14590,ef:0,side:'D',desc:'CBUQ Faixa C',item:'16.7',ton:391.315,larg:3.60,esp:0.05},
+{cat:'cbuq',mp:20,s:14550,sf:0,e:14590,ef:0,side:'E',desc:'CBUQ Faixa C',item:'16.7',ton:211.522,larg:3.60,esp:0.05},
+{cat:'cbuq',mp:20,s:14754,sf:0,e:14780,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:640.996,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:20,s:15190,sf:0,e:15225,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:850.374,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:20,s:15904,sf:2,e:15913,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:207.758,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:20,s:16540,sf:5,e:16565,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:247.609,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:20,s:16593,sf:0,e:16611,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:180.079,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:20,s:16630,sf:0,e:16661,ef:15,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:317.640,larg:7.00,esp:0.05},
+{cat:'cbuq',mp:20,s:16936,sf:12,e:16950,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'16.7',ton:265.071,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:16933,sf:0,e:16936,ef:12,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:84.037,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:16921,sf:7,e:16933,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:119.049,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:16915,sf:0,e:16921,ef:7,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:154.282,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:16747,sf:0,e:16915,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:1692.744,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:16535,sf:10,e:16540,ef:5,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:48.879,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:16425,sf:1,e:16521,ef:8,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:991.465,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:16393,sf:10,e:16399,ef:13,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:63.285,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:16353,sf:3,e:16377,ef:11,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:251.082,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:16294,sf:0,e:16302,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:82.322,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:16225,sf:0,e:16243,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:308.707,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:16106,sf:0,e:16221,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:1972.296,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:16076,sf:7,e:16106,ef:0,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:305.106,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15923,sf:0,e:16070,ef:6,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:1515.752,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15864,sf:0,e:15894,ef:5,side:'D/E',desc:'CBUQ Faixa C',item:'10.1',ton:311.280,larg:7.00,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15820,sf:10,e:15864,ef:0,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:223.813,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15810,sf:0,e:15864,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:277.836,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15783,sf:0,e:15800,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:87.467,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15810,sf:0,e:15820,ef:10,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:54.024,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15773,sf:5,e:15800,ef:0,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:137.632,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15693,sf:10,e:15783,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:460.488,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15695,sf:10,e:15773,ef:5,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:400.033,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15689,sf:12,e:15693,ef:10,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:20.066,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15628,sf:0,e:15685,ef:5,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:294.558,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15689,sf:12,e:15695,ef:10,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:30.356,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15561,sf:8,e:15685,ef:5,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:637.223,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15566,sf:0,e:15628,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:318.997,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15532,sf:15,e:15561,ef:8,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:147.408,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:23,s:15492,sf:0,e:15566,ef:0,side:'D',desc:'CBUQ Faixa C',item:'10.1',ton:380.739,larg:3.60,esp:0.05},
+{cat:'cbuq-rev',mp:24,s:15423,sf:0,e:15532,ef:0,side:'E',desc:'CBUQ Faixa C',item:'10.1',ton:560.818,larg:3.60,esp:0.05},
+{cat:'remendo-cbuq',mp:15,s:16733,sf:0,e:16736,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'remendo-cbuq',mp:15,s:16078,sf:0,e:16078,ef:10,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'remendo-cbuq',mp:15,s:14510,sf:0,e:14518,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'remendo-cbuq',mp:15,s:14667,sf:0,e:14667,ef:10,side:'D',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'remendo-cbuq',mp:15,s:15302,sf:0,e:15302,ef:10,side:'D',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'remendo-cbuq',mp:15,s:15919,sf:0,e:15919,ef:10,side:'E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'remendo-cbuq',mp:15,s:16711,sf:0,e:16711,ef:10,side:'E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'remendo-cbuq',mp:15,s:16896,sf:0,e:16896,ef:10,side:'D',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'remendo-cbuq',mp:15,s:18569,sf:0,e:18599,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'remendo-cbuq',mp:20,s:14518,sf:0,e:14581,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'remendo-cbuq',mp:20,s:14887,sf:0,e:14994,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'remendo-cbuq',mp:20,s:16300,sf:0,e:16392,ef:0,side:'D/E',desc:'Remendo profundo c/ CBUQ',item:'3.3'},
+{cat:'remendo-cbuq',mp:20,s:16534,sf:0,e:16658,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'remendo-cbuq',mp:20,s:16775,sf:0,e:16840,ef:0,side:'D/E',desc:'Remendo profundo c/ CBUQ',item:'3.3'},
+{cat:'remendo-cbuq',mp:20,s:16924,sf:0,e:16943,ef:0,side:'D/E',desc:'Reparo localizado c/ CBUQ',item:'3.1'},
+{cat:'drenagem',mp:18,s:16701,sf:0,e:16735,ef:0,side:'D/E',desc:'Meio-fio, linha d\'água, descida d\'água',item:'8.9-8.22'},
+{cat:'drenagem',mp:18,s:16409,sf:0,e:16415,ef:0,side:'E',desc:'Cabeça de ponte',item:'8.15'},
+{cat:'drenagem',mp:20,s:16681,sf:0,e:16683,ef:0,side:'D',desc:'Escavação manual / concreto',item:'8.9'},
+{cat:'drenagem',mp:20,s:16839,sf:0,e:16840,ef:0,side:'D/E',desc:'Escavação manual / concreto',item:'8.9'},
+{cat:'drenagem',mp:20,s:16936,sf:0,e:16936,ef:10,side:'E',desc:'Escavação manual / concreto',item:'8.9'},
 ];
 
 SEGS.forEach((s,i)=>{
@@ -455,7 +441,7 @@ SEGS.forEach((s,i)=>{
 const VSEGS=SEGS.filter(s=>!!CM[s.cat]);
 VSEGS.sort((a,b)=>CM[a.cat].p-CM[b.cat].p);
 
-const MCP={9:'Mai/2025',15:'Nov/2025',18:'Fev/2026',20:'Mar-Abr/2026',23:'Abr-Jul/2026',24:'Ago/2026'};
+const MPP={9:'Mai/2025',15:'Nov/2025',18:'Fev/2026',20:'Mar-Abr/2026',23:'Abr-Jul/2026',24:'Ago/2026'};
 
 /* ═══════════ Estado ═══════════ */
 let pk=500,sf=null,asg=null;
@@ -499,7 +485,8 @@ function render(){
     const x=(seg.km0-KM0)*pk;
     const w=Math.max((seg.km1-seg.km0)*pk,3);
     const el=document.createElement('div');
-    el.className='sg'+(seg===asg?' act':'');
+    const sc=seg.side==='D'?' sg-d':seg.side==='E'?' sg-e':'';
+    el.className='sg'+sc+(seg===asg?' act':'');
     el.dataset.i=seg._i;
     el.style.cssText=`left:${x}px;width:${w}px;background:${gc(c)};--sc:${gc(c)};`;
     el.onpointerenter=()=>showCard(seg);
@@ -601,9 +588,9 @@ function showCard(seg){
 
   const card=document.getElementById('ic');
   card.innerHTML=`<div class="fc-bar" style="background:${co};color:${co}"></div>
-    <div class="fc-hd"><span class="fc-cat">${c.nm}</span><span class="fc-mc">MC ${seg.mc} · Item ${seg.item}</span></div>
+    <div class="fc-hd"><span class="fc-cat">${c.nm}</span><span class="fc-mc">MP ${seg.mp} · Item ${seg.item}</span></div>
     <div class="fc-desc">${seg.desc}</div>
-    <div class="fc-grid">${r('Período',MCP[seg.mc]||'—',true)}${sep}${grid}</div>`;
+    <div class="fc-grid">${r('Período',MPP[seg.mp]||'—',true)}${sep}${grid}</div>`;
   card.classList.add('sh');
   card.onpointerenter=()=>clearTimeout(ht);
   card.onpointerleave=hideCard;
@@ -750,7 +737,7 @@ function fS(s){
 })();
 
 /* ═══════════ Tabela ═══════════ */
-let sortKey='km0',sortDir=1;
+let sortKey='mp',sortDir=1;
 
 function buildTable(){
   const tb=document.getElementById('tb');
@@ -765,7 +752,7 @@ function buildTable(){
     switch(sortKey){
       case'i':va=a._i;vb=b._i;break;
       case'cat':va=CM[a.cat].p;vb=CM[b.cat].p;break;
-      case'mc':va=a.mc;vb=b.mc;break;
+      case'mp':va=a.mp;vb=b.mp;break;
       case'item':va=a.item;vb=b.item;break;
       case'km0':va=a.km0;vb=b.km0;break;
       case'km1':va=a.km1;vb=b.km1;break;
@@ -790,7 +777,7 @@ function buildTable(){
     tr.innerHTML=`
       <td class="t-mono" style="color:var(--tx3)">${i+1}</td>
       <td><span class="t-cat"><span class="t-dot" style="background:${co}"></span>${c.nm}</span></td>
-      <td class="t-mono">${s.mc}</td>
+      <td class="t-mono">${s.mp}</td>
       <td class="t-mono">${s.item}</td>
       <td class="t-mono">${fK(s.km0)}</td>
       <td class="t-mono">${fK(s.km1)}</td>
@@ -836,18 +823,6 @@ document.querySelectorAll('th[data-k]').forEach(th=>{
   });
 });
 
-/* ═══════════ Tema ═══════════ */
-function tTh(){
-  const r=document.documentElement;
-  const cur=r.getAttribute('data-theme');
-  const nxt=cur==='light'?'dark':'light'; /* padrão (sem atributo) = escuro */
-  r.setAttribute('data-theme',nxt);
-  render();buildTable();
-  document.querySelectorAll('.chip').forEach(ch=>{
-    const cat=ch.dataset.cat;
-    ch.querySelector('.chip-d').style.background=gc(CM[cat]);
-  });
-}
 
 /* ═══════════ Boot ═══════════ */
 buildTable();
