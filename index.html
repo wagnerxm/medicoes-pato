@@ -97,8 +97,9 @@ body{background:var(--bg);color:var(--tx);font-family:Calibri,'Carlito','Segoe U
 .sg.sg-d{top:81px;height:55px;}
 /* Sinalização amarela nova: só dentro dos segmentos, posicionada no centro da rodovia */
 .sg::after{content:'';position:absolute;top:55px;left:0;right:0;height:2px;background:repeating-linear-gradient(to right,#FBBF24 0 8px,transparent 8px 18px);opacity:.9;pointer-events:none;z-index:4;}
-/* Segmentos de um lado só: o centro da rodovia fica fora — não mostrar */
-.sg.sg-e::after,.sg.sg-d::after{display:none;}
+/* Segmentos laterais: reposiciona a linha amarela no eixo da rodovia */
+.sg.sg-e::after{top:53px;}
+.sg.sg-d::after{top:-2px;}
 .sg:hover{opacity:1;filter:brightness(1.15);z-index:8;box-shadow:0 0 12px var(--sc,var(--ac));}
 .sg.act{opacity:1;z-index:9;outline:2px solid var(--ac2);outline-offset:1px;box-shadow:0 0 16px var(--sc,var(--ac));}
 
