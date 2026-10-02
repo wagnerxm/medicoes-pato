@@ -14,7 +14,7 @@
   --glass:rgba(255,255,255,.9);--hdr-bg:rgba(255,255,255,.8);
   --kpi-bd:#DDE5EE;--kpi-glow:0 1px 3px rgba(15,23,42,.06),0 4px 14px rgba(15,23,42,.04);
   --ok:#059669;--wrn:#D97706;
-  --road:#B8C4D0;--road-edge:#97A5B3;--shldr:#A0977A;--grass:#6B7D3A;--center:#FBBF24;
+  --road:#B8C4D0;--road-edge:#97A5B3;--shldr:#A0977A;--grass:#6B7D3A;--center:rgba(100,110,120,.25);
   --edge-ln:rgba(160,170,180,.25);
   --mm-bg:#E6ECF3;
   --road-ac:#2E3311;--road-ac2:#3A4219;
@@ -97,6 +97,10 @@ body{background:var(--bg);color:var(--tx);font-family:Calibri,'Carlito','Segoe U
 .sg.sg-e{top:24px;height:55px;}
 /* Segmento só lado D (direito): metade inferior */
 .sg.sg-d{top:81px;height:55px;}
+/* Sinalização amarela nova: só dentro dos segmentos, posicionada no centro da rodovia */
+.sg::after{content:'';position:absolute;top:55px;left:0;right:0;height:2px;background:repeating-linear-gradient(to right,#FBBF24 0 8px,transparent 8px 18px);opacity:.9;pointer-events:none;z-index:4;}
+/* Segmentos de um lado só: o centro da rodovia fica fora — não mostrar */
+.sg.sg-e::after,.sg.sg-d::after{display:none;}
 .sg:hover{opacity:1;filter:brightness(1.15);z-index:8;box-shadow:0 0 12px var(--sc,var(--ac));}
 .sg.act{opacity:1;z-index:9;outline:2px solid var(--road-ac2);outline-offset:1px;box-shadow:0 0 16px var(--sc,var(--road-ac));}
 
