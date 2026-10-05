@@ -10,7 +10,7 @@
   color-scheme:light;
   --bg:#F1F5F9;--card:#FFFFFF;--bd:#E2E8F0;--bdl:#F1F5F9;
   --tx:#0F172A;--tx2:#334155;--tx3:#64748B;
-  --ac:#0EA5E9;--ac2:#38BDF8;--act:#0284C7;--acbg:rgba(14,165,233,.06);
+  --ac:#0F172A;--ac2:#1E293B;--act:#334155;--acbg:rgba(15,23,42,.06);
   --glass:rgba(255,255,255,.9);--hdr-bg:rgba(255,255,255,.8);
   --kpi-bd:#E2E8F0;--kpi-glow:0 1px 2px rgba(0,0,0,.05);
   --ok:#059669;--wrn:#D97706;
@@ -34,7 +34,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Instrument Sans',ui-sans-
 .hdr{position:sticky;top:0;z-index:50;background:var(--hdr-bg);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border-bottom:1px solid var(--bd);padding:.7rem 1.25rem .6rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;}
 .hdr::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ac),var(--ac2) 60%,var(--ac));box-shadow:0 0 8px var(--ac);}
 .hdr-l{display:flex;align-items:center;gap:.7rem;}
-.badge{background:var(--ac);color:#fff;font-size:.62rem;font-weight:700;padding:.22rem .65rem;border-radius:8px;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 0 12px rgba(14,165,233,.3);}
+.badge{background:var(--ac);color:#fff;font-size:.62rem;font-weight:700;padding:.22rem .65rem;border-radius:8px;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 0 12px rgba(15,23,42,.3);}
 .hdr h1{font-size:1.15rem;font-weight:700;letter-spacing:-.01em;line-height:1.2;}
 .hdr .uf{font-weight:400;color:var(--tx2);}
 .meta{font-family:inherit;font-size:.62rem;color:var(--tx3);}
@@ -42,7 +42,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Instrument Sans',ui-sans-
 .hdr-r{display:flex;align-items:center;gap:.5rem;}
 .tag{font-family:inherit;font-size:.62rem;color:var(--act);background:var(--acbg);border:1px solid var(--kpi-bd);padding:.2rem .55rem;border-radius:8px;}
 .th-btn{background:transparent;border:1px solid var(--bd);color:var(--tx2);padding:.3rem .7rem;border-radius:8px;font-size:.66rem;cursor:pointer;font-family:inherit;font-weight:600;letter-spacing:.04em;text-transform:uppercase;transition:all .15s;}
-.th-btn:hover{border-color:var(--ac);color:var(--act);box-shadow:0 0 10px rgba(14,165,233,.25);}
+.th-btn:hover{border-color:var(--ac);color:var(--act);box-shadow:0 0 10px rgba(15,23,42,.25);}
 .th-btn:focus-visible,.cb:focus-visible,.chip:focus-visible{outline:2px solid var(--ac2);outline-offset:2px;}
 
 /* ── Wrap ── */
@@ -57,7 +57,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Instrument Sans',ui-sans-
 .kpi-lab{font-size:.6rem;color:var(--tx3);font-weight:600;margin-top:.2rem;text-transform:uppercase;letter-spacing:.1em;}
 .kpi-sub{font-family:inherit;font-size:.55rem;color:var(--ac2);margin-top:.15rem;}
 .kpi-bar{margin-top:.5rem;height:4px;background:var(--bdl);border-radius:2px;overflow:hidden;}
-.kpi-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:2px;box-shadow:0 0 8px rgba(14,165,233,.5);transition:width .5s ease;}
+.kpi-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:2px;box-shadow:0 0 8px rgba(15,23,42,.5);transition:width .5s ease;}
 .kpi-pct{font-size:.5rem;color:var(--tx3);margin-top:.2rem;text-align:right;font-family:inherit;}
 
 /* ── Seção da estrada (largura total) ── */
@@ -68,7 +68,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Instrument Sans',ui-sans-
 .ctrls{display:flex;align-items:center;gap:.25rem;flex-wrap:wrap;}
 .cb{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:.22rem .6rem;font-size:.62rem;font-weight:600;color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .12s;}
 .cb:hover{border-color:var(--ac);color:var(--act);}
-.cb.on{background:var(--ac);border-color:var(--ac);color:#fff;box-shadow:0 0 10px rgba(14,165,233,.35);}
+.cb.on{background:var(--ac);border-color:var(--ac);color:#fff;box-shadow:0 0 10px rgba(15,23,42,.35);}
 .cb-sep{width:1px;height:16px;background:var(--bd);margin:0 .2rem;}
 .zlab{font-family:inherit;font-size:.55rem;color:var(--tx3);padding:0 .25rem;min-width:64px;text-align:center;}
 
@@ -81,7 +81,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Instrument Sans',ui-sans-
 .road-scroll::-webkit-scrollbar-thumb:hover{background:var(--ac2);}
 
 /* Pílula de KM flutuante: verde-limão cheio com brilho */
-.km-pill{position:absolute;top:8px;left:8px;z-index:20;background:var(--ac);color:#fff;font-family:inherit;font-size:.62rem;font-weight:700;padding:.18rem .65rem;border-radius:999px;pointer-events:none;box-shadow:0 0 14px rgba(14,165,233,.55);}
+.km-pill{position:absolute;top:8px;left:8px;z-index:20;background:var(--ac);color:#fff;font-family:inherit;font-size:.62rem;font-weight:700;padding:.18rem .65rem;border-radius:999px;pointer-events:none;box-shadow:0 0 14px rgba(15,23,42,.55);}
 
 /* ── Faixa da estrada (160px): E em cima, D embaixo ── */
 .road-canvas{position:relative;}
@@ -136,12 +136,12 @@ body{background:var(--bg);color:var(--tx);font-family:'Instrument Sans',ui-sans-
 .mm-w{padding:.5rem 1rem .55rem;border-top:1px solid var(--bdl);}
 .mm{position:relative;height:14px;background:var(--mm-bg);border:1px solid var(--bd);border-radius:3px;overflow:hidden;cursor:pointer;}
 .mm canvas{position:absolute;inset:0;width:100%;height:100%;}
-.mv{position:absolute;top:0;height:100%;border:1.5px solid var(--ac2);border-radius:2px;background:var(--acbg);box-shadow:0 0 8px rgba(14,165,233,.4);pointer-events:none;}
+.mv{position:absolute;top:0;height:100%;border:1.5px solid var(--ac2);border-radius:2px;background:var(--acbg);box-shadow:0 0 8px rgba(15,23,42,.4);pointer-events:none;}
 
 /* ── Chips: borda verde-limão fina quando ativos ── */
 .chips{display:flex;flex-wrap:wrap;gap:.45rem;padding:.6rem 1rem .7rem;border-top:1px solid var(--bdl);}
 .chip{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .7rem;border-radius:8px;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .12s;background:var(--bg);border:1px solid var(--ac);color:var(--tx);user-select:none;}
-.chip:hover{box-shadow:0 0 8px rgba(14,165,233,.3);}
+.chip:hover{box-shadow:0 0 8px rgba(15,23,42,.3);}
 .chip.off{opacity:.35;border-color:var(--bd);color:var(--tx2);}
 .chip-d{width:11px;height:11px;border-radius:2px;flex-shrink:0;}
 .chip-n{font-family:inherit;font-size:.65rem;color:var(--tx3);margin-left:.08rem;}
