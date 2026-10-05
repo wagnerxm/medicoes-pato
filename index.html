@@ -295,7 +295,9 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
 <script>
 /* ═══════════ Dados ═══════════ */
 const E2K=(e,f=0)=>(e*20+f)/1000;
-const KM0=290,KM1=421,LEN=KM1-KM0;
+const KM0=290,KM1=421,LEN=KM1-KM0,MAP_PAD=24;
+function km2px(km){return(km-KM0)*pk+MAP_PAD;}
+function px2km(px){return KM0+(px-MAP_PAD)/pk;}
 const fm=(n,d=0)=>n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
 function fK(km){const w=Math.floor(km),f=Math.round((km-w)*1000);return w+'+'+String(f).padStart(3,'0');}
 
@@ -461,7 +463,7 @@ document.getElementById('kpiCatN').textContent=CATS.length+' soluções';
 /* ═══════════ Render ═══════════ */
 function render(){
   const canvas=document.getElementById('roadCanvas');
-  const W=LEN*pk;
+  const W=LEN*pk+MAP_PAD*2;
   canvas.style.width=W+'px';
 
   const rv=document.getElementById('rv');
@@ -479,7 +481,7 @@ function render(){
   const gridStep=visKm>80?20:visKm>40?10:visKm>15?5:visKm>5?2:1;
   const gridStart=Math.ceil(KM0/gridStep)*gridStep;
   for(let km=gridStart;km<=KM1;km+=gridStep){
-    const x=(km-KM0)*pk;
+    const x=km2px(km);
     const ln=document.createElement('div');
     ln.className='rv-guide';ln.style.left=x+'px';
     rv.appendChild(ln);
@@ -488,7 +490,7 @@ function render(){
   /* Segmentos */
   vis.forEach(seg=>{
     const c=CM[seg.cat];
-    const x=(seg.km0-KM0)*pk;
+    const x=km2px(seg.km0);
     const w=Math.max((seg.km1-seg.km0)*pk,3);
     const el=document.createElement('div');
     const sc=seg.side==='D'?' sg-d':seg.side==='E'?' sg-e':'';
@@ -520,7 +522,7 @@ function render(){
   const kmStep=visKm>100?20:visKm>50?10:visKm>20?5:visKm>8?2:1;
   const kmStart=Math.ceil(KM0/kmStep)*kmStep;
   for(let km=kmStart;km<=KM1;km+=kmStep){
-    const x=(km-KM0)*pk;
+    const x=km2px(km);
     const d=document.createElement('div');
     d.className='rk-km';d.style.left=x+'px';
     const lb=document.createElement('span');lb.className='lb';lb.textContent='km '+km;
@@ -537,7 +539,7 @@ function render(){
     for(let e=e0;e<=e1;e+=estIv){
       if(e%50===0)continue;
       const km=e*20/1000;
-      const x=(km-KM0)*pk;
+      const x=km2px(km);
       const d=document.createElement('div');
       const cls=e%25===0?'h':e%10===0?'q':'t';
       d.className='rk-e '+cls;d.style.left=x+'px';
@@ -554,7 +556,7 @@ function render(){
 
 /* ═══════════ KM Indicator ═══════════ */
 function updateKmInd(){
-  const km=KM0+scrollEl.scrollLeft/pk;
+  const km=px2km(scrollEl.scrollLeft);
   document.getElementById('kmPill').textContent='km '+fK(Math.max(KM0,Math.min(km,KM1)));
 }
 
@@ -642,7 +644,7 @@ function rMM(){
   updateMMView();
 }
 function updateMMView(){
-  const totalW=LEN*pk;
+  const totalW=LEN*pk+MAP_PAD*2;
   const vpW=scrollEl.clientWidth;
   const mv=document.getElementById('mv');
   mv.style.left=(scrollEl.scrollLeft/totalW*100)+'%';
@@ -669,13 +671,13 @@ scrollEl.addEventListener('wheel',e=>{
     e.preventDefault();
     const rect=scrollEl.getBoundingClientRect();
     const mx=e.clientX-rect.left;
-    const mouseKm=KM0+(scrollEl.scrollLeft+mx)/pk;
+    const mouseKm=px2km(scrollEl.scrollLeft+mx);
     const f=e.deltaY>0?0.8:1.25;
     const vpW=scrollEl.clientWidth;
-    const minPk=vpW/(LEN+4);
+    const minPk=(vpW-MAP_PAD*2)/(LEN+4);
     pk=Math.max(minPk,Math.min(pk*f,10000));
     render();
-    scrollEl.scrollLeft=(mouseKm-KM0)*pk-mx;
+    scrollEl.scrollLeft=km2px(mouseKm)-mx;
   } else {
     e.preventDefault();
     scrollEl.scrollLeft+=e.deltaY+e.deltaX;
@@ -684,18 +686,18 @@ scrollEl.addEventListener('wheel',e=>{
 
 function zI(){
   const vpW=scrollEl.clientWidth;
-  const centerKm=KM0+(scrollEl.scrollLeft+vpW/2)/pk;
+  const centerKm=px2km(scrollEl.scrollLeft+vpW/2);
   pk=Math.min(pk*1.5,10000);
   render();
-  scrollEl.scrollLeft=(centerKm-KM0)*pk-vpW/2;
+  scrollEl.scrollLeft=km2px(centerKm)-vpW/2;
 }
 function zO(){
   const vpW=scrollEl.clientWidth;
-  const centerKm=KM0+(scrollEl.scrollLeft+vpW/2)/pk;
-  const minPk=vpW/(LEN+4);
+  const centerKm=px2km(scrollEl.scrollLeft+vpW/2);
+  const minPk=(vpW-MAP_PAD*2)/(LEN+4);
   pk=Math.max(pk/1.5,minPk);
   render();
-  scrollEl.scrollLeft=(centerKm-KM0)*pk-vpW/2;
+  scrollEl.scrollLeft=km2px(centerKm)-vpW/2;
 }
 
 function fW(){
@@ -704,15 +706,15 @@ function fW(){
   const minKm=Math.min(...s.map(s=>s.km0))-2;
   const maxKm=Math.max(...s.map(s=>s.km1))+2;
   const vpW=scrollEl.clientWidth;
-  pk=vpW/(maxKm-minKm);
+  pk=(vpW-MAP_PAD*2)/(maxKm-minKm);
   render();
-  scrollEl.scrollLeft=(minKm-KM0)*pk;
+  scrollEl.scrollLeft=km2px(minKm);
   document.getElementById('bf').classList.add('on');
   document.getElementById('ba').classList.remove('on');
 }
 function fA(){
   const vpW=scrollEl.clientWidth;
-  pk=vpW/(LEN+4);
+  pk=(vpW-MAP_PAD*2)/(LEN+4);
   render();
   scrollEl.scrollLeft=0;
   document.getElementById('ba').classList.add('on');
@@ -725,7 +727,7 @@ document.getElementById('mm').addEventListener('click',e=>{
   const frac=(e.clientX-r.left)/r.width;
   const targetKm=KM0+frac*LEN;
   const vpW=scrollEl.clientWidth;
-  scrollEl.scrollTo({left:(targetKm-KM0)*pk-vpW/2,behavior:'smooth'});
+  scrollEl.scrollTo({left:km2px(targetKm)-vpW/2,behavior:'smooth'});
 });
 
 /* ═══════════ Filtros ═══════════ */
@@ -821,9 +823,9 @@ function selectSeg(seg){
   const mid=(seg.km0+seg.km1)/2;
   const span=Math.max((seg.km1-seg.km0)*4,10);
   const vpW=scrollEl.clientWidth;
-  pk=vpW/span;
+  pk=(vpW-MAP_PAD*2)/span;
   render();
-  scrollEl.scrollTo({left:(mid-KM0)*pk-vpW/2,behavior:'smooth'});
+  scrollEl.scrollTo({left:km2px(mid)-vpW/2,behavior:'smooth'});
   setTimeout(()=>showCard(seg),300);
   hiRow(seg);
 }
@@ -847,7 +849,7 @@ buildTable();
 /* Abre com ~5 km visíveis a partir do km 290 */
 (function(){
   const vpW=scrollEl.clientWidth;
-  pk=vpW/5;
+  pk=(vpW-MAP_PAD*2)/5;
   render();
   scrollEl.scrollLeft=0;
   document.getElementById('bf').classList.remove('on');
