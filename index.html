@@ -582,20 +582,10 @@ function posCard(seg){
   let cl=cx-cW/2;
   cl=Math.max(8,Math.min(cl,window.innerWidth-cW-8));
   card.style.left=cl+'px';
-  const cH=card.offsetHeight||280;
-  const above=sr.top-8;
-  const below=window.innerHeight-sr.bottom-8;
-  let ct;
-  if(cH<=above){
-    ct=sr.top-cH-8;
-  } else if(cH<=below){
-    ct=sr.bottom+8;
-  } else if(above>=below){
-    ct=8;card.style.maxHeight=(above-8)+'px';card.style.overflowY='auto';
-  } else {
-    ct=sr.bottom+8;card.style.maxHeight=(below-8)+'px';card.style.overflowY='auto';
-  }
+  const ct=sr.bottom+8;
+  const maxH=window.innerHeight-ct-8;
   card.style.top=ct+'px';
+  card.style.maxHeight=maxH+'px';
 }
 
 function showCard(seg){
