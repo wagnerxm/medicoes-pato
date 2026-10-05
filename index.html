@@ -122,14 +122,14 @@ body{background:var(--bg);color:var(--tx);font-family:'Instrument Sans',ui-sans-
 @keyframes fcIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 .fc-bar{height:2px;box-shadow:0 0 10px currentColor;}
 .fc-hd{padding:.7rem 1rem .2rem;display:flex;align-items:baseline;justify-content:space-between;gap:.4rem;}
-.fc-cat{font-weight:700;font-size:1rem;color:#FFFFFF;}
-.fc-mc{font-size:.7rem;color:rgba(255,255,255,.7);font-family:inherit;flex-shrink:0;}
-.fc-desc{padding:0 1rem .5rem;font-size:.82rem;color:rgba(255,255,255,.7);}
+.fc-cat{font-weight:700;font-size:1.1rem;color:#FFFFFF;}
+.fc-mc{font-size:.78rem;color:rgba(255,255,255,.7);font-family:inherit;flex-shrink:0;}
+.fc-desc{padding:0 1rem .5rem;font-size:.9rem;color:rgba(255,255,255,.7);}
 .fc-grid{display:grid;grid-template-columns:auto 1fr;border-top:1px solid rgba(255,255,255,.12);}
-.fc-grid>div{padding:.28rem 1rem;font-size:.8rem;}
+.fc-grid>div{padding:.35rem 1rem;font-size:.92rem;}
 .fc-l{color:rgba(255,255,255,.7);white-space:nowrap;}
-.fc-v{font-weight:700;text-align:right;font-family:inherit;font-size:.78rem!important;color:#FFFFFF;}
-.fc-v.tx{font-family:inherit;font-weight:500;font-size:.8rem!important;color:rgba(255,255,255,.85);}
+.fc-v{font-weight:700;text-align:center;font-family:inherit;font-size:.9rem!important;color:#FFFFFF;}
+.fc-v.tx{font-family:inherit;font-weight:500;font-size:.92rem!important;color:rgba(255,255,255,.85);}
 .fc-sep{grid-column:1/-1;height:0;border-bottom:1px solid rgba(255,255,255,.12);padding:0!important;}
 
 /* ── Minimapa (14px) ── */
@@ -610,9 +610,10 @@ function showCard(seg){
   if(seg.larg)grid+=r('Largura',`${fm(seg.larg,2)} m`);
   if(seg.esp)grid+=r('Espessura',`${fm(seg.esp*100,1)} cm`);
   grid+=r('Lado',sl,true);
-  if(seg.ton){grid+=sep;grid+=r('Tonelagem',`${fm(seg.ton,3)} T`);}
+  grid+=sep;
   if(seg.larg&&seg.ext>0)grid+=r('Área',`${fm(seg.ext*seg.larg,1)} m²`);
   if(seg.larg&&seg.esp&&seg.ext>0)grid+=r('Volume',`${fm(seg.ext*seg.larg*seg.esp,1)} m³`);
+  if(seg.ton)grid+=r('Toneladas',`${fm(seg.ton,3)} T`);
 
   const card=document.getElementById('ic');
   card.innerHTML=`<div class="fc-bar" style="background:${co};color:${co}"></div>
