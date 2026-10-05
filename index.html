@@ -269,14 +269,16 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
           <th data-k="i" style="width:32px">#</th>
           <th data-k="cat">Categoria</th>
           <th data-k="mp">MP</th>
+          <th data-k="mes">Mês</th>
           <th data-k="item">Item</th>
+          <th data-k="desc">Nome do Item</th>
           <th data-k="km0">KM Início</th>
           <th data-k="km1">KM Fim</th>
-          <th data-k="ext" class="t-right">Ext. (m)</th>
-          <th data-k="larg" class="t-right">Larg. (m)</th>
-          <th data-k="esp" class="t-right">Esp. (cm)</th>
+          <th data-k="ext" class="t-right">Extensão (m)</th>
+          <th data-k="larg" class="t-right">Largura (m)</th>
+          <th data-k="esp" class="t-right">Espessura (cm)</th>
           <th data-k="side">Lado</th>
-          <th data-k="ton" class="t-right">Ton. (T)</th>
+          <th data-k="ton" class="t-right">Tonelada (T)</th>
         </tr></thead>
         <tbody id="tb"></tbody>
       </table>
@@ -802,7 +804,9 @@ function buildTable(){
       case'i':va=a._i;vb=b._i;break;
       case'cat':va=CM[a.cat].p;vb=CM[b.cat].p;break;
       case'mp':va=a.mp;vb=b.mp;break;
+      case'mes':va=a.mp;vb=b.mp;break;
       case'item':va=a.item;vb=b.item;break;
+      case'desc':va=a.desc||'';vb=b.desc||'';break;
       case'km0':va=a.km0;vb=b.km0;break;
       case'km1':va=a.km1;vb=b.km1;break;
       case'ext':va=a.ext;vb=b.ext;break;
@@ -827,7 +831,9 @@ function buildTable(){
       <td class="t-mono" style="color:var(--tx3)">${i+1}</td>
       <td><span class="t-cat"><span class="t-dot" style="background:${co}"></span>${c.nm}</span></td>
       <td class="t-mono">${s.mp}</td>
+      <td class="t-mono">${MPP[s.mp]||'—'}</td>
       <td class="t-mono">${s.item}</td>
+      <td>${s.desc||'—'}</td>
       <td class="t-mono">${fK(s.km0)}</td>
       <td class="t-mono">${fK(s.km1)}</td>
       <td class="t-mono t-right">${fm(s.ext,0)}</td>
