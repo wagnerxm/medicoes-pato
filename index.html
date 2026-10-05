@@ -790,8 +790,8 @@ function buildTable(){
     const c=CM[s.cat],co=gc(c);
     const tr=document.createElement('tr');
     tr.dataset.idx=s._i;
-    tr.onpointerenter=()=>{showCard(s);tr.classList.add('hi');};
-    tr.onpointerleave=()=>{hideCard();tr.classList.remove('hi');};
+    tr.onpointerenter=()=>{tr.classList.add('hi');};
+    tr.onpointerleave=()=>{tr.classList.remove('hi');};
     tr.onclick=()=>selectSeg(s);
     tr.innerHTML=`
       <td class="t-mono" style="color:var(--tx3)">${i+1}</td>
