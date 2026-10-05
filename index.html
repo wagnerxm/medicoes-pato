@@ -690,6 +690,29 @@ scrollEl.addEventListener('wheel',e=>{
   }
 },{passive:false});
 
+/* ── Drag horizontal: click + arrastar no mapa ── */
+(function(){
+  let dragging=false,startX=0,startScroll=0;
+  scrollEl.addEventListener('pointerdown',e=>{
+    if(e.button!==0)return;
+    dragging=true;startX=e.clientX;startScroll=scrollEl.scrollLeft;
+    scrollEl.setPointerCapture(e.pointerId);
+    scrollEl.style.cursor='grabbing';scrollEl.style.userSelect='none';
+  });
+  scrollEl.addEventListener('pointermove',e=>{
+    if(!dragging)return;
+    scrollEl.scrollLeft=startScroll-(e.clientX-startX);
+  });
+  const stop=e=>{
+    if(!dragging)return;
+    dragging=false;
+    scrollEl.style.cursor='grab';scrollEl.style.userSelect='';
+  };
+  scrollEl.addEventListener('pointerup',stop);
+  scrollEl.addEventListener('pointercancel',stop);
+  scrollEl.style.cursor='grab';
+})();
+
 function zI(){
   const vpW=scrollEl.clientWidth;
   const centerKm=px2km(scrollEl.scrollLeft+vpW/2);
