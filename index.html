@@ -582,8 +582,15 @@ function posCard(seg){
   let cl=cx-cW/2;
   cl=Math.max(8,Math.min(cl,window.innerWidth-cW-8));
   card.style.left=cl+'px';
-  const ct=sr.bottom+1;
+  /* posiciona rente ao mapa; se não couber no viewport, sobe sobre o mapa */
+  let ct=sr.bottom+1;
   card.style.top=ct+'px';
+  const cH=card.getBoundingClientRect().height;
+  if(ct+cH>window.innerHeight-4){
+    ct=window.innerHeight-cH-4;
+    if(ct<sr.top)ct=sr.top;
+    card.style.top=ct+'px';
+  }
 }
 
 function showCard(seg){
