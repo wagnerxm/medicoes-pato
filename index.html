@@ -616,7 +616,7 @@ function showCard(seg){
   grid+=r('KM',`${fK(seg.km0)} → ${fK(seg.km1)}`);
   grid+=r('Estacas',`${fm(eI)} → ${fm(eF)}`);
   grid+=r('Extensão',`${fm(seg.ext,0)} m`);
-  const midKm=(seg.km0+seg.km1)/2,coord=kmToCoord(midKm);
+  const coord=kmToCoord(seg.km0);
   if(coord)grid+=r('Coordenada',`${coord.lat.toFixed(6)}, ${coord.lng.toFixed(6)}`);
   grid+=sep;
   if(seg.larg)grid+=r('Largura',`${fm(seg.larg,2)} m`);
@@ -632,7 +632,7 @@ function showCard(seg){
     <div class="fc-hd"><span class="fc-cat">${c.nm}</span><span class="fc-mc">MP ${seg.mp} · Item ${seg.item}</span></div>
     <div class="fc-desc">${seg.desc}</div>
     <div class="fc-grid">${r('Período',MPP[seg.mp]||'—',true)}${sep}${grid}</div>
-    <div class="fc-maps">${(()=>{const mid=(seg.km0+seg.km1)/2,u=mapsUrl(mid);return u?`<a href="${u}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Abrir no Google Maps</a>`:'';})()}</div>`;
+    <div class="fc-maps">${(()=>{const u=mapsUrl(seg.km0);return u?`<a href="${u}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Abrir no Google Maps</a>`:'';})()}</div>`;
   card.classList.add('sh');
   posCard(seg);
   document.querySelectorAll('.sg.act').forEach(el=>el.classList.remove('act'));
