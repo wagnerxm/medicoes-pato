@@ -519,8 +519,6 @@ function render(){
     el.className='sg'+sc+(seg===asg?' act':'');
     el.dataset.i=seg._i;
     el.style.cssText=`left:${x}px;width:${w}px;background:${gc(c)};--sc:${gc(c)};`;
-    el.onpointerenter=()=>showCard(seg);
-    el.onpointerleave=hideCard;
     el.onclick=()=>selectSeg(seg);
     rv.appendChild(el);
   });
@@ -583,13 +581,11 @@ function updateKmInd(){
 }
 
 /* ═══════════ Info Card ═══════════ */
-let ht=null;
 function hideCardNow(){
-  clearTimeout(ht);asg=null;
+  asg=null;
   document.getElementById('ic').classList.remove('sh');
   document.querySelectorAll('.sg.act').forEach(el=>el.classList.remove('act'));
 }
-function hideCard(){ht=setTimeout(hideCardNow,250);}
 
 function posCard(seg){
   const el=document.querySelector(`.sg[data-i="${seg._i}"]`);
@@ -612,7 +608,7 @@ function posCard(seg){
 }
 
 function showCard(seg){
-  clearTimeout(ht);asg=seg;
+  asg=seg;
   const c=CM[seg.cat],co=gc(c);
   const sl=seg.side==='D/E'?'Ambos':seg.side==='D'?'Direito':'Esquerdo';
   const eI=Math.min(seg.s,seg.e),eF=Math.max(seg.s,seg.e);
@@ -638,8 +634,6 @@ function showCard(seg){
     <div class="fc-grid">${r('Período',MPP[seg.mp]||'—',true)}${sep}${grid}</div>
     <div class="fc-maps">${(()=>{const mid=(seg.km0+seg.km1)/2,u=mapsUrl(mid);return u?`<a href="${u}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Abrir no Google Maps</a>`:'';})()}</div>`;
   card.classList.add('sh');
-  card.onpointerenter=()=>clearTimeout(ht);
-  card.onpointerleave=hideCard;
   posCard(seg);
   document.querySelectorAll('.sg.act').forEach(el=>el.classList.remove('act'));
   const el2=document.querySelector(`.sg[data-i="${seg._i}"]`);
@@ -873,6 +867,8 @@ function hiRow(seg){
 }
 
 function selectSeg(seg){
+  /* toggle: clicar no mesmo segmento fecha o card */
+  if(asg&&asg._i===seg._i){hideCardNow();return;}
   const mid=(seg.km0+seg.km1)/2;
   const span=Math.max((seg.km1-seg.km0)*4,10);
   const vpW=scrollEl.clientWidth;
@@ -882,6 +878,13 @@ function selectSeg(seg){
   setTimeout(()=>showCard(seg),300);
   hiRow(seg);
 }
+/* Toque fora do card ou do segmento fecha */
+document.addEventListener('pointerdown',e=>{
+  if(!asg)return;
+  const card=document.getElementById('ic');
+  if(card.contains(e.target)||e.target.closest('.sg'))return;
+  hideCardNow();
+});
 
 /* Sorting */
 document.querySelectorAll('th[data-k]').forEach(th=>{
