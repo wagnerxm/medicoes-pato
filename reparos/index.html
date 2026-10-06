@@ -269,9 +269,9 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   <div class="kpis">
     <div class="kpi"><div class="kpi-val" id="k1">&mdash;</div><div class="kpi-lab">Reparos localizados</div><div class="kpi-sub" id="k1s"></div></div>
     <div class="kpi"><div class="kpi-val" id="k2">&mdash;</div><div class="kpi-lab">Remendos profundos</div><div class="kpi-sub" id="k2s"></div></div>
-    <div class="kpi"><div class="kpi-val" id="k3">&mdash;</div><div class="kpi-lab">Capa nova (CBUQ)</div><div class="kpi-sub" id="k3s"></div></div>
+    <div class="kpi"><div class="kpi-val" id="k3">&mdash;</div><div class="kpi-lab">Revestimento (CBUQ)</div><div class="kpi-sub" id="k3s"></div></div>
     <div class="kpi"><div class="kpi-val" id="k4">&mdash;</div><div class="kpi-lab">Reparos sobrepostos</div><div class="kpi-sub" id="k4s"></div></div>
-    <div class="kpi"><div class="kpi-val" id="k5">&mdash;</div><div class="kpi-lab">Reparos sobre capa nova</div><div class="kpi-sub" id="k5s"></div></div>
+    <div class="kpi"><div class="kpi-val" id="k5">&mdash;</div><div class="kpi-lab">Reparos sobre revestimento novo</div><div class="kpi-sub" id="k5s"></div></div>
   </div>
 </div>
 
@@ -295,13 +295,13 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   <div class="fbar">
     <div class="fg"><label for="mFrom">Período</label><select id="mFrom"></select><label for="mTo">até</label><select id="mTo"></select></div>
     <div class="cb-sep"></div>
-    <div class="fg"><button class="cb on" id="tOv" onclick="tg('ov')">Destacar sobreposição</button><button class="cb on" id="tOc" onclick="tg('oc')">Destacar reparo sobre capa</button><button class="cb on" id="tCv" onclick="tg('cv')" title="Reparo feito antes de uma capa nova no mesmo trecho: hoje está por baixo do asfalto novo">Esmaecer reparo coberto</button></div>
+    <div class="fg"><button class="cb on" id="tOv" onclick="tg('ov')">Destacar sobreposição</button><button class="cb on" id="tOc" onclick="tg('oc')">Destacar reparo sobre revestimento</button><button class="cb on" id="tCv" onclick="tg('cv')" title="Reparo feito antes de um revestimento novo no mesmo trecho: hoje está por baixo do asfalto novo">Esmaecer reparo coberto</button></div>
     <div class="fg"><label for="dMax">em até</label><select id="dMax"><option value="30">1 mês</option><option value="90">3 meses</option><option value="180" selected>6 meses</option><option value="365">12 meses</option><option value="99999">sem limite</option></select></div>
     <div class="cb-sep"></div>
     <span class="lg"><i class="ov"></i>sobrepõe outro reparo</span>
     <span class="lg"><i class="ovp"></i>possível (estaca arredondada)</span>
-    <span class="lg"><i class="oc"></i>feito sobre capa nova</span>
-    <span class="lg"><i class="cv"></i>coberto por capa posterior</span>
+    <span class="lg"><i class="oc"></i>feito sobre revestimento novo</span>
+    <span class="lg"><i class="cv"></i>coberto por revestimento posterior</span>
   </div>
   <div class="road-wrap">
     <div class="km-pill" id="kmPill">km 290</div>
@@ -373,9 +373,9 @@ const hid=new Set();
 let mFrom=0,mTo=0,showOv=true,showOc=true,showCv=true,dMax=180;
 const scrollEl=document.getElementById('roadScroll');
 
-/* Faixas contínuas (k:'b') e reparos individuais (k:'p'). Capa nova fica separada das demais soluções. */
+/* Faixas contínuas (k:'b') e reparos individuais (k:'p'). O revestimento fica separado das demais soluções. */
 const LAYS=[
-  {id:'capa',nm:'Capa nova (CBUQ)',cor:'#0F0F0F',k:'b'},
+  {id:'capa',nm:'Revestimento (CBUQ)',cor:'#0F0F0F',k:'b'},
   {id:'rec',nm:'Reciclagem',cor:'#152D4A',k:'b'},
   {id:'fres',nm:'Fresagem',cor:'#7C0D2B',k:'b'},
   {id:'ater',nm:'Troca de solo (aterro)',cor:'#8B4106',k:'b'},
@@ -384,7 +384,7 @@ const LAYS=[
   {id:'cd',nm:'Correção de defeitos',cor:'#38BDF8',k:'p'},
 ];
 const LM={};LAYS.forEach(l=>LM[l.id]=l);
-const BORD=['rec','fres','ater','capa']; /* ordem de desenho das faixas: a capa fica por cima */
+const BORD=['rec','fres','ater','capa']; /* ordem de desenho das faixas: o revestimento fica por cima */
 
 const MESN=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const mAbs=s=>(+s.slice(0,4))*12+(+s.slice(5,7))-1;
@@ -426,7 +426,7 @@ REP.forEach((r,i)=>{
 });
 PT.forEach(p=>IT[p.k]=p);BANDS.forEach(b=>IT[b.k]=b);
 
-/* ═══════════ Análise: sobreposição e reparo sobre capa ═══════════
+/* ═══════════ Análise: sobreposição e reparo sobre revestimento ═══════════
    Estaca arredondada (inteira) só localiza o reparo dentro de ~20 m: nesses casos a sobreposição é "possível", não certa. */
 const lanesOf=x=>x.side==='D'?1:x.side==='E'?2:3;
 const lo=p=>p.int?p.m0-10:p.m0,hi=p=>p.int?p.m1+10:p.m1;
@@ -455,7 +455,7 @@ const OV=[],OC=[];
     });
   });
 })();
-/* Reparo executado ANTES de uma capa nova no mesmo trecho e lado: hoje está por baixo do asfalto novo */
+/* Reparo executado ANTES de um revestimento novo no mesmo trecho e lado: hoje está por baixo do asfalto novo */
 const CV=[],CV_BY={};
 PT.forEach(p=>{
   const lp=lanesOf(p);
@@ -660,14 +660,14 @@ function showCard(it){
     grid+=r('Área',`${fm(it.ext*it.larg,2)} m²`)+r('Volume',`${fm(it.qtd,3)} m³`)+sep
       +r('Posição',it.int?'Estaca arredondada (±20 m)':'Estaca exata',true);
     const cb=(CV_BY[it.k]||[]).slice().sort((a,b)=>a.dt-b.dt)[0];
-    if(cb)grid+=r('Capa nova depois',`${fD(cb.data)} (${fm(cb.dt-it.dt)} d depois)`,true);
+    if(cb)grid+=r('Revestimento depois',`${fD(cb.data)} (${fm(cb.dt-it.dt)} d depois)`,true);
   }
   const pairs=isP?(PAIRS_BY[it.k]||[]).filter(o=>o.dd<=99999).sort((a,b)=>a.dd-b.dd):[];
   let list='';
   if(pairs.length){
     list=`<div class="card-list"><div class="ct">Sobreposições (${pairs.length})</div>`+pairs.slice(0,6).map(o=>{
       const rc=o.a.k[0]==='b',other=o.b===it?o.a:o.b,rel=o.b===it?'antes':'depois'; /* relação do OUTRO reparo com este */
-      const nm=rc?'Capa nova':LM[other.lay].nm;
+      const nm=rc?'Revestimento novo':LM[other.lay].nm;
       return `<div class="li" data-go="${other.k}"><span>${rc?'sobre ':''}${nm} · ${fD(other.data)}</span><span>${fm(o.dd)} d ${rel}${o.cert?'':' · possível'}</span></div>`;
     }).join('')+(pairs.length>6?`<div class="li"><span>… e mais ${pairs.length-6}</span><span></span></div>`:'')+'</div>';
   }
@@ -851,13 +851,13 @@ const flags=p=>{
   let s='';
   if(p.int)s+='<span class="pill p">estaca arredondada</span> ';
   if(p.fo)s+=`<span class="pill c">sobrepõe${p.fo===1?' (possível)':''}</span> `;
-  if(p.fc)s+='<span class="pill w">sobre capa</span>';
+  if(p.fc)s+='<span class="pill w">sobre revestimento</span>';
   return s||'—';
 };
 function ovRows(){
   const out=[];
   OV.forEach(o=>{if(o.dd<=dMax&&vis(o.a)&&vis(o.b))out.push({o,t:'Reparo × reparo',km:o.b.km0,side:o.b.side});});
-  OC.forEach(o=>{if(o.dd<=dMax&&vis(o.a)&&vis(o.b))out.push({o,t:'Reparo sobre capa',km:o.b.km0,side:o.b.side});});
+  OC.forEach(o=>{if(o.dd<=dMax&&vis(o.a)&&vis(o.b))out.push({o,t:'Reparo sobre revestimento',km:o.b.km0,side:o.b.side});});
   return out;
 }
 const desc1=x=>x.k[0]==='b'?`${LM[x.lay].nm} · ${fD(x.data)}`:`${tipoNm[x.tipo]} · ${fD(x.data)} · ${fm(x.ext,1)}×${fm(x.larg,1)} m`;
@@ -871,12 +871,12 @@ const TBL={
     rows:()=>ovRows(),
     val:(r,k)=>k==='t'?r.t:k==='cert'?(r.o.cert?1:0):k==='km'?r.km:k==='side'?r.side:k==='a'?r.o.a.data:k==='b'?r.o.b.data:r.o.dd,
     tr:(r,i)=>`<tr data-o="${i}"><td>${r.t}</td><td>${r.o.cert?'<span class="pill c">certa</span>':'<span class="pill p">possível</span>'}</td><td class="t-mono">${fK(r.km)}</td><td><span class="t-side">${r.side}</span></td><td>${desc1(r.o.a)}</td><td>${desc1(r.o.b)}</td><td class="t-mono t-right">${fm(r.o.dd)}</td></tr>`,
-    cap:'Reparos de datas diferentes no mesmo trecho e lado, e reparos feitos depois sobre capa nova. “Possível”: pelo menos um dos dois só tem a estaca arredondada. O prazo máximo segue o seletor “em até”.'},
+    cap:'Reparos de datas diferentes no mesmo trecho e lado, e reparos feitos depois sobre revestimento novo. “Possível”: pelo menos um dos dois só tem a estaca arredondada. O prazo máximo segue o seletor “em até”.'},
   tre:{cols:[['lay','Solução'],['data','Data'],['mp','MP'],['item','Item'],['km0','KM início'],['km1','KM fim'],['ext','Ext. (m)',1],['larg','Larg. (m)',1],['esp','Esp. (cm)',1],['side','Lado'],['qtd','Quantidade',1],['obs','Obs.']],
     rows:()=>BANDS.filter(b=>vis(b)&&(!catFilter||b.lay===catFilter)),
     val:(b,k)=>k==='lay'?LAYS.findIndex(l=>l.id===b.lay):b[k]??0,
     tr:(b,i)=>`<tr data-k="${b.k}"><td><span class="t-cat"><span class="t-dot" style="background:${LM[b.lay].cor}"></span>${LM[b.lay].nm}</span></td><td class="t-mono">${fD(b.data)}</td><td class="t-mono">${b.mp}</td><td class="t-mono">${b.item}</td><td class="t-mono">${fK(b.km0)}</td><td class="t-mono">${fK(b.km1)}</td><td class="t-mono t-right">${fm(b.ext,0)}</td><td class="t-mono t-right">${b.larg?fm(b.larg,2):'—'}</td><td class="t-mono t-right">${b.esp?fm(b.esp*100,1):'—'}</td><td><span class="t-side">${b.side}</span></td><td class="t-mono t-right">${b.qtd?fm(b.qtd,3)+(b.lay==='capa'?' T':' m³'):'—'}</td><td>${b.ponto?'extensão estimada':b.inf?'lado deduzido':'—'}</td></tr>`,
-    cap:'Faixas contínuas: capa nova (itens 16.7 e 10.1) separada de reciclagem, fresagem e recomposição de aterro.'},
+    cap:'Faixas contínuas: revestimento (itens 16.7 e 10.1) separada de reciclagem, fresagem e recomposição de aterro.'},
 };
 let curRows=[];
 function buildTable(){
@@ -911,15 +911,15 @@ document.getElementById('tb').addEventListener('click',e=>{
 /* ═══════════ Notas ═══════════ */
 (function(){
   const n=[
-    `Fonte: memórias de cálculo MC 2 a 24 do contrato SR/RN 515/2024. Reparos individuais: itens 3.1 (reparo localizado), 3.2 + 3.3 (remendo profundo, base e revestimento unidos) e 4.1 (correção de defeitos). Capa nova: itens 16.7 (MC 15 a 20) e 10.1 (MC 23 e 24). Soluções em trecho: 16.2 reciclagem, 16.12 fresagem e 8.3 recomposição de aterro.`,
+    `Fonte: memórias de cálculo MC 2 a 24 do contrato SR/RN 515/2024. Reparos individuais: itens 3.1 (reparo localizado), 3.2 + 3.3 (remendo profundo, base e revestimento unidos) e 4.1 (correção de defeitos). Revestimento (CBUQ): itens 16.7 (MC 15 a 20) e 10.1 (MC 23 e 24). Soluções em trecho: 16.2 reciclagem, 16.12 fresagem e 8.3 recomposição de aterro.`,
     `Conferência: a soma de cada serviço em cada MC bate com o total impresso e com a planilha de medição (diferença de até 0,02 m³, arredondamento). Nas MC 10 e 11 o pagamento de junho/2025 foi deslocado para a MP 11; o mapa usa a data de execução de cada linha.`,
     `Lacunas: a MC 1 (16 a 30/09/2024) não tem memória de cálculo no conjunto. As MC 19 e 21 não vieram em separado: o período de março está na MC 20 e o de maio na consolidação da MC 23.`,
     `Estaca: algumas MCs informam a estaca com decimal (posição exata); outras arredondam para a estaca inteira (±20 m): parte das MC 2 e 3 e todas as MC 5, 6, 7, 15, 20, 23 e 24. Por isso a sobreposição só é “certa” quando os dois reparos têm posição exata; nos demais casos é “possível”.`,
     `Desenho: o reparo parte da estaca informada e cresce no sentido do KM. A posição na largura da pista não consta nas MCs, então o retângulo fica no centro da faixa do lado informado. Lado “X” nas MCs = ambos os lados; “Eixo” = linha central.`,
-    `Repetições entre MCs: a MC 22 foi estornada por falta de saldo de empenho e refeita (com correções) na consolidação da MC 23, que é a versão usada. Trechos de capa repetidos nas MC 20, 22 e 23 aparecem uma vez, pela MC mais recente.`,
-    `Reparo coberto: reparo feito antes de uma capa nova no mesmo trecho e lado fica esmaecido no mapa, porque hoje está por baixo do asfalto novo. O botão “Esmaecer” desliga isso; o período escolhido define quais capas já existiam.`,
-    `Datas corrigidas: 17 reparos da MC 12 vinham datados de 29/09/2025 (fora do período e depois de 28/08 e 29/08 na sequência), tratados como 29/08/2025; a reciclagem de 11/12 da MC 18 vinha com o ano 2026, tratada como 2025 (a imprimação, a capa e a pintura do mesmo trecho trazem 11/12/2025).`,
-    `Capa da MC 15 veio sem lado: as duas faixas de 3,60 m foram atribuídas a D e E. O trevo da MC 18 (E 16750) foi medido pela topografia sem extensão: desenhado com 200 m estimados.`,
+    `Repetições entre MCs: a MC 22 foi estornada por falta de saldo de empenho e refeita (com correções) na consolidação da MC 23, que é a versão usada. Trechos de revestimento repetidos nas MC 20, 22 e 23 aparecem uma vez, pela MC mais recente.`,
+    `Reparo coberto: reparo feito antes de um revestimento novo no mesmo trecho e lado fica esmaecido no mapa, porque hoje está por baixo do asfalto novo. O botão “Esmaecer” desliga isso; o período escolhido define quais revestimentos já existiam.`,
+    `Datas corrigidas: 17 reparos da MC 12 vinham datados de 29/09/2025 (fora do período e depois de 28/08 e 29/08 na sequência), tratados como 29/08/2025; a reciclagem de 11/12 da MC 18 vinha com o ano 2026, tratada como 2025 (a imprimação, o revestimento e a pintura do mesmo trecho trazem 11/12/2025).`,
+    `O revestimento da MC 15 veio sem lado: as duas faixas de 3,60 m foram atribuídas a D e E. O trevo da MC 18 (E 16750) foi medido pela topografia sem extensão: desenhado com 200 m estimados.`,
     FORA.length?`Fora do trecho do contrato (não plotado): ${FORA.length} reparo(s) — MC ${FORA[0][0]}, ${fD(FORA[0][2])}, estaca ${fm(FORA[0][3])}, entre as estacas 15217 e 15281 na própria MC: provável erro de digitação (15265?).`:'',
   ].filter(Boolean);
   document.getElementById('notesList').innerHTML=n.map(t=>`<li>${t}</li>`).join('');

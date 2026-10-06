@@ -61,14 +61,14 @@ Acesse via GitHub Pages ou abra `index.html` localmente.
 | Endereço | O que mostra |
 |---|---|
 | `/` (esta página, `index.html`) | Visão por solução: faixas contínuas por trecho (MP 15, 18, 20, 23, 24). |
-| `/reparos/` | Visão por reparo: capa nova (CBUQ) separada das demais soluções e **um retângulo por reparo/remendo**, na estaca da memória de cálculo, com análise de sobreposição e filtro por período (MC 2 a 24). |
+| `/reparos/` | Visão por reparo: revestimento (CBUQ) separado das demais soluções e **um retângulo por reparo/remendo**, na estaca da memória de cálculo, com análise de sobreposição e filtro por período (MC 2 a 24). |
 
 A versão `/reparos/` não altera a principal. O ponto de retorno da versão principal está na branch `v1-mapa-linear`.
 
 ### Versão por reparo
 
 - `reparos/index.html` — página (HTML + CSS + JS inline, sem build).
-- `reparos/dados.js` — dados consolidados das memórias de cálculo (reparos, capa, reciclagem, fresagem, aterro).
+- `reparos/dados.js` — dados consolidados das memórias de cálculo (reparos, revestimento, reciclagem, fresagem, aterro).
 - `reparos/scripts/` — extração reproduzível a partir dos PDFs: `rodar.sh <pasta dos PDFs "N MC.pdf">` (requer `pdftotext` e Python 3).
 
 A soma de cada serviço em cada MC foi conferida com o total impresso na MC e com a planilha de medição (diferença de até 0,02 m³). As decisões de tratamento (estornos, repetições entre MCs, datas com erro de digitação, estaca arredondada) estão em “Notas sobre os dados” na própria página.
