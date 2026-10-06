@@ -521,7 +521,6 @@ function render(){
     el.className='sg'+sc+(seg===asg?' act':'');
     el.dataset.i=seg._i;
     el.style.cssText=`left:${x}px;width:${w}px;background:${gc(c)};--sc:${gc(c)};`;
-    el.onclick=()=>tapSeg(seg);
     rv.appendChild(el);
   });
 
@@ -870,12 +869,27 @@ function hiRow(seg){
   }
 }
 
-/* Toque no segmento do mapa: só abre/fecha card, sem zoom */
-function tapSeg(seg){
+/* Toque no segmento do mapa: só abre/fecha card, sem zoom.
+   Usa pointerdown/up no container com detecção de drag para não
+   interferir no scroll horizontal (click simples não funciona
+   bem com -webkit-overflow-scrolling:touch no iOS). */
+let _pDown=null;
+document.getElementById('rv').addEventListener('pointerdown',e=>{
+  const sg=e.target.closest('.sg');
+  if(!sg)return;
+  _pDown={x:e.clientX,y:e.clientY,i:sg.dataset.i};
+});
+document.getElementById('rv').addEventListener('pointerup',e=>{
+  if(!_pDown)return;
+  const dx=Math.abs(e.clientX-_pDown.x),dy=Math.abs(e.clientY-_pDown.y);
+  const idx=_pDown.i; _pDown=null;
+  if(dx>8||dy>8)return; /* foi drag/scroll, não tap */
+  const seg=VSEGS.find(s=>String(s._i)===idx);
+  if(!seg)return;
   if(asg&&asg._i===seg._i){hideCardNow();return;}
   showCard(seg);
   hiRow(seg);
-}
+});
 /* Clique na tabela: zoom no segmento + card */
 function selectSeg(seg){
   hideCardNow();
@@ -889,7 +903,7 @@ function selectSeg(seg){
   hiRow(seg);
 }
 /* Toque fora do card ou do segmento fecha */
-document.addEventListener('click',e=>{
+document.addEventListener('pointerup',e=>{
   if(!asg)return;
   const card=document.getElementById('ic');
   if(card.contains(e.target)||e.target.closest('.sg'))return;
