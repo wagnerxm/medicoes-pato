@@ -92,13 +92,13 @@ body{background:var(--bg);color:var(--tx);font-family:'Instrument Sans',ui-sans-
 /* Segmento D/E (ambos): pista inteira */
 .sg{position:absolute;top:20px;height:120px;border-radius:1px;cursor:pointer;transition:filter .1s,opacity .1s,box-shadow .12s;min-width:3px;opacity:.95;z-index:3;border-top:2px solid rgba(255,255,255,.85);border-bottom:2px solid rgba(255,255,255,.85);}
 /* Segmento só lado E (esquerdo): estende até o eixo para cobrir a faixa central */
-.sg.sg-e{top:20px;height:61px;border-bottom:none;}
+.sg.sg-e{top:20px;height:59px;border-bottom:none;}
 /* Segmento só lado D (direito): estende até o eixo para cobrir a faixa central */
-.sg.sg-d{top:79px;height:61px;border-top:none;}
+.sg.sg-d{top:81px;height:59px;border-top:none;}
 /* Sinalização amarela nova: só dentro dos segmentos, posicionada no centro da rodovia */
 .sg::after{content:'';position:absolute;top:57px;left:0;right:0;height:2px;background:repeating-linear-gradient(to right,#FBBF24 0 8px,transparent 8px 18px);opacity:.9;pointer-events:none;z-index:4;}
 /* Segmentos laterais: reposiciona a linha amarela no eixo da rodovia */
-.sg.sg-e::after{top:57px;}
+.sg.sg-e::after{top:55px;}
 .sg.sg-d::after{top:0;}
 /* Suprime linha duplicada quando D e E coexistem no mesmo trecho */
 .sg.sg-d.no-ln::after{display:none;}
