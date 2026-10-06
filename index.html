@@ -95,6 +95,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Instrument Sans',ui-sans-
 .sg.sg-e{top:20px;height:59px;border-bottom:none;}
 /* Segmento só lado D (direito): estende até o eixo para cobrir a faixa central */
 .sg.sg-d{top:81px;height:59px;border-top:none;}
+/* Textura granulada de asfalto sobre os segmentos de solução */
+.sg::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;background-image:radial-gradient(circle at 25% 25%,rgba(255,255,255,.1) .5px,transparent .5px),radial-gradient(circle at 75% 60%,rgba(0,0,0,.08) .5px,transparent .5px),radial-gradient(circle at 50% 10%,rgba(255,255,255,.07) .5px,transparent .5px),radial-gradient(circle at 10% 80%,rgba(0,0,0,.06) .5px,transparent .5px);background-size:3px 3px,4px 4px,5px 5px,6px 6px;}
 /* Sinalização amarela nova: só dentro dos segmentos, posicionada no centro da rodovia */
 .sg::after{content:'';position:absolute;top:57px;left:0;right:0;height:2px;background:repeating-linear-gradient(to right,#FBBF24 0 8px,transparent 8px 18px);opacity:.9;pointer-events:none;z-index:4;}
 /* Segmentos laterais: reposiciona a linha amarela no eixo da rodovia */
