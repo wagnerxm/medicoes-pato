@@ -248,6 +248,8 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
       <div class="cb-sep"></div>
       <button class="cb" id="fD" onclick="fS('D')">Lado D</button>
       <button class="cb" id="fE" onclick="fS('E')">Lado E</button>
+      <div class="cb-sep"></div>
+      <button class="cb" onclick="resetView()" title="Voltar à visão inicial"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 9l9-7 9 7"/><path d="M9 22V12h6v10"/></svg></button>
     </div>
   </div>
   <div class="road-wrap">
@@ -763,6 +765,8 @@ function fA(){
   document.getElementById('ba').classList.add('on');
   document.getElementById('bf').classList.remove('on');
 }
+
+function resetView(){hideCardNow();sf=null;hid.clear();document.querySelectorAll('.chip.off').forEach(c=>c.classList.remove('off'));document.getElementById('fD').classList.remove('on');document.getElementById('fE').classList.remove('on');fW();buildTable();}
 
 /* Minimap click */
 document.getElementById('mm').addEventListener('click',e=>{
