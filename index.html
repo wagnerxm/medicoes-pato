@@ -130,12 +130,17 @@ body{background:var(--bg);color:var(--tx);font-family:'Instrument Sans',ui-sans-
 .fc-grid{display:grid;grid-template-columns:auto 1fr;border-top:1px solid rgba(255,255,255,.12);}
 .fc-grid>div{padding:.35rem 1rem;font-size:.92rem;}
 .fc-l{color:rgba(255,255,255,.7);white-space:nowrap;}
-.fc-v{font-weight:700;text-align:center;font-family:inherit;font-size:.9rem!important;color:#FFFFFF;display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:nowrap;}
+.fc-v{font-weight:700;text-align:center;font-family:inherit;font-size:.9rem!important;color:#FFFFFF;}
 .fc-v.tx{font-family:inherit;font-weight:500;font-size:.92rem!important;color:rgba(255,255,255,.85);}
 .fc-sep{grid-column:1/-1;height:0;border-bottom:1px solid rgba(255,255,255,.12);padding:0!important;}
-.fc-v .gps{display:inline-flex;align-items:center;justify-content:center;margin-left:.4rem;width:22px;height:22px;border-radius:5px;background:rgba(255,255,255,.15);color:#fff;vertical-align:middle;text-decoration:none;transition:background .15s;flex-shrink:0;}
-.fc-v .gps:hover{background:rgba(255,255,255,.32);}
-.fc-v .gps svg{width:13px;height:13px;}
+.fc-geo{border-top:1px solid rgba(255,255,255,.12);padding:.45rem 1rem .55rem;}
+.fc-geo-t{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5);margin-bottom:.3rem;}
+.fc-geo-grid{display:grid;grid-template-columns:auto 1fr auto;gap:.15rem .5rem;align-items:center;}
+.fc-geo-l{font-size:.8rem;color:rgba(255,255,255,.6);white-space:nowrap;}
+.fc-geo-c{font-size:.82rem;font-weight:600;color:#fff;font-family:inherit;}
+.fc-geo .gps{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;background:rgba(255,255,255,.13);color:#fff;text-decoration:none;transition:background .15s;}
+.fc-geo .gps:hover{background:rgba(255,255,255,.3);}
+.fc-geo .gps svg{width:14px;height:14px;}
 
 /* ── Minimapa (14px) ── */
 .mm-w{padding:.5rem 1rem .55rem;border-top:1px solid var(--bdl);}
@@ -615,11 +620,6 @@ function showCard(seg){
   grid+=r('KM',`${fK(seg.km0)} → ${fK(seg.km1)}`);
   grid+=r('Estacas',`${fm(eI)} → ${fm(eF)}`);
   grid+=r('Extensão',`${fm(seg.ext,0)} m`);
-  const gpsSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>';
-  const cI=kmToCoord(seg.km0),cF=kmToCoord(seg.km1);
-  const gpsLnk=(c)=>{const u=`https://www.google.com/maps?q=${c.lat},${c.lng}&z=17`;return `<a class="gps" href="${u}" target="_blank" rel="noopener" title="Abrir no Maps">${gpsSvg}</a>`;};
-  if(cI)grid+=r('Coord. Inicial',`${cI.lat.toFixed(6)}, ${cI.lng.toFixed(6)} ${gpsLnk(cI)}`);
-  if(cF)grid+=r('Coord. Final',`${cF.lat.toFixed(6)}, ${cF.lng.toFixed(6)} ${gpsLnk(cF)}`);
   grid+=sep;
   if(seg.larg)grid+=r('Largura',`${fm(seg.larg,2)} m`);
   if(seg.esp)grid+=r('Espessura',`${fm(seg.esp*100,1)} cm`);
@@ -633,7 +633,17 @@ function showCard(seg){
   card.innerHTML=`<div class="fc-bar" style="background:${co};color:${co}"></div>
     <div class="fc-hd"><span class="fc-cat">${c.nm}</span><span class="fc-mc">MP ${seg.mp} · Item ${seg.item}</span></div>
     <div class="fc-desc">${seg.desc}</div>
-    <div class="fc-grid">${r('Período',MPP[seg.mp]||'—',true)}${sep}${grid}</div>`;
+    <div class="fc-grid">${r('Período',MPP[seg.mp]||'—',true)}${sep}${grid}</div>
+    ${(()=>{
+      const cI=kmToCoord(seg.km0),cF=kmToCoord(seg.km1);
+      if(!cI&&!cF)return '';
+      const pin='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+      const gl=(c)=>`<a class="gps" href="https://www.google.com/maps?q=${c.lat},${c.lng}&z=17" target="_blank" rel="noopener" title="Abrir no Maps">${pin}</a>`;
+      let rows='';
+      if(cI)rows+=`<div class="fc-geo-l">Inicial</div><div class="fc-geo-c">${cI.lat.toFixed(6)}, ${cI.lng.toFixed(6)}</div>${gl(cI)}`;
+      if(cF)rows+=`<div class="fc-geo-l">Final</div><div class="fc-geo-c">${cF.lat.toFixed(6)}, ${cF.lng.toFixed(6)}</div>${gl(cF)}`;
+      return `<div class="fc-geo"><div class="fc-geo-t">Visualizar no Google Maps</div><div class="fc-geo-grid">${rows}</div></div>`;
+    })()}`;
   card.classList.add('sh');
   posCard(seg);
   document.querySelectorAll('.sg.act').forEach(el=>el.classList.remove('act'));
