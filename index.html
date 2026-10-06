@@ -90,7 +90,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Instrument Sans',ui-sans-
 .rv::after{content:'';position:absolute;top:79px;left:0;right:0;height:2px;z-index:1;background:repeating-linear-gradient(to right,var(--center) 0 10px,transparent 10px 22px);pointer-events:none;}
 .rv-guide{position:absolute;top:0;height:100%;width:0;border-left:1px dashed var(--ac2);opacity:.14;z-index:1;}
 /* Segmento D/E (ambos): pista inteira */
-.sg{position:absolute;top:20px;height:120px;border-radius:1px;cursor:pointer;transition:filter .1s,opacity .1s,box-shadow .12s;min-width:3px;opacity:.95;z-index:3;border-top:2px solid rgba(255,255,255,.85);border-bottom:2px solid rgba(255,255,255,.85);}
+.sg{position:absolute;top:20px;height:120px;border-radius:1px;cursor:pointer;touch-action:manipulation;transition:filter .1s,opacity .1s,box-shadow .12s;min-width:3px;opacity:.95;z-index:3;border-top:2px solid rgba(255,255,255,.85);border-bottom:2px solid rgba(255,255,255,.85);}
 /* Segmento só lado E (esquerdo): estende até o eixo para cobrir a faixa central */
 .sg.sg-e{top:20px;height:59px;border-bottom:none;}
 /* Segmento só lado D (direito): estende até o eixo para cobrir a faixa central */
@@ -521,6 +521,7 @@ function render(){
     el.className='sg'+sc+(seg===asg?' act':'');
     el.dataset.i=seg._i;
     el.style.cssText=`left:${x}px;width:${w}px;background:${gc(c)};--sc:${gc(c)};`;
+    el.onclick=e=>{e.stopPropagation();tapSeg(seg);};
     rv.appendChild(el);
   });
 
@@ -869,27 +870,12 @@ function hiRow(seg){
   }
 }
 
-/* Toque no segmento do mapa: só abre/fecha card, sem zoom.
-   Usa pointerdown/up no container com detecção de drag para não
-   interferir no scroll horizontal (click simples não funciona
-   bem com -webkit-overflow-scrolling:touch no iOS). */
-let _pDown=null;
-document.getElementById('rv').addEventListener('pointerdown',e=>{
-  const sg=e.target.closest('.sg');
-  if(!sg)return;
-  _pDown={x:e.clientX,y:e.clientY,i:sg.dataset.i};
-});
-document.getElementById('rv').addEventListener('pointerup',e=>{
-  if(!_pDown)return;
-  const dx=Math.abs(e.clientX-_pDown.x),dy=Math.abs(e.clientY-_pDown.y);
-  const idx=_pDown.i; _pDown=null;
-  if(dx>8||dy>8)return; /* foi drag/scroll, não tap */
-  const seg=VSEGS.find(s=>String(s._i)===idx);
-  if(!seg)return;
+/* Toque no segmento do mapa: só abre/fecha card, sem zoom */
+function tapSeg(seg){
   if(asg&&asg._i===seg._i){hideCardNow();return;}
   showCard(seg);
   hiRow(seg);
-});
+}
 /* Clique na tabela: zoom no segmento + card */
 function selectSeg(seg){
   hideCardNow();
@@ -903,7 +889,7 @@ function selectSeg(seg){
   hiRow(seg);
 }
 /* Toque fora do card ou do segmento fecha */
-document.addEventListener('pointerup',e=>{
+document.addEventListener('click',e=>{
   if(!asg)return;
   const card=document.getElementById('ic');
   if(card.contains(e.target)||e.target.closest('.sg'))return;
