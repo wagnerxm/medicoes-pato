@@ -766,7 +766,7 @@ function fA(){
   document.getElementById('bf').classList.remove('on');
 }
 
-function resetView(){hideCardNow();sf=null;hid.clear();document.querySelectorAll('.chip.off').forEach(c=>c.classList.remove('off'));document.getElementById('fD').classList.remove('on');document.getElementById('fE').classList.remove('on');fW();buildTable();}
+function resetView(){hideCardNow();sf=null;hid.clear();document.querySelectorAll('.chip.off').forEach(c=>c.classList.remove('off'));document.getElementById('fD').classList.remove('on');document.getElementById('fE').classList.remove('on');pk=scrollEl.clientWidth/5.1;render();scrollEl.scrollLeft=0;document.getElementById('bf').classList.remove('on');document.getElementById('ba').classList.remove('on');buildTable();}
 
 /* Minimap click */
 document.getElementById('mm').addEventListener('click',e=>{
