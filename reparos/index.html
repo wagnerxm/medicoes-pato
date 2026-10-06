@@ -920,6 +920,7 @@ document.getElementById('tb').addEventListener('click',e=>{
     `Reparo coberto: reparo feito antes de um revestimento novo no mesmo trecho e lado fica esmaecido no mapa, porque hoje está por baixo do asfalto novo. O botão “Esmaecer” desliga isso; o período escolhido define quais revestimentos já existiam.`,
     `Datas corrigidas: 17 reparos da MC 12 vinham datados de 29/09/2025 (fora do período e depois de 28/08 e 29/08 na sequência), tratados como 29/08/2025; a reciclagem de 11/12 da MC 18 vinha com o ano 2026, tratada como 2025 (a imprimação, o revestimento e a pintura do mesmo trecho trazem 11/12/2025).`,
     `O revestimento da MC 15 veio sem lado: as duas faixas de 3,60 m foram atribuídas a D e E. O trevo da MC 18 (E 16750) foi medido pela topografia sem extensão: desenhado com 200 m estimados.`,
+    `Estaca corrigida: 1 reparo da MC 2 (22/10/2024) vinha com a estaca 12265, entre as estacas 15217 e 15281 na própria MC; corrigido para 15265.`,
     FORA.length?`Fora do trecho do contrato (não plotado): ${FORA.length} reparo(s) — MC ${FORA[0][0]}, ${fD(FORA[0][2])}, estaca ${fm(FORA[0][3])}, entre as estacas 15217 e 15281 na própria MC: provável erro de digitação (15265?).`:'',
   ].filter(Boolean);
   document.getElementById('notesList').innerHTML=n.map(t=>`<li>${t}</li>`).join('');

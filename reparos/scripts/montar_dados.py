@@ -15,6 +15,12 @@ for r in tre:
     if r['mc'] == 18 and r['sv'] == 'REC' and r['data'] == '2026-12-11': r['data'] = '2025-12-11'; corr_datas += 1  # IMP/CAPA/PINT do mesmo trecho: 11/12/2025
 rel.append(f'datas corrigidas (erro de digitação na MC): {corr_datas}')
 
+# Estaca com erro de digitação na MC 2 (E12265 entre 15217 e 15281): confirmada pelo usuário como 15265
+corr_est = 0
+for x in rep:
+    if x['mc'] == 2 and x['est'] == 12265.0: x['est'] = 15265.0; corr_est += 1
+rel.append(f'estacas corrigidas (erro de digitação na MC): {corr_est}')
+
 # ---------- REPAROS ----------
 # MC 22 foi estornada por falta de empenho e remedida (corrigida) na MC 23 -> descartar MC 22
 n22 = sum(1 for x in rep if x['mc'] == 22 and x['sv'] in ('RL', 'BGS', 'RP3'))
