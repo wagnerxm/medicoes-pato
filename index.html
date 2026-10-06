@@ -521,7 +521,7 @@ function render(){
     el.className='sg'+sc+(seg===asg?' act':'');
     el.dataset.i=seg._i;
     el.style.cssText=`left:${x}px;width:${w}px;background:${gc(c)};--sc:${gc(c)};`;
-    el.onclick=()=>selectSeg(seg);
+    el.onclick=()=>tapSeg(seg);
     rv.appendChild(el);
   });
 
@@ -870,9 +870,14 @@ function hiRow(seg){
   }
 }
 
-function selectSeg(seg){
-  /* toggle: clicar no mesmo segmento fecha o card */
+/* Toque no segmento do mapa: só abre/fecha card, sem zoom */
+function tapSeg(seg){
   if(asg&&asg._i===seg._i){hideCardNow();return;}
+  showCard(seg);
+  hiRow(seg);
+}
+/* Clique na tabela: zoom no segmento + card */
+function selectSeg(seg){
   hideCardNow();
   const mid=(seg.km0+seg.km1)/2;
   const span=Math.max((seg.km1-seg.km0)*4,10);
@@ -880,7 +885,6 @@ function selectSeg(seg){
   pk=(vpW-MAP_PAD*2)/span;
   render();
   scrollEl.scrollTo({left:km2px(mid)-vpW/2,behavior:'smooth'});
-  /* espera scroll + layout estabilizar antes de mostrar */
   requestAnimationFrame(()=>requestAnimationFrame(()=>{showCard(seg);}));
   hiRow(seg);
 }
