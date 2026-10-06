@@ -869,17 +869,19 @@ function hiRow(seg){
 function selectSeg(seg){
   /* toggle: clicar no mesmo segmento fecha o card */
   if(asg&&asg._i===seg._i){hideCardNow();return;}
+  hideCardNow();
   const mid=(seg.km0+seg.km1)/2;
   const span=Math.max((seg.km1-seg.km0)*4,10);
   const vpW=scrollEl.clientWidth;
   pk=(vpW-MAP_PAD*2)/span;
   render();
   scrollEl.scrollTo({left:km2px(mid)-vpW/2,behavior:'smooth'});
-  setTimeout(()=>showCard(seg),300);
+  /* espera scroll + layout estabilizar antes de mostrar */
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{showCard(seg);}));
   hiRow(seg);
 }
 /* Toque fora do card ou do segmento fecha */
-document.addEventListener('pointerdown',e=>{
+document.addEventListener('click',e=>{
   if(!asg)return;
   const card=document.getElementById('ic');
   if(card.contains(e.target)||e.target.closest('.sg'))return;
