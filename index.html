@@ -587,6 +587,7 @@ function hideCardNow(){
   asg=null;
   document.getElementById('ic').classList.remove('sh');
   document.querySelectorAll('.sg.act').forEach(el=>el.classList.remove('act'));
+  filterTableByCat(null);
 }
 
 function posCard(seg){
@@ -594,19 +595,14 @@ function posCard(seg){
   if(!el)return;
   const card=document.getElementById('ic');
   const r=el.getBoundingClientRect();
-  const sr=scrollEl.getBoundingClientRect();
   const cW=Math.min(440,window.innerWidth-24);
   card.style.width=cW+'px';
   card.style.maxHeight='none';card.style.overflowY='visible';
-  const cx=r.left+r.width/2;
-  let cl=cx-cW/2;
-  cl=Math.max(8,Math.min(cl,window.innerWidth-cW-8));
-  card.style.left=cl+'px';
-  /* posiciona acima do mapa para não interferir no scroll horizontal */
-  const cH=card.getBoundingClientRect().height;
-  let ct=sr.top-cH-4;
-  if(ct<4) ct=4;
-  card.style.top=ct+'px';
+  /* canto superior oposto ao segmento clicado */
+  const segCenter=r.left+r.width/2;
+  const onRight=segCenter>=window.innerWidth/2;
+  card.style.left=onRight?'12px':(window.innerWidth-cW-12)+'px';
+  card.style.top='12px';
 }
 
 function showCard(seg){
@@ -805,11 +801,18 @@ function fS(s){
 })();
 
 /* ═══════════ Tabela ═══════════ */
-let sortKey='mp',sortDir=1;
+let sortKey='mp',sortDir=1,catFilter=null;
+
+/* Filtra a tabela pela categoria do card aberto */
+function filterTableByCat(cat){
+  catFilter=cat;
+  buildTable();
+}
 
 function buildTable(){
   const tb=document.getElementById('tb');
   let rows=VSEGS.filter(s=>{
+    if(catFilter&&s.cat!==catFilter)return false;
     if(hid.has(s.cat))return false;
     if(sf==='D'&&s.side==='E')return false;
     if(sf==='E'&&s.side==='D')return false;
@@ -875,7 +878,7 @@ function hiRow(seg){
 function tapSeg(seg){
   if(asg&&asg._i===seg._i){hideCardNow();return;}
   showCard(seg);
-  hiRow(seg);
+  filterTableByCat(seg.cat);
 }
 /* Clique na tabela: zoom no segmento + card */
 function selectSeg(seg){
