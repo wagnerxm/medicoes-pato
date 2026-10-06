@@ -711,6 +711,7 @@ scrollEl.addEventListener('wheel',e=>{
   let dragging=false,startX=0,startScroll=0;
   scrollEl.addEventListener('pointerdown',e=>{
     if(e.button!==0)return;
+    if(e.target.closest('.sg'))return; /* deixa o clique chegar ao segmento */
     dragging=true;startX=e.clientX;startScroll=scrollEl.scrollLeft;
     scrollEl.setPointerCapture(e.pointerId);
     scrollEl.style.cursor='grabbing';scrollEl.style.userSelect='none';
