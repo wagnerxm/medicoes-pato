@@ -402,52 +402,77 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   .ft{padding:1rem 12px;}
 }
 
-/* ═══════ Celular, aba Mapa: filtros e soluções cabem na tela (sem rolar a página) ═══════ */
-.x-m,.sw{display:none;}
+/* ═══════ Celular, aba Mapa: escala de espaçamento única, simétrica, sem rolagem vertical ═══════
+   Variáveis: --px margem lateral · --sp respiro das seções · --g espaço entre itens · --hz botões de zoom
+              --hc selects · --hf destaques · --hch soluções. Três densidades conforme a altura da tela. */
+.x-m,.sw,.m-t{display:none;}
+@media(max-width:640px){
+  :root{--px:16px;--sp:8px;--g:6px;--hz:36px;--hc:36px;--hf:48px;--hch:30px;}
+}
+@media(max-width:640px) and (min-height:740px){
+  :root{--sp:10px;--g:6px;--hz:40px;--hc:40px;--hf:56px;--hch:36px;}
+}
+@media(max-width:640px) and (min-height:800px){
+  :root{--sp:12px;--g:8px;--hz:40px;--hc:42px;--hf:60px;--hch:38px;}
+}
+@media(max-width:640px) and (min-height:900px){
+  :root{--sp:14px;--g:10px;--hz:40px;--hc:46px;--hf:68px;--hch:42px;}
+  .m-t{display:block;}
+}
 @media(max-width:640px){
   .x-d{display:none;}
   .x-m{display:inline;}
-  .hdr{padding:.4rem 12px;background:linear-gradient(180deg,#2A3750,#1E293B);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:none;-webkit-backdrop-filter:none;}
+  body[data-mt="map"]{background:var(--card);}
+
+  /* barra superior: mesmo fundo da barra de abas */
+  .hdr{padding:var(--sp) var(--px);background:linear-gradient(180deg,#2A3750,#1E293B);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:none;-webkit-backdrop-filter:none;}
   .hdr::before{display:none;}
   .hdr .meta{display:none;}
   .hdr h1{color:#F8FAFC;}
   .hdr .uf{color:#CBD5E1;}
   .hdr .badge{background:#8CCBB6;color:#0F172A;box-shadow:none;}
   .hdr .th-btn{background:transparent;border-color:rgba(255,255,255,.28);color:#E2E8F0;}
-  .road-bar{position:static;height:auto;padding:.35rem 12px .25rem;box-shadow:none;border-bottom:0;}
-  .ctrls{overflow:visible;justify-content:space-between;gap:.2rem;}
-  .ctrls .cb{padding:.3rem .5rem;font-size:.68rem;font-weight:700;}
+
+  /* zoom: grade simétrica  [−][km][+] · [Obra][Tudo] · [LD][LE] · [casa] */
+  .road-bar{position:static;height:auto;padding:var(--sp) var(--px);box-shadow:none;border-bottom:0;}
+  .ctrls{display:grid;grid-template-columns:var(--hz) minmax(0,1fr) var(--hz) minmax(0,1.2fr) minmax(0,1.2fr) var(--hz) var(--hz) var(--hz);gap:5px;align-items:center;overflow:visible;width:100%;}
   .ctrls .cb-sep{display:none;}
-  .zlab{min-width:0;padding:0 .15rem;font-size:.58rem;white-space:nowrap;}
+  .ctrls .cb{height:var(--hz);min-height:0;padding:0;border-radius:12px;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .zlab{min-width:0;padding:0;font-size:.6rem;text-align:center;white-space:nowrap;}
   .dock{position:static;}
 
-  /* filtros: título "Período"; na linha de baixo De · até · Até · em até · prazo; depois os 3 destaques com o nome completo */
-  .fbar{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .3rem;padding:.4rem 12px .3rem;}
+  /* filtros: Período (título) · De | Até | Em até (3 colunas iguais) · Destaques (3 colunas iguais) */
+  .fbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--g);row-gap:var(--g);align-items:end;padding:var(--sp) var(--px);}
   .fbar .cb-sep,.fbar .lgs{display:none;}
-  .fbar>.fg:first-child{display:contents;}
-  .fbar label[for=mFrom]{order:1;flex:0 0 100%;font-size:.58rem;letter-spacing:.14em;margin-bottom:-.05rem;}
-  .fbar #mFrom{order:2;flex:0 0 80px;}
-  .fbar label[for=mTo]{order:3;flex:0 0 auto;font-size:.56rem;}
-  .fbar #mTo{order:4;flex:0 0 80px;}
-  .fbar select{min-width:0;min-height:34px;font-size:.7rem;padding:.2rem 18px .2rem .45rem;-webkit-appearance:none;appearance:none;background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2364748B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 6px center;}
-  .fbar .dm{order:5;flex:1 1 0;width:auto;display:flex;align-items:center;gap:.25rem;min-width:0;}
-  .fbar .dm label{display:block;flex:0 0 auto;font-size:.56rem;}
-  .fbar .dm select{flex:1;width:100%;}
-  .fbar .tgs{order:6;flex:0 0 100%;display:flex;gap:.3rem;overflow:visible;}
-  .fbar .tgs .cb{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:flex-start;gap:.3rem;padding:.25rem .4rem;min-height:44px;font-size:.6rem;font-weight:600;line-height:1.2;text-align:left;white-space:normal;}
+  .fbar>.fg:first-child,.fbar .dm{display:contents;}
+  .fbar label{font-size:.54rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);line-height:1;}
+  .fbar label[for=mFrom]{grid-column:1 / -1;grid-row:1;font-size:.6rem;}
+  .fbar::before{content:"De";grid-column:1;grid-row:2;font-size:.54rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);line-height:1;margin-bottom:-2px;}
+  .fbar label[for=mTo]{grid-column:2;grid-row:2;margin-bottom:-2px;}
+  .fbar .dm label{grid-column:3;grid-row:2;margin-bottom:-2px;}
+  .fbar #mFrom{grid-column:1;grid-row:3;}
+  .fbar #mTo{grid-column:2;grid-row:3;}
+  .fbar #dMax{grid-column:3;grid-row:3;}
+  .fbar select{width:100%;min-width:0;height:var(--hc);padding:0 22px 0 .65rem;font-size:.76rem;font-weight:500;color:var(--tx);border:1px solid var(--bd);border-radius:12px;box-shadow:0 1px 2px rgba(15,23,42,.05);-webkit-appearance:none;appearance:none;background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2364748B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 8px center;}
+  .fbar .m-t-dst{grid-column:1 / -1;margin-top:calc(var(--g) / 2);}
+  .fbar .tgs{grid-column:1 / -1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--g);overflow:visible;}
+  .fbar .tgs .cb{min-width:0;min-height:var(--hf);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:.4rem .35rem;border-radius:12px;font-size:.62rem;font-weight:600;line-height:1.2;text-align:center;white-space:normal;}
   .fbar .tgs .x-d{display:inline;}
   .fbar .tgs .x-m{display:none;}
+  .m-t{font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);line-height:1;}
   .sw.ovp{display:none;}
-  .sw{display:inline-block;flex:0 0 auto;width:12px;height:8px;margin:0 1px;border-radius:2px;background:rgba(245,158,11,.85);}
+  .sw{display:inline-block;flex:0 0 auto;width:14px;height:9px;border-radius:2px;background:rgba(245,158,11,.85);}
   .sw.ov{box-shadow:0 0 0 1.5px #A855F7;}
   .sw.oc{box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px #475569;}
   .sw.cv{opacity:.4;}
 
-  /* soluções: linhas pequenas que quebram, sem rolagem */
-  .chips{flex-wrap:wrap;overflow:visible;gap:.3rem;padding:.3rem 12px .45rem;}
-  .chip{padding:.2rem .4rem;font-size:.62rem;border-radius:7px;gap:.25rem;}
-  .chip-d{width:9px;height:9px;}
-  .chip-n{font-size:.58rem;margin-left:0;}
+  /* soluções (legenda): grade de 2 colunas iguais; a 7ª ocupa a linha inteira */
+  .chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--g);align-items:stretch;padding:var(--sp) var(--px);border-top:1px solid var(--bdl);overflow:visible;}
+  .chips .m-t-sol{grid-column:1 / -1;}
+  .chip{display:flex;align-items:center;gap:8px;min-height:var(--hch);padding:.3rem .65rem;border-radius:12px;font-size:.68rem;font-weight:500;line-height:1.15;background:var(--card);box-shadow:0 1px 2px rgba(15,23,42,.05);}
+  .chip:last-child{grid-column:1 / -1;}
+  .chip-d{width:10px;height:10px;border-radius:3px;}
+  .chip-n{margin-left:auto;font-size:.62rem;padding-left:4px;}
 }
 </style>
 </head>
@@ -496,6 +521,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   <div class="fbar">
     <div class="fg"><label for="mFrom">Período</label><select id="mFrom"></select><label for="mTo">até</label><select id="mTo"></select></div>
     <div class="cb-sep"></div>
+    <div class="m-t m-t-dst">Destaques</div>
     <div class="fg tgs"><button class="cb on" id="tOv" onclick="tg('ov')"><i class="sw ov"></i><i class="sw ovp"></i><span class="x-d">Destacar sobreposição</span><span class="x-m">Sobrepõe</span></button><button class="cb on" id="tOc" onclick="tg('oc')"><i class="sw oc"></i><span class="x-d">Destacar reparo sobre revestimento</span><span class="x-m">Sobre rev.</span></button><button class="cb on" id="tCv" onclick="tg('cv')" title="Reparo feito antes de um revestimento novo no mesmo trecho: hoje está por baixo do asfalto novo"><i class="sw cv"></i><span class="x-d">Esmaecer reparo coberto</span><span class="x-m">Coberto</span></button></div>
     <div class="fg dm"><label for="dMax">em até</label><select id="dMax"><option value="30">1 mês</option><option value="90">3 meses</option><option value="180" selected>6 meses</option><option value="365">12 meses</option><option value="99999">sem limite</option></select></div>
     <div class="cb-sep"></div>
@@ -518,7 +544,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   </div>
   <div class="mm-w"><div class="mm" id="mm"><canvas id="mc"></canvas><div class="mv" id="mv"></div></div></div>
   </div>
-  <div class="chips" id="chips"></div>
+  <div class="chips" id="chips"><div class="m-t m-t-sol">Soluções</div></div>
 </section>
 
 <div class="wrap" id="tblWrap">
@@ -1195,9 +1221,9 @@ function fitMap(){
   if(!MOB.matches||mt!=='map'||scrollY>0)return;
   root.style.setProperty('--vs','1.22');
   const dockB=document.querySelector('.dock').getBoundingClientRect().bottom,allB=document.querySelector('.chips').getBoundingClientRect().bottom;
-  const sheet=Math.min(innerHeight*.36,320),bar=92;
+  const sheet=210,bar=96;
   const free=Math.min(innerHeight-bar-allB,innerHeight-bar-sheet-8-dockB);
-  root.style.setProperty('--vs',String(Math.max(.9,Math.min(1.8,1.22+free/160)).toFixed(3)));
+  root.style.setProperty('--vs',String(Math.max(.9,Math.min(2.3,1.22+free/160)).toFixed(3)));
   /* a folha do cartão ocupa só o espaço entre o mapa e a barra de abas */
   const sb=document.querySelector('.dock').getBoundingClientRect().bottom;
   root.style.setProperty('--sheet-max',Math.round(Math.max(150,Math.min(320,innerHeight-bar-8-sb)))+'px');
