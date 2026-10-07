@@ -251,14 +251,38 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
 
 /* ═══════ Celular (≤640 px): só reorganiza; o desktop não usa nada abaixo ═══════ */
 .lgs{display:contents;}
+.dock{display:contents;}
+.m-sort{display:none;}
 .fc-x{display:none;}
 @media(max-width:640px){
   /* cabeçalho compacto, rola junto com a página */
-  .hdr{position:static;padding:.55rem 12px .5rem;gap:.4rem;}
-  .hdr-l{gap:.5rem;min-width:0;}
-  .hdr h1{font-size:1rem;}
-  .hdr .meta{font-size:.58rem;}
-  .hdr-r{gap:.4rem;}
+  .hdr{position:static;padding:.5rem 12px;gap:.4rem;flex-wrap:nowrap;}
+  .hdr-l{gap:.5rem;min-width:0;flex:1;}
+  .hdr-l>div{min-width:0;}
+  .hdr h1{font-size:.95rem;white-space:nowrap;}
+  .hdr .meta{font-size:.56rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .hdr-r{gap:.4rem;flex:0 0 auto;}
+  .hdr .tag{display:none;}
+  .hdr .th-btn{padding:.3rem .55rem;font-size:.6rem;}
+  .badge{font-size:.55rem;padding:.2rem .5rem;}
+
+  /* mapa primeiro e fixo: a página vira uma coluna; barra de zoom + mapa + minimapa ficam colados no topo */
+  body{display:flex;flex-direction:column;}
+  .wrap{width:100%;}
+  .road-sec{display:contents;}
+  .hdr{order:1;}
+  .road-bar{order:2;position:sticky;top:0;z-index:46;height:42px;padding:0 12px;flex-wrap:nowrap;background:var(--card);border-bottom:1px solid var(--bdl);box-shadow:var(--sh);}
+  .road-bar h2{display:none;}
+  .ctrls{width:100%;}
+  .dock{display:block;order:3;position:sticky;top:42px;z-index:45;background:var(--card);border-bottom:1px solid var(--bd);box-shadow:0 8px 16px rgba(15,23,42,.14);}
+  .fbar{order:4;background:var(--card);}
+  .chips{order:5;background:var(--card);border-bottom:1px solid var(--bd);}
+  #kpiWrap{order:6;}
+  #tblWrap{order:7;}
+  .rv{transform:scaleY(1.22);transform-origin:top;margin-bottom:35px;}
+  .rl{height:46px;}
+  .rk-km .est{bottom:3px;}
+  .mm-w{padding:.3rem 12px .35rem;}
 
   /* indicadores: uma faixa rolável em vez de 3 linhas de cartões */
   .kpis{display:flex;gap:.5rem;overflow-x:auto;margin:.55rem -12px;padding:0 12px .3rem;scroll-snap-type:x proximity;scrollbar-width:none;}
@@ -300,15 +324,22 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   .tabs::-webkit-scrollbar{display:none;}
   .tab{flex:0 0 auto;white-space:nowrap;padding:.4rem .75rem;font-size:.72rem;}
   .tcap{padding:.4rem 12px;font-size:.62rem;}
-  .tw{max-height:62vh;}
-  th{padding:.5rem .55rem;}
-  td{padding:.5rem .55rem;font-size:.7rem;}
+  .tw{max-height:none;overflow:visible;}
+  thead{display:none;}
+  .m-sort{display:flex;align-items:center;gap:.5rem;padding:.4rem 12px;border-bottom:1px solid var(--bdl);}
+  .m-sort label{font-size:.56rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--tx3);}
+  .m-sort select{flex:1;min-width:0;min-height:34px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:.3rem .5rem;font-size:.78rem;font-family:inherit;color:var(--tx2);}
+  td.m-row{padding:.6rem 12px;white-space:normal;font-size:.74rem;}
+  .m-row .m1{display:flex;align-items:center;gap:.5rem;font-weight:600;font-size:.82rem;}
+  .m-row .m1 .m-d{margin-left:auto;font-weight:500;color:var(--tx2);font-size:.74rem;}
+  .m-row .m2,.m-row .m3{color:var(--tx3);font-size:.7rem;line-height:1.5;margin-top:.15rem;}
+  .m-row .m3 b{color:var(--tx2);font-weight:600;}
   .notes summary{padding:.65rem 12px;}
   .notes ul{padding:.2rem 1rem 1rem 1.6rem;}
   .ft{padding:.8rem 12px;}
 
   /* cartão: folha fixa no rodapé, compacta, com botão de fechar; o mapa continua visível acima */
-  .fc{top:auto!important;bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;left:8px!important;right:8px!important;width:auto!important;max-width:none;max-height:min(44vh,400px)!important;overflow-y:auto!important;overscroll-behavior:contain;border-radius:14px;}
+  .fc{top:auto!important;bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;left:8px!important;right:8px!important;width:auto!important;max-width:none;max-height:min(38vh,340px)!important;overflow-y:auto!important;overscroll-behavior:contain;border-radius:14px;}
   .fc.sh{animation:fcUp .16s ease;}
   @keyframes fcUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
   .fc-x{display:flex;position:absolute;top:8px;right:8px;z-index:2;width:34px;height:34px;align-items:center;justify-content:center;border:0;border-radius:9px;background:rgba(255,255,255,.16);color:#fff;font-size:1.3rem;line-height:1;cursor:pointer;}
@@ -343,7 +374,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   </div>
 </header>
 
-<div class="wrap">
+<div class="wrap" id="kpiWrap">
   <div class="kpis">
     <div class="kpi"><div class="kpi-val" id="k1">&mdash;</div><div class="kpi-lab">Reparos localizados</div><div class="kpi-sub" id="k1s"></div></div>
     <div class="kpi"><div class="kpi-val" id="k2">&mdash;</div><div class="kpi-lab">Remendos profundos</div><div class="kpi-sub" id="k2s"></div></div>
@@ -383,6 +414,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
     <span class="lg"><i class="cv"></i>coberto por revestimento posterior</span>
     </div>
   </div>
+  <div class="dock">
   <div class="road-wrap">
     <div class="km-pill" id="kmPill">km 290</div>
     <div class="road-scroll" id="roadScroll">
@@ -393,10 +425,11 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
     </div>
   </div>
   <div class="mm-w"><div class="mm" id="mm"><canvas id="mc"></canvas><div class="mv" id="mv"></div></div></div>
+  </div>
   <div class="chips" id="chips"></div>
 </section>
 
-<div class="wrap">
+<div class="wrap" id="tblWrap">
   <div class="sec">
     <div class="sec-h">
       <div class="tabs" id="tabs">
@@ -407,6 +440,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
       <span class="cnt" id="tCount"></span>
     </div>
     <div class="tcap" id="tCap"></div>
+    <div class="m-sort" id="mSortBar"><label for="mSort">Ordenar por</label><select id="mSort"></select></div>
     <div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody></table></div>
     <div class="tw-more" id="tMore" hidden><button class="cb" onclick="moreRows()">Mostrar mais</button></div>
   </div>
@@ -768,11 +802,6 @@ function showCard(it){
     <div class="fc-grid">${grid}</div>${list}${geo}`;
   card.classList.add('sh');
   posCard(it);
-  /* celular: o cartão é uma folha no rodapé; se ela cobrir o mapa, rola a página até o mapa ficar acima dela */
-  if(MOB.matches){
-    const rw=document.querySelector('.road-wrap').getBoundingClientRect(),room=innerHeight-card.getBoundingClientRect().height-12;
-    if(rw.bottom+60>room||rw.top<0)window.scrollTo(0,scrollY+rw.top-48);
-  }
   document.querySelectorAll('.sg.act,.pt.act').forEach(el=>el.classList.remove('act'));
   const e2=elOf(it.k);if(e2)e2.classList.add('act');
 }
@@ -882,9 +911,20 @@ if(matchMedia('(pointer:coarse)').matches)(function(){
   scrollEl.addEventListener('touchend',e=>{if(e.touches.length<2)fim();});
   scrollEl.addEventListener('touchcancel',fim);
 })();
+/* Toque (celular): se o dedo cair perto de um reparo, vale o reparo mais próximo (até 18 px), mesmo que haja uma faixa embaixo */
+const COARSE=matchMedia('(pointer:coarse)');
+function nearestPt(x,y){
+  let best=null,bd=18.5;
+  document.querySelectorAll('#rv .pt').forEach(p=>{
+    const r=p.getBoundingClientRect(),dx=Math.max(r.left-x,0,x-r.right),dy=Math.max(r.top-y,0,y-r.bottom),d=Math.hypot(dx,dy);
+    if(d<=bd){bd=d;best=p;}
+  });
+  return best;
+}
 scrollEl.addEventListener('click',e=>{
   if(dragMoved>4){e.stopPropagation();dragMoved=0;return;}
-  const el=e.target.closest('[data-k]');
+  let el=e.target.closest('[data-k]');
+  if(COARSE.matches&&!(el&&el.classList.contains('pt'))){const n=nearestPt(e.clientX,e.clientY);if(n)el=n;}
   if(!el)return;
   e.stopPropagation();
   tapItem(IT[el.dataset.k]);
@@ -993,6 +1033,20 @@ const TBL={
     tr:(b,i)=>`<tr data-k="${b.k}"><td><span class="t-cat"><span class="t-dot" style="background:${LM[b.lay].cor}"></span>${LM[b.lay].nm}</span></td><td class="t-mono">${fD(b.data)}</td><td class="t-mono">${b.mp}</td><td class="t-mono">${b.item}</td><td class="t-mono">${fK(b.km0)}</td><td class="t-mono">${fK(b.km1)}</td><td class="t-mono t-right">${fm(b.ext,0)}</td><td class="t-mono t-right">${b.larg?fm(b.larg,2):'—'}</td><td class="t-mono t-right">${b.esp?fm(b.esp*100,1):'—'}</td><td><span class="t-side">${b.side}</span></td><td class="t-mono t-right">${b.qtd?fm(b.qtd,3)+(b.lay==='capa'?' T':' m³'):'—'}</td><td>${b.ponto?'extensão estimada':b.inf?'lado deduzido':'—'}</td></tr>`,
     cap:'Faixas contínuas: revestimento (itens 16.7 e 10.1) separado de reciclagem, fresagem e recomposição de aterro.'},
 };
+/* Celular: cada registro vira uma linha de 2-3 textos, sem rolagem lateral */
+const mistNm=m=>m===1?'CBUQ':m===0?'PMF':'—';
+TBL.rep.trm=p=>`<tr data-k="${p.k}"><td colspan="13" class="m-row"><div class="m1"><span class="t-cat"><span class="t-dot" style="background:${LM[p.lay].cor}"></span>${tipoNm[p.tipo]}</span><span class="m-d">${fD(p.data)}</span><span class="t-side">${p.side}</span></div><div class="m2">km ${fK(p.km0)} · ${fm(p.ext,2)} × ${fm(p.larg,2)} m · MP ${p.mp} · ${mistNm(p.mist)}</div><div class="m2">${flags(p)}</div></td></tr>`;
+TBL.ov.trm=(r,i)=>`<tr data-o="${i}"><td colspan="7" class="m-row"><div class="m1"><span>${r.t}</span>${r.o.cert?'<span class="pill c">certa</span>':'<span class="pill p">possível</span>'}<span class="m-d">${fm(r.o.dd)} ${r.o.dd===1?'dia':'dias'}</span><span class="t-side">${r.side}</span></div><div class="m2">km ${fK(r.km)}</div><div class="m3"><b>Antes:</b> ${desc1(r.o.a)}</div><div class="m3"><b>Depois:</b> ${desc1(r.o.b)}</div></td></tr>`;
+TBL.tre.trm=b=>`<tr data-k="${b.k}"><td colspan="12" class="m-row"><div class="m1"><span class="t-cat"><span class="t-dot" style="background:${LM[b.lay].cor}"></span>${LM[b.lay].nm}</span><span class="m-d">${fD(b.data)}</span><span class="t-side">${b.side}</span></div><div class="m2">km ${fK(b.km0)} → ${fK(b.km1)} · ${fm(b.ext,0)} m${b.larg?` · ${fm(b.larg,2)} m de largura`:''}${b.esp?` · ${fm(b.esp*100,1)} cm`:''}</div><div class="m2">MP ${b.mp} · item ${b.item}${b.qtd?` · ${fm(b.qtd,3)} ${b.lay==='capa'?'T':'m³'}`:''}${b.ponto?' · extensão estimada':b.inf?' · lado deduzido':''}</div></td></tr>`;
+const MOB_SORT_SKIP=new Set(['fl','obs']);
+function fillSort(){
+  const T=TBL[tab],s=ST[tab],sel=document.getElementById('mSort');
+  sel.innerHTML=T.cols.filter(c=>!MOB_SORT_SKIP.has(c[0])).map(c=>[1,-1].map(d=>`<option value="${c[0]}|${d}">${c[1]} ${d>0?'↑':'↓'}</option>`).join('')).join('');
+  sel.value=s.k+'|'+s.d;
+}
+document.getElementById('mSort').addEventListener('change',e=>{
+  const[k,d]=e.target.value.split('|');ST[tab].k=k;ST[tab].d=+d;lim=200;buildTable();
+});
 let curRows=[];
 function buildTable(){
   const T=TBL[tab],s=ST[tab];
@@ -1003,14 +1057,17 @@ function buildTable(){
     return(typeof va==='string'?va.localeCompare(vb):va-vb)*s.d||(tab==='ov'?(b.o.cert-a.o.cert):0);
   });
   document.getElementById('tCount').textContent=fm(curRows.length)+' registros';
+  fillSort();
   paint();
 }
 function paint(){
   const T=TBL[tab];
-  document.getElementById('tb').innerHTML=curRows.slice(0,lim).map((r,i)=>T.tr(r,i)).join('');
+  const m=MOB.matches;
+  document.getElementById('tb').innerHTML=curRows.slice(0,lim).map((r,i)=>m?T.trm(r,i):T.tr(r,i)).join('');
   document.getElementById('tMore').hidden=curRows.length<=lim;
 }
 function moreRows(){lim+=300;paint();}
+MOB.addEventListener('change',()=>{render();buildTable();}); /* girar/redimensionar muda entre tabela e lista */
 document.getElementById('th').addEventListener('click',e=>{
   const th=e.target.closest('th[data-k]');if(!th)return;
   const s=ST[tab],k=th.dataset.k;
