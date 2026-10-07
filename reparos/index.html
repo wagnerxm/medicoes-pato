@@ -256,7 +256,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
     <span class="badge">PATO</span>
     <div>
       <h1>BR-226<span class="uf">/RN</span> <span class="uf">· reparos</span></h1>
-      <p class="meta">SR/RN 515/2024 <span class="sep">&middot;</span> km 290+320 &rarr; 421+020 <span class="sep">&middot;</span> MC 2 a 24</p>
+      <p class="meta">SR/RN 515/2024 <span class="sep">&middot;</span> km 290+320 &rarr; 421+020 <span class="sep">&middot;</span> Memórias de Cálculo 2 a 24</p>
     </div>
   </div>
   <div class="hdr-r">
@@ -337,7 +337,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   </details>
 
   <div class="ft">
-    Dados extraídos das Memórias de Cálculo (MC 2 a 24) e conferidos com as planilhas de medição
+    Dados extraídos das Memórias de Cálculo (Memórias de Cálculo 2 a 24) e conferidos com as planilhas de medição
     <span>&middot;</span> Contrato SR/RN 515/2024 — BR-226/RN
     <span>&middot;</span> PATO
   </div>
@@ -645,9 +645,9 @@ function showCard(it){
     if(it.larg&&it.esp&&it.ext>0)grid+=r('Volume',`${fm(it.ext*it.larg*it.esp,1)} m³`);
     if(it.qtd)grid+=r(it.lay==='capa'?'Toneladas':'Quantidade',`${fm(it.qtd,3)} ${it.lay==='capa'?'T':'m³'}`);
     if(it.ponto)grid+=r('Obs.','Medido pela topografia no trevo; extensão estimada','');
-    if(it.inf)grid+=r('Obs.','Lado deduzido (MC não informa)','');
+    if(it.inf)grid+=r('Obs.','Lado deduzido (MP não informa)','');
   }else{
-    hd=`MC ${it.mc}`;
+    hd=`MP ${it.mp}`;
     desc=`Mistura ${it.mist===1?'CBUQ':it.mist===0?'PMF (pré-misturado a frio)':'não informada'}`;
     grid=r('Data',fD(it.data),true)+sep+r('KM',`${fK(it.km0)} → ${fK(it.km1)}`)
       +r('Estaca',it.int?`${fm(it.est)} (arredondada)`:`${fEstM(it.m0)}`)
@@ -862,11 +862,11 @@ function ovRows(){
 }
 const desc1=x=>x.k[0]==='b'?`${LM[x.lay].nm} · ${fD(x.data)}`:`${tipoNm[x.tipo]} · ${fD(x.data)} · ${fm(x.ext,1)}×${fm(x.larg,1)} m`;
 const TBL={
-  rep:{cols:[['data','Data'],['mc','MC'],['tipo','Tipo'],['mist','Mistura'],['est','Estaca'],['km0','KM'],['side','Lado'],['ext','Ext. (m)',1],['larg','Larg. (m)',1],['esp','Esp. (cm)',1],['area','Área (m²)',1],['qtd','Vol. (m³)',1],['fl','Observação']],
+  rep:{cols:[['data','Data'],['mp','MP'],['tipo','Tipo'],['mist','Mistura'],['est','Estaca'],['km0','KM'],['side','Lado'],['ext','Ext. (m)',1],['larg','Larg. (m)',1],['esp','Esp. (cm)',1],['area','Área (m²)',1],['qtd','Vol. (m³)',1],['fl','Observação']],
     rows:()=>PT.filter(p=>vis(p)&&(!catFilter||p.lay===catFilter)),
     val:(p,k)=>k==='area'?p.ext*p.larg:k==='fl'?(p.fo?2:0)+(p.fc?1:0)+(p.int?.5:0):p[k]??0,
-    tr:(p,i)=>`<tr data-k="${p.k}"><td class="t-mono">${fD(p.data)}</td><td class="t-mono">${p.mc}</td><td><span class="t-cat"><span class="t-dot" style="background:${LM[p.lay].cor}"></span>${tipoNm[p.tipo]}</span></td><td class="t-mono">${p.mist===1?'CBUQ':p.mist===0?'PMF':'—'}</td><td class="t-mono">${p.int?fm(p.est):fEstM(p.m0)}</td><td class="t-mono">${fK(p.km0)}</td><td><span class="t-side">${p.side}</span></td><td class="t-mono t-right">${fm(p.ext,2)}</td><td class="t-mono t-right">${fm(p.larg,2)}</td><td class="t-mono t-right">${p.esp?fm(p.esp*100,1):'—'}</td><td class="t-mono t-right">${fm(p.ext*p.larg,2)}</td><td class="t-mono t-right">${fm(p.qtd,3)}</td><td>${flags(p)}</td></tr>`,
-    cap:'Um registro por reparo medido. Estaca em destaque “arredondada”: a MC informa só a estaca inteira (posição ±20 m).'},
+    tr:(p,i)=>`<tr data-k="${p.k}"><td class="t-mono">${fD(p.data)}</td><td class="t-mono">${p.mp}</td><td><span class="t-cat"><span class="t-dot" style="background:${LM[p.lay].cor}"></span>${tipoNm[p.tipo]}</span></td><td class="t-mono">${p.mist===1?'CBUQ':p.mist===0?'PMF':'—'}</td><td class="t-mono">${p.int?fm(p.est):fEstM(p.m0)}</td><td class="t-mono">${fK(p.km0)}</td><td><span class="t-side">${p.side}</span></td><td class="t-mono t-right">${fm(p.ext,2)}</td><td class="t-mono t-right">${fm(p.larg,2)}</td><td class="t-mono t-right">${p.esp?fm(p.esp*100,1):'—'}</td><td class="t-mono t-right">${fm(p.ext*p.larg,2)}</td><td class="t-mono t-right">${fm(p.qtd,3)}</td><td>${flags(p)}</td></tr>`,
+    cap:'Um registro por reparo medido. Estaca em destaque “arredondada”: a MP informa só a estaca inteira (posição ±20 m).'},
   ov:{cols:[['t','Tipo'],['cert','Certeza'],['km','KM'],['side','Lado'],['a','Anterior'],['b','Posterior'],['dd','Intervalo (dias)',1]],
     rows:()=>ovRows(),
     val:(r,k)=>k==='t'?r.t:k==='cert'?(r.o.cert?1:0):k==='km'?r.km:k==='side'?r.side:k==='a'?r.o.a.data:k==='b'?r.o.b.data:r.o.dd,
@@ -876,7 +876,7 @@ const TBL={
     rows:()=>BANDS.filter(b=>vis(b)&&(!catFilter||b.lay===catFilter)),
     val:(b,k)=>k==='lay'?LAYS.findIndex(l=>l.id===b.lay):b[k]??0,
     tr:(b,i)=>`<tr data-k="${b.k}"><td><span class="t-cat"><span class="t-dot" style="background:${LM[b.lay].cor}"></span>${LM[b.lay].nm}</span></td><td class="t-mono">${fD(b.data)}</td><td class="t-mono">${b.mp}</td><td class="t-mono">${b.item}</td><td class="t-mono">${fK(b.km0)}</td><td class="t-mono">${fK(b.km1)}</td><td class="t-mono t-right">${fm(b.ext,0)}</td><td class="t-mono t-right">${b.larg?fm(b.larg,2):'—'}</td><td class="t-mono t-right">${b.esp?fm(b.esp*100,1):'—'}</td><td><span class="t-side">${b.side}</span></td><td class="t-mono t-right">${b.qtd?fm(b.qtd,3)+(b.lay==='capa'?' T':' m³'):'—'}</td><td>${b.ponto?'extensão estimada':b.inf?'lado deduzido':'—'}</td></tr>`,
-    cap:'Faixas contínuas: revestimento (itens 16.7 e 10.1) separada de reciclagem, fresagem e recomposição de aterro.'},
+    cap:'Faixas contínuas: revestimento (itens 16.7 e 10.1) separado de reciclagem, fresagem e recomposição de aterro.'},
 };
 let curRows=[];
 function buildTable(){
@@ -911,17 +911,17 @@ document.getElementById('tb').addEventListener('click',e=>{
 /* ═══════════ Notas ═══════════ */
 (function(){
   const n=[
-    `Fonte: memórias de cálculo MC 2 a 24 do contrato SR/RN 515/2024. Reparos individuais: itens 3.1 (reparo localizado), 3.2 + 3.3 (remendo profundo, base e revestimento unidos) e 4.1 (correção de defeitos). Revestimento (CBUQ): itens 16.7 (MC 15 a 20) e 10.1 (MC 23 e 24). Soluções em trecho: 16.2 reciclagem, 16.12 fresagem e 8.3 recomposição de aterro.`,
-    `Conferência: a soma de cada serviço em cada MC bate com o total impresso e com a planilha de medição (diferença de até 0,02 m³, arredondamento). Nas MC 10 e 11 o pagamento de junho/2025 foi deslocado para a MP 11; o mapa usa a data de execução de cada linha.`,
-    `Lacunas: a MC 1 (16 a 30/09/2024) não tem memória de cálculo no conjunto. As MC 19 e 21 não vieram em separado: o período de março está na MC 20 e o de maio na consolidação da MC 23.`,
-    `Estaca: algumas MCs informam a estaca com decimal (posição exata); outras arredondam para a estaca inteira (±20 m): parte das MC 2 e 3 e todas as MC 5, 6, 7, 15, 20, 23 e 24. Por isso a sobreposição só é “certa” quando os dois reparos têm posição exata; nos demais casos é “possível”.`,
-    `Desenho: o reparo parte da estaca informada e cresce no sentido do KM. A posição na largura da pista não consta nas MCs, então o retângulo fica no centro da faixa do lado informado. Lado “X” nas MCs = ambos os lados; “Eixo” = linha central.`,
-    `Repetições entre MCs: a MC 22 foi estornada por falta de saldo de empenho e refeita (com correções) na consolidação da MC 23, que é a versão usada. Trechos de revestimento repetidos nas MC 20, 22 e 23 aparecem uma vez, pela MC mais recente.`,
+    `Fonte: Memórias de Cálculo 2 a 24 do contrato SR/RN 515/2024. Reparos individuais: itens 3.1 (reparo localizado), 3.2 + 3.3 (remendo profundo, base e revestimento unidos) e 4.1 (correção de defeitos). Revestimento (CBUQ): itens 16.7 (Memórias de Cálculo 15 a 20) e 10.1 (Memórias de Cálculo 23 e 24). Soluções em trecho: 16.2 reciclagem, 16.12 fresagem e 8.3 recomposição de aterro.`,
+    `Conferência: a soma de cada serviço em cada Memória de Cálculo bate com o total impresso e com a planilha de medição (diferença de até 0,02 m³, arredondamento). Nas Memórias de Cálculo 10 e 11 o pagamento de junho/2025 foi deslocado para a MP 11; o mapa usa a data de execução de cada linha.`,
+    `Lacunas: a Memória de Cálculo 1 (16 a 30/09/2024) não está no conjunto. As Memórias de Cálculo 19 e 21 não vieram em separado: o período de março está na Memória de Cálculo 20 e o de maio na consolidação da Memória de Cálculo 23.`,
+    `Estaca: algumas Memórias de Cálculo informam a estaca com decimal (posição exata); outras arredondam para a estaca inteira (±20 m): parte das Memórias de Cálculo 2 e 3 e todas as Memórias de Cálculo 5, 6, 7, 15, 20, 23 e 24. Por isso a sobreposição só é “certa” quando os dois reparos têm posição exata; nos demais casos é “possível”.`,
+    `Desenho: o reparo parte da estaca informada e cresce no sentido do KM. A posição na largura da pista não consta nas Memórias de Cálculo, então o retângulo fica no centro da faixa do lado informado. Lado “X” nas Memórias de Cálculo = ambos os lados; “Eixo” = linha central.`,
+    `Repetições entre Memórias de Cálculo: a Memória de Cálculo 22 foi estornada por falta de saldo de empenho e refeita (com correções) na consolidação da Memória de Cálculo 23, que é a versão usada. Trechos de revestimento repetidos nas Memórias de Cálculo 20, 22 e 23 aparecem uma vez, pela Memória de Cálculo mais recente.`,
     `Reparo coberto: reparo feito antes de um revestimento novo no mesmo trecho e lado fica esmaecido no mapa, porque hoje está por baixo do asfalto novo. O botão “Esmaecer” desliga isso; o período escolhido define quais revestimentos já existiam.`,
-    `Datas corrigidas: 17 reparos da MC 12 vinham datados de 29/09/2025 (fora do período e depois de 28/08 e 29/08 na sequência), tratados como 29/08/2025; a reciclagem de 11/12 da MC 18 vinha com o ano 2026, tratada como 2025 (a imprimação, o revestimento e a pintura do mesmo trecho trazem 11/12/2025).`,
-    `O revestimento da MC 15 veio sem lado: as duas faixas de 3,60 m foram atribuídas a D e E. O trevo da MC 18 (E 16750) foi medido pela topografia sem extensão: desenhado com 200 m estimados.`,
-    `Estaca corrigida: 1 reparo da MC 2 (22/10/2024) vinha com a estaca 12265, entre as estacas 15217 e 15281 na própria MC; corrigido para 15265.`,
-    FORA.length?`Fora do trecho do contrato (não plotado): ${FORA.length} reparo(s) — MC ${FORA[0][0]}, ${fD(FORA[0][2])}, estaca ${fm(FORA[0][3])}, entre as estacas 15217 e 15281 na própria MC: provável erro de digitação (15265?).`:'',
+    `Datas corrigidas: 17 reparos da Memória de Cálculo 12 vinham datados de 29/09/2025 (fora do período e depois de 28/08 e 29/08 na sequência), tratados como 29/08/2025; a reciclagem de 11/12 da Memória de Cálculo 18 vinha com o ano 2026, tratada como 2025 (a imprimação, o revestimento e a pintura do mesmo trecho trazem 11/12/2025).`,
+    `O revestimento da Memória de Cálculo 15 veio sem lado: as duas faixas de 3,60 m foram atribuídas a D e E. O trevo da Memória de Cálculo 18 (E 16750) foi medido pela topografia sem extensão: desenhado com 200 m estimados.`,
+    `Estaca corrigida: 1 reparo da Memória de Cálculo 2 (22/10/2024) vinha com a estaca 12265, entre as estacas 15217 e 15281 na própria Memória de Cálculo; corrigido para 15265.`,
+    FORA.length?`Fora do trecho do contrato (não plotado): ${FORA.length} reparo(s) — Memória de Cálculo ${FORA[0][0]}, ${fD(FORA[0][2])}, estaca ${fm(FORA[0][3])}, entre as estacas 15217 e 15281 na própria Memória de Cálculo: provável erro de digitação (15265?).`:'',
   ].filter(Boolean);
   document.getElementById('notesList').innerHTML=n.map(t=>`<li>${t}</li>`).join('');
 })();
