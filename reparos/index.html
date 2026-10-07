@@ -248,6 +248,84 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
 .card-list .li span:last-child{color:rgba(255,255,255,.6);white-space:nowrap;}
 @media(max-width:640px){.fbar{padding:.4rem 12px;}}
 
+
+/* ═══════ Celular (≤640 px): só reorganiza; o desktop não usa nada abaixo ═══════ */
+.lgs{display:contents;}
+.fc-x{display:none;}
+@media(max-width:640px){
+  /* cabeçalho compacto, rola junto com a página */
+  .hdr{position:static;padding:.55rem 12px .5rem;gap:.4rem;}
+  .hdr-l{gap:.5rem;min-width:0;}
+  .hdr h1{font-size:1rem;}
+  .hdr .meta{font-size:.58rem;}
+  .hdr-r{gap:.4rem;}
+
+  /* indicadores: uma faixa rolável em vez de 3 linhas de cartões */
+  .kpis{display:flex;gap:.5rem;overflow-x:auto;margin:.55rem -12px;padding:0 12px .3rem;scroll-snap-type:x proximity;scrollbar-width:none;}
+  .kpis::-webkit-scrollbar{display:none;}
+  .kpi{flex:0 0 156px;scroll-snap-align:start;padding:.55rem .7rem;}
+  .kpi-val{font-size:1.1rem;}
+  .kpi-lab{font-size:.52rem;letter-spacing:.06em;}
+  .kpi-sub{font-size:.54rem;line-height:1.3;}
+
+  /* barra do mapa e filtros: cada grupo em uma linha, com rolagem horizontal quando não cabe */
+  .road-bar{padding:.4rem 12px;gap:.3rem;}
+  .ctrls{flex-wrap:nowrap;overflow-x:auto;max-width:100%;gap:.25rem;scrollbar-width:none;}
+  .ctrls::-webkit-scrollbar{display:none;}
+  .cb{min-height:34px;padding:.3rem .65rem;font-size:.68rem;}
+  .ctrls .cb,.tgs .cb{flex:0 0 auto;white-space:nowrap;}
+  .fbar{gap:.4rem;padding:.4rem 12px;}
+  .fbar .fg{width:100%;gap:.4rem;}
+  .fbar .cb-sep{display:none;}
+  .fbar select{flex:1;min-width:0;min-height:34px;font-size:.78rem;padding:.3rem .5rem;}
+  .tgs{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;}
+  .tgs::-webkit-scrollbar{display:none;}
+  .fbar .dm{width:auto;}
+  .fbar .dm select{flex:0 0 auto;}
+  .lgs{display:flex;gap:.9rem;overflow-x:auto;width:100%;white-space:nowrap;padding:.1rem 0 .15rem;scrollbar-width:none;}
+  .lgs::-webkit-scrollbar{display:none;}
+  .lg{flex:0 0 auto;font-size:.62rem;}
+
+  /* mapa: dois dedos ampliam; um dedo rola */
+  .road-scroll{touch-action:pan-x pan-y;}
+
+  /* soluções: uma fileira rolável */
+  .chips{flex-wrap:nowrap;overflow-x:auto;padding:.5rem 12px;gap:.35rem;scrollbar-width:none;}
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{flex:0 0 auto;white-space:nowrap;padding:.4rem .65rem;font-size:.76rem;}
+
+  /* abas e tabela */
+  .sec-h{padding:.5rem 12px;}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{flex:0 0 auto;white-space:nowrap;padding:.4rem .75rem;font-size:.72rem;}
+  .tcap{padding:.4rem 12px;font-size:.62rem;}
+  .tw{max-height:62vh;}
+  th{padding:.5rem .55rem;}
+  td{padding:.5rem .55rem;font-size:.7rem;}
+  .notes summary{padding:.65rem 12px;}
+  .notes ul{padding:.2rem 1rem 1rem 1.6rem;}
+  .ft{padding:.8rem 12px;}
+
+  /* cartão: folha fixa no rodapé, compacta, com botão de fechar; o mapa continua visível acima */
+  .fc{top:auto!important;bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;left:8px!important;right:8px!important;width:auto!important;max-width:none;max-height:min(44vh,400px)!important;overflow-y:auto!important;overscroll-behavior:contain;border-radius:14px;}
+  .fc.sh{animation:fcUp .16s ease;}
+  @keyframes fcUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .fc-x{display:flex;position:absolute;top:8px;right:8px;z-index:2;width:34px;height:34px;align-items:center;justify-content:center;border:0;border-radius:9px;background:rgba(255,255,255,.16);color:#fff;font-size:1.3rem;line-height:1;cursor:pointer;}
+  .fc-hd{padding:.6rem 3rem .15rem .85rem;flex-wrap:wrap;}
+  .fc-cat{font-size:1rem;}
+  .fc-mc{font-size:.72rem;}
+  .fc-desc{padding:0 .85rem .4rem;font-size:.8rem;}
+  .fc-grid{grid-template-columns:auto 1fr auto 1fr;}
+  .fc-grid>div{padding:.28rem .45rem;font-size:.78rem;}
+  .fc-l{padding-left:.85rem!important;}
+  .fc-l.fc-w{grid-column:1;}
+  .fc-v.fc-w{grid-column:2 / -1;}
+  .fc-v,.fc-v.tx{text-align:left;font-size:.78rem!important;}
+  .fc-geo{padding:.4rem .85rem .55rem;}
+  .card-list{padding:.4rem .85rem .45rem;}
+  .fc-geo .gps{width:32px;height:32px;}
+}
 </style>
 </head>
 <body>
@@ -295,13 +373,15 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   <div class="fbar">
     <div class="fg"><label for="mFrom">Período</label><select id="mFrom"></select><label for="mTo">até</label><select id="mTo"></select></div>
     <div class="cb-sep"></div>
-    <div class="fg"><button class="cb on" id="tOv" onclick="tg('ov')">Destacar sobreposição</button><button class="cb on" id="tOc" onclick="tg('oc')">Destacar reparo sobre revestimento</button><button class="cb on" id="tCv" onclick="tg('cv')" title="Reparo feito antes de um revestimento novo no mesmo trecho: hoje está por baixo do asfalto novo">Esmaecer reparo coberto</button></div>
-    <div class="fg"><label for="dMax">em até</label><select id="dMax"><option value="30">1 mês</option><option value="90">3 meses</option><option value="180" selected>6 meses</option><option value="365">12 meses</option><option value="99999">sem limite</option></select></div>
+    <div class="fg tgs"><button class="cb on" id="tOv" onclick="tg('ov')">Destacar sobreposição</button><button class="cb on" id="tOc" onclick="tg('oc')">Destacar reparo sobre revestimento</button><button class="cb on" id="tCv" onclick="tg('cv')" title="Reparo feito antes de um revestimento novo no mesmo trecho: hoje está por baixo do asfalto novo">Esmaecer reparo coberto</button></div>
+    <div class="fg dm"><label for="dMax">em até</label><select id="dMax"><option value="30">1 mês</option><option value="90">3 meses</option><option value="180" selected>6 meses</option><option value="365">12 meses</option><option value="99999">sem limite</option></select></div>
     <div class="cb-sep"></div>
+    <div class="lgs">
     <span class="lg"><i class="ov"></i>sobrepõe outro reparo</span>
     <span class="lg"><i class="ovp"></i>possível (estaca arredondada)</span>
     <span class="lg"><i class="oc"></i>feito sobre revestimento novo</span>
     <span class="lg"><i class="cv"></i>coberto por revestimento posterior</span>
+    </div>
   </div>
   <div class="road-wrap">
     <div class="km-pill" id="kmPill">km 290</div>
@@ -632,7 +712,8 @@ const PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wid
 function showCard(it){
   asg=it;
   const isP=it.k[0]==='p',L=LM[it.lay],co=L.cor;
-  const r=(l,v,t)=>`<div class="fc-l">${l}</div><div class="fc-v${t?' tx':''}">${v}</div>`;
+  /* campos longos ocupam a linha toda no celular (classe fc-w); sem efeito no desktop */
+  const r=(l,v,t)=>{const w=l.length>10||String(v).replace(/<[^>]*>/g,'').length>8?' fc-w':'';return `<div class="fc-l${w}">${l}</div><div class="fc-v${t?' tx':''}${w}">${v}</div>`;};
   const sep='<div class="fc-sep"></div>';
   let hd,desc,grid;
   if(!isP){
@@ -681,12 +762,17 @@ function showCard(it){
     geo=`<div class="fc-geo"><div class="fc-geo-t">Visualizar no Google Maps</div><div class="fc-geo-grid">${rows}</div></div>`;
   }
   const card=document.getElementById('ic');
-  card.innerHTML=`<div class="fc-bar" style="background:${co};color:${co}"></div>
+  card.innerHTML=`<button class="fc-x" type="button" aria-label="Fechar" onclick="hideCardNow()">×</button><div class="fc-bar" style="background:${co};color:${co}"></div>
     <div class="fc-hd"><span class="fc-cat">${L.nm}</span><span class="fc-mc">${hd}</span></div>
     <div class="fc-desc">${desc}</div>
     <div class="fc-grid">${grid}</div>${list}${geo}`;
   card.classList.add('sh');
   posCard(it);
+  /* celular: o cartão é uma folha no rodapé; se ela cobrir o mapa, rola a página até o mapa ficar acima dela */
+  if(MOB.matches){
+    const rw=document.querySelector('.road-wrap').getBoundingClientRect(),room=innerHeight-card.getBoundingClientRect().height-12;
+    if(rw.bottom+60>room||rw.top<0)window.scrollTo(0,scrollY+rw.top-48);
+  }
   document.querySelectorAll('.sg.act,.pt.act').forEach(el=>el.classList.remove('act'));
   const e2=elOf(it.k);if(e2)e2.classList.add('act');
 }
@@ -746,11 +832,12 @@ scrollEl.addEventListener('wheel',e=>{
 },{passive:false});
 
 /* Drag horizontal; clique sem arrastar chega ao item. Depois de arrastar, o clique é descartado */
-let dragMoved=0;
+const MOB=window.matchMedia('(max-width:640px)');
+let dragMoved=0,pinching=false;
 (function(){
   let dragging=false,startX=0,startScroll=0;
   scrollEl.addEventListener('pointerdown',e=>{
-    if(e.button!==0)return;
+    if(e.button!==0||!e.isPrimary||pinching)return;
     dragMoved=0;
     if(e.target.closest('[data-k]'))return;
     dragging=true;startX=e.clientX;startScroll=scrollEl.scrollLeft;
@@ -758,7 +845,7 @@ let dragMoved=0;
     scrollEl.style.cursor='grabbing';scrollEl.style.userSelect='none';
   });
   scrollEl.addEventListener('pointermove',e=>{
-    if(!dragging)return;
+    if(!dragging||pinching)return;
     dragMoved=Math.max(dragMoved,Math.abs(e.clientX-startX));
     scrollEl.scrollLeft=startScroll-(e.clientX-startX);
   });
@@ -766,6 +853,34 @@ let dragMoved=0;
   scrollEl.addEventListener('pointerup',stop);
   scrollEl.addEventListener('pointercancel',stop);
   scrollEl.style.cursor='grab';
+})();
+/* Pinça com dois dedos (celular): durante o gesto só estica o mapa (pré-visualização); ao soltar, refaz o desenho na escala nova.
+   Refazer a cada passo trocaria os elementos tocados e o navegador deixaria de entregar os eventos. Só em telas de toque. */
+if(matchMedia('(pointer:coarse)').matches)(function(){
+  const cv=document.getElementById('roadCanvas');
+  let d0=0,pk0=0,km0=0,mx=0,f=1;
+  const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+  const midX=t=>(t[0].clientX+t[1].clientX)/2-scrollEl.getBoundingClientRect().left;
+  const lim=v=>Math.max((scrollEl.clientWidth-MAP_PAD*2)/(LEN+4)/pk0,Math.min(v,PK_MAX/pk0));
+  scrollEl.addEventListener('touchstart',e=>{
+    if(e.touches.length!==2)return;
+    pinching=true;d0=dist(e.touches);pk0=pk;mx=midX(e.touches);km0=px2km(scrollEl.scrollLeft+mx);f=1;
+    cv.style.transformOrigin=(scrollEl.scrollLeft+mx)+'px 0';
+  },{passive:true});
+  scrollEl.addEventListener('touchmove',e=>{
+    if(!pinching||e.touches.length!==2)return;
+    e.preventDefault();
+    f=lim(dist(e.touches)/d0);mx=midX(e.touches);
+    cv.style.transform=`scaleX(${f})`;
+  },{passive:false});
+  const fim=()=>{
+    if(!pinching)return;
+    pinching=false;cv.style.transform='';cv.style.transformOrigin='';
+    if(Math.abs(f-1)<.02)return;
+    pk=pk0*f;render();scrollEl.scrollLeft=km2px(km0)-mx;
+  };
+  scrollEl.addEventListener('touchend',e=>{if(e.touches.length<2)fim();});
+  scrollEl.addEventListener('touchcancel',fim);
 })();
 scrollEl.addEventListener('click',e=>{
   if(dragMoved>4){e.stopPropagation();dragMoved=0;return;}
