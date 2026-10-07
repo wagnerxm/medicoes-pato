@@ -399,6 +399,47 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   .n-b::first-letter{text-transform:uppercase;}
   .ft{padding:1rem 12px;}
 }
+
+/* ═══════ Celular, aba Mapa: filtros e soluções cabem na tela (sem rolar a página) ═══════ */
+.x-m,.sw{display:none;}
+@media(max-width:640px){
+  .x-d{display:none;}
+  .x-m{display:inline;}
+  .hdr{padding:.4rem 12px;}
+  .hdr .meta{display:none;}
+  .road-bar{position:static;height:auto;padding:.35rem 12px .25rem;box-shadow:none;border-bottom:0;}
+  .ctrls{overflow:visible;justify-content:space-between;gap:.2rem;}
+  .ctrls .cb{padding:.3rem .5rem;font-size:.68rem;font-weight:700;}
+  .ctrls .cb-sep{display:none;}
+  .zlab{min-width:0;padding:0 .15rem;font-size:.58rem;white-space:nowrap;}
+  .dock{position:static;}
+
+  /* período em uma linha; abaixo, 3 destaques + prazo numa grade de 4 colunas; a legenda vai para dentro dos botões */
+  .fbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) 84px;gap:.3rem;padding:.35rem 12px .25rem;align-items:stretch;}
+  .fbar .cb-sep,.fbar .lgs{display:none;}
+  .fbar>.fg:first-child{grid-column:1 / -1;}
+  .fbar>.fg:first-child select{min-height:34px;}
+  .fbar .tgs{display:contents;}
+  .fbar .cb{display:flex;align-items:center;justify-content:center;gap:.25rem;padding:.25rem .2rem;font-size:.62rem;min-height:36px;white-space:nowrap;min-width:0;}
+  .fbar .dm{width:auto;gap:.25rem;}
+  .fbar .dm{flex-direction:column;align-items:stretch;gap:1px;}
+  .fbar .dm label{display:block;font-size:.5rem;line-height:1;text-align:center;letter-spacing:.08em;}
+  .fbar .dm{width:100%;}
+  .fbar .dm select{flex:1;min-width:0;width:100%;min-height:26px;font-size:.7rem;padding:.15rem .2rem;}
+  .fbar>.fg:first-child{min-width:0;}
+  .fbar>.fg:first-child select{min-width:0;}
+  .sw.ovp{display:none;}
+  .sw{display:inline-block;flex:0 0 auto;width:12px;height:8px;margin:0 1px;border-radius:2px;background:rgba(245,158,11,.85);}
+  .sw.ov{box-shadow:0 0 0 1.5px #A855F7;}
+  .sw.oc{box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px #475569;}
+  .sw.cv{opacity:.4;}
+
+  /* soluções: linhas pequenas que quebram, sem rolagem */
+  .chips{flex-wrap:wrap;overflow:visible;gap:.3rem;padding:.3rem 12px .45rem;}
+  .chip{padding:.2rem .4rem;font-size:.62rem;border-radius:7px;gap:.25rem;}
+  .chip-d{width:9px;height:9px;}
+  .chip-n{font-size:.58rem;margin-left:0;}
+}
 </style>
 </head>
 <body>
@@ -437,8 +478,8 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
       <button class="cb" id="bf" onclick="fW()">Obra</button>
       <button class="cb" id="ba" onclick="fA()">Tudo</button>
       <div class="cb-sep"></div>
-      <button class="cb" id="fD" onclick="fS('D')">Lado D</button>
-      <button class="cb" id="fE" onclick="fS('E')">Lado E</button>
+      <button class="cb" id="fD" onclick="fS('D')"><span class="x-d">Lado D</span><span class="x-m">LD</span></button>
+      <button class="cb" id="fE" onclick="fS('E')"><span class="x-d">Lado E</span><span class="x-m">LE</span></button>
       <div class="cb-sep"></div>
       <button class="cb" onclick="resetView()" title="Voltar à visão inicial"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 9l9-7 9 7"/><path d="M9 22V12h6v10"/></svg></button>
     </div>
@@ -446,7 +487,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   <div class="fbar">
     <div class="fg"><label for="mFrom">Período</label><select id="mFrom"></select><label for="mTo">até</label><select id="mTo"></select></div>
     <div class="cb-sep"></div>
-    <div class="fg tgs"><button class="cb on" id="tOv" onclick="tg('ov')">Destacar sobreposição</button><button class="cb on" id="tOc" onclick="tg('oc')">Destacar reparo sobre revestimento</button><button class="cb on" id="tCv" onclick="tg('cv')" title="Reparo feito antes de um revestimento novo no mesmo trecho: hoje está por baixo do asfalto novo">Esmaecer reparo coberto</button></div>
+    <div class="fg tgs"><button class="cb on" id="tOv" onclick="tg('ov')"><i class="sw ov"></i><i class="sw ovp"></i><span class="x-d">Destacar sobreposição</span><span class="x-m">Sobrepõe</span></button><button class="cb on" id="tOc" onclick="tg('oc')"><i class="sw oc"></i><span class="x-d">Destacar reparo sobre revestimento</span><span class="x-m">Sobre rev.</span></button><button class="cb on" id="tCv" onclick="tg('cv')" title="Reparo feito antes de um revestimento novo no mesmo trecho: hoje está por baixo do asfalto novo"><i class="sw cv"></i><span class="x-d">Esmaecer reparo coberto</span><span class="x-m">Coberto</span></button></div>
     <div class="fg dm"><label for="dMax">em até</label><select id="dMax"><option value="30">1 mês</option><option value="90">3 meses</option><option value="180" selected>6 meses</option><option value="365">12 meses</option><option value="99999">sem limite</option></select></div>
     <div class="cb-sep"></div>
     <div class="lgs">
@@ -1128,7 +1169,7 @@ function fitMap(){
   const dockB=document.querySelector('.dock').getBoundingClientRect().bottom,allB=document.querySelector('.chips').getBoundingClientRect().bottom;
   const sheet=Math.min(innerHeight*.36,320),bar=92;
   const free=Math.min(innerHeight-bar-allB,innerHeight-bar-sheet-8-dockB);
-  root.style.setProperty('--vs',String(Math.min(1.8,1.22+Math.max(0,free)/160).toFixed(3)));
+  root.style.setProperty('--vs',String(Math.max(1,Math.min(1.8,1.22+free/160)).toFixed(3)));
   /* a folha do cartão ocupa só o espaço entre o mapa e a barra de abas */
   const sb=document.querySelector('.dock').getBoundingClientRect().bottom;
   root.style.setProperty('--sheet-max',Math.round(Math.max(150,Math.min(320,innerHeight-bar-8-sb)))+'px');
