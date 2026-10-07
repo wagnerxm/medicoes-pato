@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#2A3750" media="(max-width: 640px)">
 <title>Medições PATO — Reparos BR-226/RN</title>
 <style>
 /* ── Tokens: tema claro único ── */
@@ -312,6 +313,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
 
   /* mapa: dois dedos ampliam; um dedo rola */
   .road-scroll{touch-action:pan-x pan-y;}
+  .mm{touch-action:pan-y;}
 
   /* soluções: uma fileira rolável */
   .chips{flex-wrap:nowrap;overflow-x:auto;padding:.5rem 12px;gap:.35rem;scrollbar-width:none;}
@@ -405,8 +407,13 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
 @media(max-width:640px){
   .x-d{display:none;}
   .x-m{display:inline;}
-  .hdr{padding:.4rem 12px;}
+  .hdr{padding:.4rem 12px;background:linear-gradient(180deg,#2A3750,#1E293B);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:none;-webkit-backdrop-filter:none;}
+  .hdr::before{display:none;}
   .hdr .meta{display:none;}
+  .hdr h1{color:#F8FAFC;}
+  .hdr .uf{color:#CBD5E1;}
+  .hdr .badge{background:#8CCBB6;color:#0F172A;box-shadow:none;}
+  .hdr .th-btn{background:transparent;border-color:rgba(255,255,255,.28);color:#E2E8F0;}
   .road-bar{position:static;height:auto;padding:.35rem 12px .25rem;box-shadow:none;border-bottom:0;}
   .ctrls{overflow:visible;justify-content:space-between;gap:.2rem;}
   .ctrls .cb{padding:.3rem .5rem;font-size:.68rem;font-weight:700;}
@@ -414,20 +421,22 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   .zlab{min-width:0;padding:0 .15rem;font-size:.58rem;white-space:nowrap;}
   .dock{position:static;}
 
-  /* período em uma linha; abaixo, 3 destaques + prazo numa grade de 4 colunas; a legenda vai para dentro dos botões */
-  .fbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) 84px;gap:.3rem;padding:.35rem 12px .25rem;align-items:stretch;}
+  /* filtros: título "Período"; na linha de baixo De · até · Até · em até · prazo; depois os 3 destaques com o nome completo */
+  .fbar{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .3rem;padding:.4rem 12px .3rem;}
   .fbar .cb-sep,.fbar .lgs{display:none;}
-  .fbar>.fg:first-child{grid-column:1 / -1;}
-  .fbar>.fg:first-child select{min-height:34px;}
-  .fbar .tgs{display:contents;}
-  .fbar .cb{display:flex;align-items:center;justify-content:center;gap:.25rem;padding:.25rem .2rem;font-size:.62rem;min-height:36px;white-space:nowrap;min-width:0;}
-  .fbar .dm{width:auto;gap:.25rem;}
-  .fbar .dm{flex-direction:column;align-items:stretch;gap:1px;}
-  .fbar .dm label{display:block;font-size:.5rem;line-height:1;text-align:center;letter-spacing:.08em;}
-  .fbar .dm{width:100%;}
-  .fbar .dm select{flex:1;min-width:0;width:100%;min-height:26px;font-size:.7rem;padding:.15rem .2rem;}
-  .fbar>.fg:first-child{min-width:0;}
-  .fbar>.fg:first-child select{min-width:0;}
+  .fbar>.fg:first-child{display:contents;}
+  .fbar label[for=mFrom]{order:1;flex:0 0 100%;font-size:.58rem;letter-spacing:.14em;margin-bottom:-.05rem;}
+  .fbar #mFrom{order:2;flex:0 0 80px;}
+  .fbar label[for=mTo]{order:3;flex:0 0 auto;font-size:.56rem;}
+  .fbar #mTo{order:4;flex:0 0 80px;}
+  .fbar select{min-width:0;min-height:34px;font-size:.7rem;padding:.2rem 18px .2rem .45rem;-webkit-appearance:none;appearance:none;background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2364748B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 6px center;}
+  .fbar .dm{order:5;flex:1 1 0;width:auto;display:flex;align-items:center;gap:.25rem;min-width:0;}
+  .fbar .dm label{display:block;flex:0 0 auto;font-size:.56rem;}
+  .fbar .dm select{flex:1;width:100%;}
+  .fbar .tgs{order:6;flex:0 0 100%;display:flex;gap:.3rem;overflow:visible;}
+  .fbar .tgs .cb{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:flex-start;gap:.3rem;padding:.25rem .4rem;min-height:44px;font-size:.6rem;font-weight:600;line-height:1.2;text-align:left;white-space:normal;}
+  .fbar .tgs .x-d{display:inline;}
+  .fbar .tgs .x-m{display:none;}
   .sw.ovp{display:none;}
   .sw{display:inline-block;flex:0 0 auto;width:12px;height:8px;margin:0 1px;border-radius:2px;background:rgba(245,158,11,.85);}
   .sw.ov{box-shadow:0 0 0 1.5px #A855F7;}
@@ -1040,13 +1049,14 @@ function fA(){
   pk=(scrollEl.clientWidth-MAP_PAD*2)/(LEN+4);render();scrollEl.scrollLeft=0;setOn('a');
 }
 /* Abre na janela de 5 km com mais reparos */
-function densest(){
+function densest(win){
   const ks=PT.map(p=>p.km0).sort((a,b)=>a-b);let best=KM0,bn=0,j=0;
-  for(let i=0;i<ks.length;i++){while(ks[i]-ks[j]>5)j++;if(i-j+1>bn){bn=i-j+1;best=ks[j];}}
+  for(let i=0;i<ks.length;i++){while(ks[i]-ks[j]>win)j++;if(i-j+1>bn){bn=i-j+1;best=ks[j];}}
   return best;
 }
+/* janela inicial: 5 km no desktop; 2,5 km no celular (o mapa é mais estreito) */
 function goHome(){
-  const vpW=scrollEl.clientWidth;pk=(vpW-MAP_PAD*2)/5;render();scrollEl.scrollLeft=km2px(densest()-.1);setOn('');
+  const win=MOB.matches?2.5:5,vpW=scrollEl.clientWidth;pk=MOB.matches?vpW/win:(vpW-MAP_PAD*2)/win;render();scrollEl.scrollLeft=km2px(densest(win)-.1);setOn('');
 }
 function resetView(){
   hideCardNow();sf=null;hid.clear();mFrom=0;mTo=NM-1;showOv=showOc=showCv=true;dMax=180;
@@ -1056,10 +1066,28 @@ function resetView(){
   document.getElementById('mFrom').value=0;document.getElementById('mTo').value=NM-1;document.getElementById('dMax').value=180;
   goHome();buildTable();
 }
-document.getElementById('mm').addEventListener('click',e=>{
-  const r=e.currentTarget.getBoundingClientRect(),km=KM0+(e.clientX-r.left)/r.width*LEN;
-  scrollEl.scrollTo({left:km2px(km)-scrollEl.clientWidth/2,behavior:'smooth'});
-});
+/* Minimapa: arrastar o dedo rola o mapa, mas só 40% do que o minimapa "andou" (é um resumo; o ajuste fino é no mapa). Toque simples continua saltando para o ponto */
+const MM_K=.4;let mmMoved=0;
+(function(){
+  const mm=document.getElementById('mm');
+  let down=false,x0=0,sl0=0;
+  if(matchMedia('(pointer:coarse)').matches){
+    mm.addEventListener('pointerdown',e=>{down=true;x0=e.clientX;sl0=scrollEl.scrollLeft;mmMoved=0;mm.setPointerCapture(e.pointerId);});
+    mm.addEventListener('pointermove',e=>{
+      if(!down)return;
+      mmMoved=Math.max(mmMoved,Math.abs(e.clientX-x0));
+      const W=mm.getBoundingClientRect().width,total=LEN*pk+MAP_PAD*2;
+      scrollEl.scrollLeft=sl0+(e.clientX-x0)*(total/W)*MM_K;
+    });
+    const up=()=>{down=false;};
+    mm.addEventListener('pointerup',up);mm.addEventListener('pointercancel',up);
+  }
+  mm.addEventListener('click',e=>{
+    if(mmMoved>4){mmMoved=0;return;}
+    const r=mm.getBoundingClientRect(),km=KM0+(e.clientX-r.left)/r.width*LEN;
+    scrollEl.scrollTo({left:km2px(km)-scrollEl.clientWidth/2,behavior:'smooth'});
+  });
+})();
 window.addEventListener('resize',()=>{render();fitMap();});
 
 /* ═══════════ Seleção ═══════════ */
@@ -1169,7 +1197,7 @@ function fitMap(){
   const dockB=document.querySelector('.dock').getBoundingClientRect().bottom,allB=document.querySelector('.chips').getBoundingClientRect().bottom;
   const sheet=Math.min(innerHeight*.36,320),bar=92;
   const free=Math.min(innerHeight-bar-allB,innerHeight-bar-sheet-8-dockB);
-  root.style.setProperty('--vs',String(Math.max(1,Math.min(1.8,1.22+free/160)).toFixed(3)));
+  root.style.setProperty('--vs',String(Math.max(.9,Math.min(1.8,1.22+free/160)).toFixed(3)));
   /* a folha do cartão ocupa só o espaço entre o mapa e a barra de abas */
   const sb=document.querySelector('.dock').getBoundingClientRect().bottom;
   root.style.setProperty('--sheet-max',Math.round(Math.max(150,Math.min(320,innerHeight-bar-8-sb)))+'px');
