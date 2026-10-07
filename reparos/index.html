@@ -279,7 +279,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   .chips{order:5;background:var(--card);border-bottom:1px solid var(--bd);}
   #kpiWrap{order:6;}
   #tblWrap{order:7;}
-  .rv{transform:scaleY(1.22);transform-origin:top;margin-bottom:35px;}
+  .rv{transform:scaleY(var(--vs,1.22));transform-origin:top;margin-bottom:calc(160px * (var(--vs,1.22) - 1));}
   .rl{height:46px;}
   .rk-km .est{bottom:3px;}
   .mm-w{padding:.3rem 12px .35rem;}
@@ -356,6 +356,48 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   .fc-geo{padding:.4rem .85rem .55rem;}
   .card-list{padding:.4rem .85rem .45rem;}
   .fc-geo .gps{width:32px;height:32px;}
+}
+
+/* ═══════ Celular: abas na barra inferior (Mapa · Tabela · Resumo) ═══════ */
+.mtabs{display:none;}
+.m-filtro{display:none;}
+@media(max-width:640px){
+  body{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px));}
+  /* barra flutuante: ardósia do app, destaque no verde-água do acostamento do mapa */
+  .mtabs{display:flex;position:fixed;z-index:1100;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));height:66px;padding:6px;gap:4px;border-radius:34px;background:linear-gradient(180deg,#2A3750,#1E293B);border:1px solid rgba(255,255,255,.08);box-shadow:0 14px 30px rgba(15,23,42,.38),0 2px 6px rgba(15,23,42,.25),inset 0 1px 0 rgba(255,255,255,.07);}
+  .mtab{flex:1 1 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:0;border-radius:28px;background:transparent;color:#94A3B8;font-family:inherit;font-size:.6rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .18s,color .18s;}
+  .mtab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .mtab.on{background:#8CCBB6;color:#0F172A;box-shadow:0 2px 10px rgba(140,203,182,.35);}
+  .mtab:focus-visible{outline:2px solid #8CCBB6;outline-offset:2px;}
+  /* o cartão do mapa sobe acima da barra */
+  .fc{bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;max-height:var(--sheet-max,min(36vh,320px))!important;}
+
+  /* o que cada aba mostra */
+  body[data-mt="map"] #kpiWrap,body[data-mt="map"] #tblWrap{display:none;}
+  body[data-mt="tab"] .road-bar,body[data-mt="tab"] .dock,body[data-mt="tab"] .fbar,body[data-mt="tab"] .chips,body[data-mt="tab"] #kpiWrap,body[data-mt="tab"] .notes,body[data-mt="tab"] .ft{display:none;}
+  body[data-mt="sum"] .road-bar,body[data-mt="sum"] .dock,body[data-mt="sum"] .fbar,body[data-mt="sum"] .chips,body[data-mt="sum"] #tblWrap .sec{display:none;}
+
+  /* aba Tabela: resumo dos filtros do mapa */
+  .m-filtro{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.45rem 12px;border-bottom:1px solid var(--bdl);font-size:.66rem;color:var(--tx2);line-height:1.4;}
+  .m-filtro button{flex:0 0 auto;border:1px solid var(--bd);background:var(--bg);border-radius:8px;padding:.3rem .6rem;font-size:.64rem;font-weight:600;color:var(--tx2);font-family:inherit;cursor:pointer;}
+
+  /* aba Resumo: indicadores em cartões e notas em cartões */
+  #kpiWrap{padding-top:.2rem;}
+  .kpis{display:grid;grid-template-columns:1fr 1fr;overflow:visible;margin:.7rem 0;padding:0;gap:.6rem;}
+  .kpi{flex:none;padding:.8rem .85rem;}
+  .kpi:nth-child(5){grid-column:1 / -1;}
+  .kpi-val{font-size:1.45rem;}
+  .kpi-lab{font-size:.58rem;}
+  .kpi-sub{font-size:.62rem;}
+  .notes{background:none;border:0;box-shadow:none;}
+  .notes summary{pointer-events:none;list-style:none;padding:.4rem 0 .5rem;}
+  .notes summary::-webkit-details-marker{display:none;}
+  .notes ul{padding:0;list-style:none;gap:.55rem;max-width:none;}
+  .notes li{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:.75rem .9rem;font-size:.78rem;line-height:1.55;box-shadow:var(--sh);}
+  .n-t{display:block;font-weight:700;color:var(--tx);margin-bottom:.15rem;}
+  .n-b{display:block;}
+  .n-b::first-letter{text-transform:uppercase;}
+  .ft{padding:1rem 12px;}
 }
 </style>
 </head>
@@ -440,6 +482,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
       <span class="cnt" id="tCount"></span>
     </div>
     <div class="tcap" id="tCap"></div>
+    <div class="m-filtro" id="mFiltro"></div>
     <div class="m-sort" id="mSortBar"><label for="mSort">Ordenar por</label><select id="mSort"></select></div>
     <div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody></table></div>
     <div class="tw-more" id="tMore" hidden><button class="cb" onclick="moreRows()">Mostrar mais</button></div>
@@ -457,6 +500,11 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   </div>
 </div>
 
+<nav class="mtabs" id="mtabs" aria-label="Seções">
+  <button class="mtab on" data-mt="map" onclick="setMT('map')" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg><span>Mapa</span></button>
+  <button class="mtab" data-mt="tab" onclick="setMT('tab')" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 10h18M3 15h18M9 4v16"/></svg><span>Tabela</span></button>
+  <button class="mtab" data-mt="sum" onclick="setMT('sum')" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="9" rx="1.8"/><rect x="13" y="3" width="8" height="5" rx="1.8"/><rect x="13" y="10" width="8" height="11" rx="1.8"/><rect x="3" y="14" width="8" height="7" rx="1.8"/></svg><span>Resumo</span></button>
+</nav>
 <div class="fc" id="ic"></div>
 
 <script src="dados.js"></script>
@@ -483,6 +531,8 @@ function mapsUrl(km){const c=kmToCoord(km);return c?`https://www.google.com/maps
 
 /* ═══════════ Estado e camadas ═══════════ */
 let pk=500,sf=null,asg=null,tab='rep',catFilter=null,lim=200;
+let mt='map',mapScroll=0;
+document.body.dataset.mt='map';
 const hid=new Set();
 let mFrom=0,mTo=0,showOv=true,showOc=true,showCv=true,dMax=180;
 const scrollEl=document.getElementById('roadScroll');
@@ -969,7 +1019,7 @@ document.getElementById('mm').addEventListener('click',e=>{
   const r=e.currentTarget.getBoundingClientRect(),km=KM0+(e.clientX-r.left)/r.width*LEN;
   scrollEl.scrollTo({left:km2px(km)-scrollEl.clientWidth/2,behavior:'smooth'});
 });
-window.addEventListener('resize',()=>{render();});
+window.addEventListener('resize',()=>{render();fitMap();});
 
 /* ═══════════ Seleção ═══════════ */
 function tapItem(it){
@@ -1058,6 +1108,8 @@ function buildTable(){
   });
   document.getElementById('tCount').textContent=fm(curRows.length)+' registros';
   fillSort();
+  const ff=document.getElementById('mFiltro');
+  ff.innerHTML=`<span>Período ${mLab(mFrom)} a ${mLab(mTo)}${sf?' · Lado '+sf:''}${hid.size?' · sem '+[...hid].map(i=>LM[i].nm.replace(/ \(.*/,'')).join(', '):''}</span><button type="button" onclick="setMT('map')">Filtrar no mapa</button>`;
   paint();
 }
 function paint(){
@@ -1067,6 +1119,30 @@ function paint(){
   document.getElementById('tMore').hidden=curRows.length<=lim;
 }
 function moreRows(){lim+=300;paint();}
+/* Celular: abas da barra inferior. O mapa fica oculto fora da aba Mapa; guarda e devolve a rolagem dele */
+/* Aba Mapa: usa a folga da tela para deixar a pista mais alta, sem que o cartão aberto (folha no rodapé) cubra o mapa */
+function fitMap(){
+  const root=document.documentElement;
+  if(!MOB.matches||mt!=='map'||scrollY>0)return;
+  root.style.setProperty('--vs','1.22');
+  const dockB=document.querySelector('.dock').getBoundingClientRect().bottom,allB=document.querySelector('.chips').getBoundingClientRect().bottom;
+  const sheet=Math.min(innerHeight*.36,320),bar=92;
+  const free=Math.min(innerHeight-bar-allB,innerHeight-bar-sheet-8-dockB);
+  root.style.setProperty('--vs',String(Math.min(1.8,1.22+Math.max(0,free)/160).toFixed(3)));
+  /* a folha do cartão ocupa só o espaço entre o mapa e a barra de abas */
+  const sb=document.querySelector('.dock').getBoundingClientRect().bottom;
+  root.style.setProperty('--sheet-max',Math.round(Math.max(150,Math.min(320,innerHeight-bar-8-sb)))+'px');
+}
+function setMT(n){
+  if(n===mt)return;
+  if(mt==='map')mapScroll=scrollEl.scrollLeft;
+  hideCardNow();
+  mt=n;document.body.dataset.mt=n;
+  document.querySelectorAll('.mtab').forEach(b=>b.classList.toggle('on',b.dataset.mt===n));
+  if(n==='map'){render();scrollEl.scrollLeft=mapScroll;fitMap();}
+  else{const d=document.querySelector('.notes');if(d)d.open=true;if(n==='tab')buildTable();}
+  window.scrollTo(0,0);
+}
 MOB.addEventListener('change',()=>{render();buildTable();}); /* girar/redimensionar muda entre tabela e lista */
 document.getElementById('th').addEventListener('click',e=>{
   const th=e.target.closest('th[data-k]');if(!th)return;
@@ -1076,8 +1152,10 @@ document.getElementById('th').addEventListener('click',e=>{
 });
 document.getElementById('tb').addEventListener('click',e=>{
   const tr=e.target.closest('tr');if(!tr)return;
-  if(tr.dataset.o!=null){const r=curRows[+tr.dataset.o];focusItem(r.o.b);return;}
-  const it=IT[tr.dataset.k];if(it)focusItem(it);
+  const it=tr.dataset.o!=null?curRows[+tr.dataset.o].o.b:IT[tr.dataset.k];
+  if(!it)return;
+  if(MOB.matches&&mt!=='map')setMT('map');
+  focusItem(it);
 });
 
 /* ═══════════ Notas ═══════════ */
@@ -1095,11 +1173,11 @@ document.getElementById('tb').addEventListener('click',e=>{
     `Estaca corrigida: 1 reparo da Memória de Cálculo 2 (22/10/2024) vinha com a estaca 12265, entre as estacas 15217 e 15281 na própria Memória de Cálculo; corrigido para 15265.`,
     FORA.length?`Fora do trecho do contrato (não plotado): ${FORA.length} reparo(s) — Memória de Cálculo ${FORA[0][0]}, ${fD(FORA[0][2])}, estaca ${fm(FORA[0][3])}, entre as estacas 15217 e 15281 na própria Memória de Cálculo: provável erro de digitação (15265?).`:'',
   ].filter(Boolean);
-  document.getElementById('notesList').innerHTML=n.map(t=>`<li>${t}</li>`).join('');
+  document.getElementById('notesList').innerHTML=n.map(t=>{const i=t.indexOf(':');return i>0&&i<=28?`<li><span class="n-t">${t.slice(0,i+1)}</span><span class="n-b">${t.slice(i+1)}</span></li>`:`<li>${t}</li>`;}).join('');
 })();
 
 /* ═══════════ Boot ═══════════ */
-render();buildTable();goHome();
+render();buildTable();goHome();fitMap();
 
 </script>
 </body>
