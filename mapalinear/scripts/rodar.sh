@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Regera reparos/dados.js a partir dos PDFs das memórias de cálculo.
-# Uso: reparos/scripts/rodar.sh <pasta com os PDFs "N MC.pdf"> [pasta de trabalho]
+# Regera mapalinear/dados.js a partir dos PDFs das memórias de cálculo.
+# Uso: mapalinear/scripts/rodar.sh <pasta com os PDFs "N MC.pdf"> [pasta de trabalho]
 # Requer: poppler-utils (pdftotext) e Python 3.
 set -euo pipefail
 PDFS="$1"; W="${2:-/tmp/mc-trabalho}"

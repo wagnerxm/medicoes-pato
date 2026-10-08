@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Gera reparos/dados.js a partir de dados_final.json."""
+"""Gera mapalinear/dados.js a partir de dados_final.json."""
 import json, sys
 d = json.load(open('dados_final.json')); REP = d['REP']; TRE = d['TRE']; ATE = d['ATE']
 j = lambda x: json.dumps(x, ensure_ascii=False, separators=(',', ':'))
