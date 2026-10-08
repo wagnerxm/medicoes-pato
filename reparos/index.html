@@ -843,6 +843,11 @@ function tC(id){
   document.querySelector(`.chip[data-cat="${id}"]`).classList.toggle('off');
   render();buildTable();
 }
+/* Visão de abertura (página e casinha): só as soluções em trecho; os reparos individuais ficam desligados e são ligados pelos chips */
+const REP_OFF=['rl','rp','cd'];
+function ocultaReparos(){
+  REP_OFF.forEach(id=>{hid.add(id);const c=document.querySelector(`.chip[data-cat="${id}"]`);if(c)c.classList.add('off');});
+}
 function fS(s){
   sf=sf===s?null:s;
   document.getElementById('fD').classList.toggle('on',sf==='D');
@@ -1100,11 +1105,11 @@ function densest(win){
 function goHome(){
   const win=MOB.matches?2.5:5,vpW=scrollEl.clientWidth;pk=MOB.matches?vpW/win:(vpW-MAP_PAD*2)/win;render();scrollEl.scrollLeft=km2px(densest(win)-.1);setOn('');
 }
-/* Casinha: volta o mapa ao início do trecho (km 290) no zoom inicial (5 km no desktop, 2,5 km no celular), sem mexer nos filtros */
+/* Casinha: volta o mapa ao início do trecho (km 290) no zoom inicial (5 km no desktop, 2,5 km no celular), desliga os reparos individuais e não mexe nos demais filtros */
 function goStart(){
-  hideCardNow();
+  hideCardNow();ocultaReparos();
   const win=MOB.matches?2.5:5,vpW=scrollEl.clientWidth;
-  pk=MOB.matches?vpW/win:(vpW-MAP_PAD*2)/win;render();scrollEl.scrollLeft=0;setOn('');
+  pk=MOB.matches?vpW/win:(vpW-MAP_PAD*2)/win;render();buildTable();scrollEl.scrollLeft=0;setOn('');
 }
 function resetView(){
   hideCardNow();sf=null;hid.clear();mFrom=0;mTo=NM-1;showOv=showOc=showCv=true;dMax=180;
@@ -1296,7 +1301,7 @@ document.getElementById('tb').addEventListener('click',e=>{
 })();
 
 /* ═══════════ Boot ═══════════ */
-render();buildTable();goHome();fitMap();
+ocultaReparos();render();buildTable();goHome();fitMap();
 
 </script>
 </body>
