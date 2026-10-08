@@ -619,6 +619,9 @@ let mFrom=0,mTo=0,showOv=true,showOc=true,showCv=true,dMax=180;
 const scrollEl=document.getElementById('roadScroll');
 
 /* Faixas contínuas (k:'b') e reparos individuais (k:'p'). O revestimento fica separado das demais soluções. */
+/* PROVISÓRIO: trata a "troca de solo" (item 8.3, recomposição manual de aterro) como remendo profundo.
+   Para voltar ao modelo anterior (faixa própria "Troca de solo (aterro)"), basta trocar para false. */
+const ATERRO_COMO_RP=true;
 const LAYS=[
   {id:'capa',nm:'Revestimento (CBUQ)',cor:'#0F0F0F',k:'b'},
   {id:'rec',nm:'Reciclagem',cor:'#152D4A',k:'b'},
@@ -627,7 +630,7 @@ const LAYS=[
   {id:'rl',nm:'Reparo localizado',cor:'#F59E0B',k:'p'},
   {id:'rp',nm:'Remendo profundo',cor:'#EF4444',k:'p'},
   {id:'cd',nm:'Correção de defeitos',cor:'#38BDF8',k:'p'},
-];
+].filter(l=>!(ATERRO_COMO_RP&&l.id==='ater'));
 const LM={};LAYS.forEach(l=>LM[l.id]=l);
 const BORD=['rec','fres','ater','capa']; /* ordem de desenho das faixas: o revestimento fica por cima */
 
@@ -656,6 +659,7 @@ TRE.forEach(t=>{
     ponto,inf,obs});
 });
 ATE.forEach(a=>{
+  if(ATERRO_COMO_RP)return;
   const[mc,data,est,lado,ext,bm,alt,qtd]=a,m0=est*20;
   BANDS.push({lay:'ater',mc,mp:mc,data,m0,m1:m0+ext,side:lado,larg:bm,esp:null,qtd,item:'8.3',desc:'Recomposição manual de aterro',ponto:0,inf:0,obs:''});
 });
@@ -668,6 +672,13 @@ REP.forEach((r,i)=>{
   if(m0/1000<KM0-0.3||m0/1000>KM1+0.1){FORA.push(r);return;}
   PT.push({k:'p'+i,mc,mp,data,est,int,side:SIDE[lado],ext,larg,tipo,mist,esp,espRev,espBase,qtd,
     m0,m1:m0+ext,km0:m0/1000,km1:(m0+ext)/1000,lay:['rl','rp','cd'][tipo],dt:day(data),mi:mAbs(data)-M0,fo:0,fc:0});
+});
+/* Aterro tratado como remendo profundo: a altura do aterro faz o papel da espessura do remendo.
+   Estaca inteira (sem decimal) = posição arredondada, como nas demais MPs. */
+if(ATERRO_COMO_RP)ATE.forEach((a,i)=>{
+  const[mc,data,est,lado,ext,bm,alt,qtd]=a,m0=est*20;
+  PT.push({k:'p'+(REP.length+i),mc,mp:mc,data,est,int:Number.isInteger(est)?1:0,side:lado,ext,larg:bm,tipo:1,mist:null,esp:alt,espRev:null,espBase:null,qtd,ate:1,
+    m0,m1:m0+ext,km0:m0/1000,km1:(m0+ext)/1000,lay:'rp',dt:day(data),mi:mAbs(data)-M0,fo:0,fc:0});
 });
 PT.forEach(p=>IT[p.k]=p);BANDS.forEach(b=>IT[b.k]=b);
 
@@ -796,7 +807,8 @@ function kpis(){
   sp.forEach(k=>{if(sc.has(k))sp.delete(k);});
   const set=(id,v,s)=>{document.getElementById(id).textContent=v;document.getElementById(id+'s').textContent=s;};
   set('k1',fm(rl),`${fm(rlA)} m² · +${fm(cd)} correções de defeitos (${fm(cdV,1)} m³)`);
-  set('k2',fm(rp),`${fm(rpV,1)} m³`);
+  const ateN=PT.filter(p=>p.ate&&inRange(p)).length;
+  set('k2',fm(rp),`${fm(rpV,1)} m³`+(ateN?` · inclui ${fm(ateN)} de aterro (item 8.3)`:''));
   set('k3',fm(capaKm/1000,1)+' km',`${fm(capaN)} trechos · equivalente a pista inteira`);
   const lab=dMax>=99999?'sem limite de prazo':'em até '+document.getElementById('dMax').selectedOptions[0].text;
   set('k4',fm(oc1.size),`${fm(pc)} pares certos · + ${fm(op1.size)} reparos com sobreposição possível · ${lab}`);
@@ -894,12 +906,12 @@ function showCard(it){
     if(it.inf)grid+=r('Obs.','Lado deduzido (MP não informa)','');
   }else{
     hd=`MP ${it.mp}`;
-    desc=`Mistura ${it.mist===1?'CBUQ':it.mist===0?'PMF (pré-misturado a frio)':'não informada'}`;
+    desc=it.ate?'Recomposição manual de aterro (item 8.3), tratada como remendo profundo':`Mistura ${it.mist===1?'CBUQ':it.mist===0?'PMF (pré-misturado a frio)':'não informada'}`;
     grid=r('Data',fD(it.data),true)+sep+r('KM',`${fK(it.km0)} → ${fK(it.km1)}`)
       +r('Estaca',it.int?`${fm(it.est)} (arredondada)`:`${fEstM(it.m0)}`)
       +r('Extensão × largura',`${fm(it.ext,2)} × ${fm(it.larg,2)} m`)+r('Lado',sideNm(it.side),true)+sep;
     if(it.tipo===1){
-      if(it.esp)grid+=r('Esp. do remendo',`${fm(it.esp*100,0)} cm`);
+      if(it.esp)grid+=r(it.ate?'Altura do aterro':'Esp. do remendo',`${fm(it.esp*100,0)} cm`);
       if(it.espRev)grid+=r('Esp. do revestimento',`${fm(it.espRev*100,0)} cm`);
       if(it.espBase)grid+=r('Esp. da base (BGS)',`${fm(it.espBase*100,0)} cm`);
     }else if(it.esp)grid+=r('Espessura',`${fm(it.esp*100,1)} cm`);
@@ -1154,6 +1166,7 @@ function setTab(t){tab=t;catFilter=null;lim=200;syncTabs();buildTable();}
 function syncTabs(){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));}
 const flags=p=>{
   let s='';
+  if(p.ate)s+='<span class="pill w">item 8.3 · aterro</span> ';
   if(p.int)s+='<span class="pill p">estaca arredondada</span> ';
   if(p.fo)s+=`<span class="pill c">sobrepõe${p.fo===1?' (possível)':''}</span> `;
   if(p.fc)s+='<span class="pill w">sobre revestimento</span>';
@@ -1261,7 +1274,8 @@ document.getElementById('tb').addEventListener('click',e=>{
 /* ═══════════ Notas ═══════════ */
 (function(){
   const n=[
-    `Fonte: Memórias de Cálculo 2 a 24 do contrato SR/RN 515/2024. Reparos individuais: itens 3.1 (reparo localizado), 3.2 + 3.3 (remendo profundo, base e revestimento unidos) e 4.1 (correção de defeitos). Revestimento (CBUQ): itens 16.7 (Memórias de Cálculo 15 a 20) e 10.1 (Memórias de Cálculo 23 e 24). Soluções em trecho: 16.2 reciclagem, 16.12 fresagem e 8.3 recomposição de aterro.`,
+    `Fonte: Memórias de Cálculo 2 a 24 do contrato SR/RN 515/2024. Reparos individuais: itens 3.1 (reparo localizado), 3.2 + 3.3 (remendo profundo, base e revestimento unidos) e 4.1 (correção de defeitos). Revestimento (CBUQ): itens 16.7 (Memórias de Cálculo 15 a 20) e 10.1 (Memórias de Cálculo 23 e 24). Soluções em trecho: 16.2 reciclagem, 16.12 fresagem${ATERRO_COMO_RP?'.':' e 8.3 recomposição de aterro.'}`,
+    ATERRO_COMO_RP?`Provisório: os ${ATE.length} registros do item 8.3 (recomposição manual de aterro, antes “troca de solo”) estão tratados como remendo profundo, com a altura do aterro no lugar da espessura. Marcados com “item 8.3 · aterro” na tabela. Alguns têm altura de 3 a 8 m (ex.: 306 m³ em 07/04/2026, estaca 16732), muito além de um remendo de pavimento.`:'',
     `Conferência: a soma de cada serviço em cada Memória de Cálculo bate com o total impresso e com a planilha de medição (diferença de até 0,02 m³, arredondamento). Nas Memórias de Cálculo 10 e 11 o pagamento de junho/2025 foi deslocado para a MP 11; o mapa usa a data de execução de cada linha.`,
     `Lacunas: a Memória de Cálculo 1 (16 a 30/09/2024) não está no conjunto. As Memórias de Cálculo 19 e 21 não vieram em separado: o período de março está na Memória de Cálculo 20 e o de maio na consolidação da Memória de Cálculo 23.`,
     `Estaca: algumas Memórias de Cálculo informam a estaca com decimal (posição exata); outras arredondam para a estaca inteira (±20 m): parte das Memórias de Cálculo 2 e 3 e todas as Memórias de Cálculo 5, 6, 7, 15, 20, 23 e 24. Por isso a sobreposição só é “certa” quando os dois reparos têm posição exata; nos demais casos é “possível”.`,
