@@ -1101,15 +1101,17 @@ function densest(win){
   for(let i=0;i<ks.length;i++){while(ks[i]-ks[j]>win)j++;if(i-j+1>bn){bn=i-j+1;best=ks[j];}}
   return best;
 }
-/* janela inicial: 5 km no desktop; 2,5 km no celular (o mapa é mais estreito) */
+/* Janela inicial (abertura da página e casinha): largura visível do mapa em km. Ajuste aqui: 1,5 km no desktop; 2,5 km no celular (o mapa é mais estreito).
+   O zoom é vpW/win, então o rótulo ao lado do "+" mostra exatamente esse valor. */
+const WIN_DESK=1.5,WIN_MOB=2.5;
+function zoomInicial(){const win=MOB.matches?WIN_MOB:WIN_DESK;pk=scrollEl.clientWidth/win;return win;}
 function goHome(){
-  const win=MOB.matches?2.5:5,vpW=scrollEl.clientWidth;pk=MOB.matches?vpW/win:(vpW-MAP_PAD*2)/win;render();scrollEl.scrollLeft=km2px(densest(win)-.1);setOn('');
+  const win=zoomInicial();render();scrollEl.scrollLeft=km2px(densest(win)-.1);setOn('');
 }
-/* Casinha: volta o mapa ao início do trecho (km 290) no zoom inicial (5 km no desktop, 2,5 km no celular), desliga os reparos individuais e não mexe nos demais filtros */
+/* Casinha: volta o mapa ao início do trecho (km 290) no zoom inicial, desliga os reparos individuais e não mexe nos demais filtros */
 function goStart(){
   hideCardNow();ocultaReparos();
-  const win=MOB.matches?2.5:5,vpW=scrollEl.clientWidth;
-  pk=MOB.matches?vpW/win:(vpW-MAP_PAD*2)/win;render();buildTable();scrollEl.scrollLeft=0;setOn('');
+  zoomInicial();render();buildTable();scrollEl.scrollLeft=0;setOn('');
 }
 function resetView(){
   hideCardNow();sf=null;hid.clear();mFrom=0;mTo=NM-1;showOv=showOc=showCv=true;dMax=180;
