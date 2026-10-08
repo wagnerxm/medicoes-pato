@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A4A68"/><stop offset=".55" stop-color="#1E293B"/><stop offset="1" stop-color="#0F172A"/></linearGradient>
+<linearGradient id="road" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C3C9D2"/><stop offset="1" stop-color="#8F97A3"/></linearGradient>
+<linearGradient id="pin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C6EEDE"/><stop offset="1" stop-color="#6FBFA4"/></linearGradient>
+<radialGradient id="glow" cx=".5" cy=".18" r=".7"><stop offset="0" stop-color="#8CCBB6" stop-opacity=".28"/><stop offset="1" stop-color="#8CCBB6" stop-opacity="0"/></radialGradient>
+<clipPath id="rc"><rect x="48" y="276" width="416" height="112" rx="18"/></clipPath>
+</defs>
+<!-- régua de km -->
+<g stroke="#4FA58A" stroke-opacity=".85" stroke-linecap="round">
+<path d="M80 436H432" stroke-width="6"/>
+<path d="M80 424v24M168 424v24M256 424v24M344 424v24M432 424v24" stroke-width="6"/>
+<path d="M124 430v12M212 430v12M300 430v12M388 430v12" stroke-width="4" stroke-opacity=".4"/>
+</g>
+<!-- pista -->
+<rect x="48" y="276" width="416" height="112" rx="18" fill="url(#road)"/>
+<g clip-path="url(#rc)">
+<rect x="48" y="276" width="416" height="11" fill="#F8FAFC"/>
+<rect x="48" y="377" width="416" height="11" fill="#F8FAFC"/>
+<path d="M62 332H470" stroke="#fff" stroke-opacity=".75" stroke-width="6" stroke-dasharray="30 22"/>
+<g stroke="#0F172A" stroke-opacity=".6" stroke-width="3">
+<rect x="92" y="298" width="72" height="46" rx="4" fill="#F59E0B"/>
+<rect x="216" y="322" width="96" height="46" rx="4" fill="#EF4444"/>
+<rect x="268" y="302" width="72" height="34" rx="4" fill="#38BDF8"/>
+<rect x="378" y="318" width="52" height="50" rx="4" fill="#F59E0B"/>
+</g></g>
+<!-- marcador de posição -->
+<path d="M256 268V232" stroke="#4FA58A" stroke-width="6" stroke-linecap="round"/>
+<path d="M256 236c-42-33-70-58-70-92a70 70 0 0 1 140 0c0 34-28 59-70 92z" fill="url(#pin)" stroke="#0F172A" stroke-opacity=".35" stroke-width="3"/>
+<circle cx="256" cy="146" r="25" fill="#0F172A"/>
+<circle cx="256" cy="146" r="10" fill="#C6EEDE"/>
+</svg>
