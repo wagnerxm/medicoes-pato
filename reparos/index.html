@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#2A3750" media="(max-width: 640px)">
-<title>Medições PATO — Reparos BR-226/RN</title>
+<title>Mapa Linear — BR-226/RN</title>
 <style>
 /* ── Tokens: tema claro único ── */
 :root{
@@ -428,8 +428,8 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   .hdr{padding:var(--sp) var(--px);background:linear-gradient(180deg,#2A3750,#1E293B);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:none;-webkit-backdrop-filter:none;}
   .hdr::before{display:none;}
   .hdr .meta{display:none;}
-  .hdr h1{color:#F8FAFC;}
-  .hdr .uf{color:#CBD5E1;}
+  .hdr h1{color:#F8FAFC;overflow:hidden;text-overflow:ellipsis;}
+  .hdr .uf{color:#CBD5E1;font-size:.82em;}
   .hdr .badge{background:#8CCBB6;color:#0F172A;box-shadow:none;}
   .hdr .th-btn{background:transparent;border-color:rgba(255,255,255,.28);color:#E2E8F0;}
 
@@ -481,13 +481,13 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   <div class="hdr-l">
     <span class="badge">PATO</span>
     <div>
-      <h1>BR-226<span class="uf">/RN</span> <span class="uf">· reparos</span></h1>
+      <h1>Mapa Linear <span class="uf">· BR-226/RN</span></h1>
       <p class="meta">SR/RN 515/2024 <span class="sep">&middot;</span> km 290+320 &rarr; 421+020 <span class="sep">&middot;</span> Memórias de Cálculo 2 a 24</p>
     </div>
   </div>
   <div class="hdr-r">
     <span class="tag">130,70 km</span>
-    <a class="th-btn" href="../" title="Voltar à visão por solução">&larr; Versão anterior</a>
+    <a class="th-btn" href="../" title="Voltar à visão por solução">&larr; <span class="x-d">Versão anterior</span><span class="x-m">Anterior</span></a>
   </div>
 </header>
 

@@ -61,11 +61,11 @@ Acesse via GitHub Pages ou abra `index.html` localmente.
 | Endereço | O que mostra |
 |---|---|
 | `/` (esta página, `index.html`) | Visão por solução: faixas contínuas por trecho (MP 15, 18, 20, 23, 24). |
-| `/reparos/` | Visão por reparo: revestimento (CBUQ) separado das demais soluções e **um retângulo por reparo/remendo**, na estaca da memória de cálculo, com análise de sobreposição e filtro por período (MC 2 a 24). |
+| `/reparos/` | **Mapa Linear** (versão por reparo): revestimento (CBUQ) separado das demais soluções e **um retângulo por reparo/remendo**, na estaca da memória de cálculo, com análise de sobreposição e filtro por período (MC 2 a 24). |
 
 A versão `/reparos/` não altera a principal. O ponto de retorno da versão principal está na branch `v1-mapa-linear`.
 
-### Versão por reparo
+### Mapa Linear (versão por reparo)
 
 - `reparos/index.html` — página (HTML + CSS + JS inline, sem build).
 - `reparos/dados.js` — dados consolidados das memórias de cálculo (reparos, revestimento, reciclagem, fresagem, aterro).
