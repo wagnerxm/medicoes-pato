@@ -67,9 +67,10 @@ A versão `/mapalinear/` (o endereço antigo `/reparos/` só redireciona) não a
 
 ### Mapa Linear (versão por reparo)
 
-- `mapalinear/index.html` — página (HTML + CSS + JS inline, sem build).
-- `mapalinear/dados.js` — dados consolidados das memórias de cálculo (reparos, revestimento, reciclagem, fresagem, aterro).
-- `mapalinear/scripts/` — extração reproduzível a partir dos PDFs: `rodar.sh <pasta dos PDFs "N MC.pdf">` (requer `pdftotext` e Python 3).
+- `mapalinear/index.html` — página (HTML + CSS; carrega o contrato escolhido e inicia `app.js`; sem build). Uso pensado para desktop.
+- `mapalinear/app.js` — o mapa (JS puro).
+- `mapalinear/contratos/` — um contrato por pasta (`cadastro.json`, `dados.json`, `geo.json`) e `index.json` com a lista. Abre com `?contrato=<id>`. Formato em `mapalinear/contratos/LEIA-ME.md`.
+- `mapalinear/scripts/` — extração reproduzível a partir dos PDFs: `rodar.sh <pasta dos PDFs "N MC.pdf"> [pasta de trabalho] [id do contrato]` (requer `pdftotext` e Python 3); grava `contratos/<id>/dados.json`.
 
 A soma de cada serviço em cada MC foi conferida com o total impresso na MC e com a planilha de medição (diferença de até 0,02 m³). As decisões de tratamento (estornos, repetições entre MCs, datas com erro de digitação, estaca arredondada) estão em “Notas sobre os dados” na própria página.
 

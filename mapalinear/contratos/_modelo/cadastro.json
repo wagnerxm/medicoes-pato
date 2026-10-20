@@ -1,0 +1,31 @@
+{
+  "id": "_modelo",
+  "nome": "BR-000/XX — Contrato de exemplo",
+  "contrato": "XX 000/2025",
+  "sigla": "EXEMPLO",
+  "br": "BR-000",
+  "uf": "XX",
+  "kmInicial": 100,
+  "kmFinal": 110,
+  "kmObraInicial": 100.2,
+  "kmObraFinal": 109.8,
+  "periodo": { "inicio": "2025-01", "fim": "2025-06" },
+  "medicoes": { "de": 1, "ate": 3, "rotulo": "Memórias de Cálculo" },
+  "fonteDados": "Dados de exemplo para teste do formato",
+  "opcoes": { "aterroComoRP": false },
+  "itens": {
+    "CAPA": [{ "item": "16.7" }],
+    "REC": [{ "item": "16.2" }],
+    "FRES": [{ "item": "16.12" }],
+    "ATERRO": [{ "item": "8.3" }]
+  },
+  "descricoes": {
+    "CAPA": "CBUQ Faixa C",
+    "REC": "Reciclagem",
+    "FRES": "Fresagem contínua",
+    "ATERRO": "Recomposição manual de aterro"
+  },
+  "notas": [
+    "Exemplo: este contrato é só um modelo do formato e não deve aparecer na lista."
+  ]
+}

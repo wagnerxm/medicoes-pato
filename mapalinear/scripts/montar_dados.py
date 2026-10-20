@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Consolida reparos/trechos/aterro extraídos das MCs em dados.js (para o mapa de reparos)."""
+"""Consolida reparos/trechos/aterro extraídos das MCs nos dados do Mapa Linear (dados_final.json)."""
 import json, collections, sys
 
 rep = json.load(open('reparos_raw.json'))

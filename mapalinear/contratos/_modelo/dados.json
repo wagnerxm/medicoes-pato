@@ -1,0 +1,14 @@
+{
+  "reparos": [
+    { "mc": 1, "mp": 1, "data": "2025-01-20", "estaca": 5020, "estacaInteira": true, "lado": "D", "extensao": 3.0, "largura": 2.0, "tipo": "RL", "mistura": "PMF", "espessura": 0.05, "quantidade": 0.3 },
+    { "mc": 1, "mp": 1, "data": "2025-01-22", "estaca": 5110.5, "lado": "E", "extensao": 4.0, "largura": 2.5, "tipo": "RP", "mistura": "CBUQ", "espessura": 0.3, "espessuraRevestimento": 0.05, "espessuraBase": 0.2, "quantidade": 3.0 },
+    { "mc": 2, "mp": 2, "data": "2025-03-05", "estaca": 5300, "lado": "D/E", "extensao": 2.0, "largura": 1.5, "tipo": "CD", "espessura": 0.04, "quantidade": 0.12 }
+  ],
+  "solucoes": [
+    { "solucao": "REC", "mc": 2, "mp": 2, "data": "2025-04-10", "estacaInicial": 5000, "estacaFinal": 5200, "lado": "D/E", "largura": 7.2, "espessura": 0.2, "quantidade": 5760 },
+    { "solucao": "CAPA", "mc": 3, "mp": 3, "data": "2025-05-15", "estacaInicial": 5000, "estacaFinal": 5200, "lado": "D/E", "largura": 7.2, "espessura": 0.05, "quantidade": 1300 }
+  ],
+  "aterros": [
+    { "mc": 2, "data": "2025-03-12", "estaca": 5250, "lado": "E", "extensao": 3.0, "baseMaior": 2.0, "altura": 1.2, "quantidade": 7.2 }
+  ]
+}
