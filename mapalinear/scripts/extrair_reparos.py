@@ -21,7 +21,7 @@ def estaca(tok):
 MDY = False  # MC 23 usa mês/dia/ano
 def iso(d):
     m = DATE.match(d); dd, mm, yy = int(m[1]), int(m[2]), int(m[3])
-    if MDY: dd, mm = mm, dd
+    if MDY or (mm > 12 and dd <= 12): dd, mm = mm, dd   # MC 23 (e linhas soltas, ex.: MC 25) usam mês/dia/ano
     if yy < 100: yy += 2000
     return f'{yy:04d}-{mm:02d}-{dd:02d}'
 
