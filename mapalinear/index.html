@@ -499,6 +499,21 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
 #carga .cg-l{display:grid;gap:.4rem;width:100%;}
 #carga .cg-l a{display:block;padding:.6rem .8rem;border:1px solid var(--bd);border-radius:10px;background:var(--card);text-decoration:none;text-align:left;}
 #carga .cg-l small{display:block;font-weight:400;color:var(--tx3);}
+/* ── Botão PDF e barra de rolagem verde (iguais à versão compartilhada /br226/) ── */
+/* barra de rolagem do mapa: mais larga e verde (cor do acostamento) */
+.road-scroll{scrollbar-width:auto;scrollbar-color:#86ADA3 var(--mm-bg);}
+.road-scroll::-webkit-scrollbar{height:16px;}
+.road-scroll::-webkit-scrollbar-thumb{background:#86ADA3;border-radius:8px;border:3px solid var(--mm-bg);}
+.road-scroll::-webkit-scrollbar-thumb:hover{background:#6E9A8F;}
+.pdfw{position:relative;}
+#bPdf,#bPdf.on{background:rgba(63,85,103,.82);border-color:rgba(63,85,103,.9);color:#fff;box-shadow:none;}
+#bPdf:hover,#bPdf.on{background:rgba(63,85,103,.95);}
+.pdfm{position:absolute;right:0;top:calc(100% + 6px);z-index:60;width:270px;background:var(--card);border:1px solid var(--bd);border-radius:10px;box-shadow:var(--sh2);padding:.35rem;}
+.pdfm button{display:block;width:100%;text-align:left;background:transparent;border:0;border-radius:7px;padding:.5rem .6rem;cursor:pointer;font-family:inherit;color:var(--tx);}
+.pdfm button:hover,.pdfm button:focus-visible{background:var(--acbg);outline:none;}
+.pdfm b{display:block;font-size:.74rem;}.pdfm small{display:block;font-size:.62rem;color:var(--tx3);margin-top:.1rem;}
+.pdfm p{font-size:.6rem;color:var(--tx3);padding:.35rem .6rem .25rem;border-top:1px solid var(--bdl);margin-top:.2rem;}
+@media(max-width:640px){.pdfm{left:0;right:auto;width:min(270px,calc(100vw - 24px));}}
 </style>
 </head>
 <body>
@@ -542,6 +557,14 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
       <div class="cb-sep"></div>
       <button class="cb" id="fD" onclick="fS('D')"><span class="x-d">Lado D</span><span class="x-m">LD</span></button>
       <button class="cb" id="fE" onclick="fS('E')"><span class="x-d">Lado E</span><span class="x-m">LE</span></button>
+      <div class="cb-sep"></div>
+      <div class="pdfw"><button class="cb" id="bPdf" onclick="pdfMenu(event)" title="Gerar PDF" aria-haspopup="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M12 12v6M9 15l3 3 3-3"/></svg>PDF</button>
+        <div class="pdfm" id="pdfMenu" hidden>
+          <button type="button" onclick="pdfMapa()"><b>Mapa linear</b><small>Rodovia inteira em folhas A4, 4 segmentos de 11 km por folha</small></button>
+          <button type="button" onclick="pdfQuadro()"><b>Quadro por medição</b><small>Cada trecho com data, estacas, lado e quantidades</small></button>
+          <p>Usa o filtro da tela (período, lado e camadas). Na janela que abrir, escolha “Salvar como PDF”.</p>
+        </div>
+      </div>
     </div>
   </div>
   <div class="fbar">
@@ -686,5 +709,6 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   });
 })();
 </script>
+<script src="pdf.js?v=20261118h"></script>
 </body>
 </html>

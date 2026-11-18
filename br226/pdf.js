@@ -35,7 +35,7 @@ body{font-family:Arial,'Liberation Sans','Helvetica Neue',sans-serif;color:#0F17
   /* ── 1) Mapa linear em folhas A4 deitadas: 4 segmentos de 11 km por folha ── */
   function htmlMapa(){
     const SEG=11,POR=4,c=cab();
-    const B=BANDS.filter(vis).map(b=>({lay:b.lay,a:b.km0,b:b.km1,side:b.side,data:b.data,ext:b.ext})).sort((x,y)=>(x.lay==='capa')-(y.lay==='capa')||x.a-y.a);
+    const B=BANDS.filter(b=>(b.lay==='capa'||b.lay==='rec')&&vis(b)).map(b=>({lay:b.lay,a:b.km0,b:b.km1,side:b.side,data:b.data,ext:b.ext})).sort((x,y)=>(x.lay==='capa')-(y.lay==='capa')||x.a-y.a);
     const tem=id=>B.some(b=>b.lay===id);
     const kmCapa=B.filter(b=>b.lay==='capa').reduce((s,b)=>s+eq(b),0)/1000,kmRec=B.filter(b=>b.lay==='rec').reduce((s,b)=>s+eq(b),0)/1000;
     const nCapa=B.filter(b=>b.lay==='capa').length,nRec=B.filter(b=>b.lay==='rec').length;
@@ -110,7 +110,7 @@ ${pg.map(sg=>{const nc=conta(sg,'capa'),nr=conta(sg,'rec');const t=[nc?nc+' de C
   /* ── 2) Quadro por medição: cada trecho de CBUQ e de reciclagem, agrupado pela medição ── */
   function htmlQuadro(){
     const c=cab();
-    const B=BANDS.filter(vis).slice().sort((x,y)=>x.mp-y.mp||(x.lay==='capa')-(y.lay==='capa')||x.data.localeCompare(y.data)||x.m0-y.m0);
+    const B=BANDS.filter(b=>(b.lay==='capa'||b.lay==='rec')&&vis(b)).slice().sort((x,y)=>x.mp-y.mp||(x.lay==='capa')-(y.lay==='capa')||x.data.localeCompare(y.data)||x.m0-y.m0);
     const mps=[...new Set(B.map(b=>b.mp))].sort((a,b)=>a-b);
     const mesDe=s=>MESC[+s.slice(5,7)-1]+'/'+s.slice(0,4);
     const per=l=>{const ds=l.map(b=>b.data).sort();const a=mesDe(ds[0]),z=mesDe(ds[ds.length-1]);return a===z?a:a+' a '+z;};
