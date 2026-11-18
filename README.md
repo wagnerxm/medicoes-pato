@@ -62,6 +62,7 @@ Acesse via GitHub Pages ou abra `index.html` localmente.
 |---|---|
 | `/` (esta página, `index.html`) | Visão por solução: faixas contínuas por trecho (MP 15, 18, 20, 23, 24). |
 | `/mapalinear/` | **Mapa Linear** (versão por reparo): revestimento (CBUQ) separado das demais soluções e **um retângulo por reparo/remendo**, na estaca da memória de cálculo, com análise de sobreposição e filtro por período (MC 2 a 25). |
+| `/mapalinear-compartilhado/` | **Cópia para compartilhar** do Mapa Linear (com menos recursos). Lê os mesmos dados de `/mapalinear/contratos/`; a versão `/mapalinear/` continua sendo a de controle. |
 
 A versão `/mapalinear/` (o endereço antigo `/reparos/` só redireciona) não altera a principal. O ponto de retorno da versão principal está na branch `v1-mapa-linear`.
 
