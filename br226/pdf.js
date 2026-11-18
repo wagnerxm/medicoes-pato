@@ -56,9 +56,16 @@ body{font-family:Arial,'Liberation Sans','Helvetica Neue',sans-serif;color:#0F17
         s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${COR('capa')}"/>`;}
       for(const b of vis_.filter(b=>b.lay==='capa')){const[a,e]=cl(b);
         s+=`<line x1="${X(a)}" x2="${X(e)}" y1="${yR+hL}" y2="${yR+hL}" stroke="#FBBF24" stroke-width=".4" stroke-dasharray="1.8 1.4"/>`;}
+      /* reciclagem: véu translúcido onde há CBUQ por cima; azul sólido onde não há (por lado, E e D separados) */
+      const capaL=ld=>vis_.filter(c=>c.lay==='capa'&&(c.side===ld||c.side==='D/E'||c.side==='C'));
+      const livres=(a,e,ld)=>{const iv=capaL(ld).map(c=>[Math.max(c.a,a),Math.min(c.b,e)]).filter(v=>v[1]>v[0]).sort((u,v)=>u[0]-v[0]);
+        const out=[];let x=a;for(const[u,v]of iv){if(u>x)out.push([x,u]);x=Math.max(x,v);}if(x<e)out.push([x,e]);return out;};
       for(const b of vis_.filter(b=>b.lay==='rec')){const[a,e]=cl(b),x=X(a),w=Math.max(X(e)-x,.25);
         const y=b.side==='D'?yR+hL:yR,h=b.side==='D/E'||b.side==='C'?RH:hL;
-        s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#5B9BE0" fill-opacity=".38"/><rect x="${x+.15}" y="${y+.15}" width="${Math.max(w-.3,.1)}" height="${h-.3}" fill="none" stroke="#9CC6F2" stroke-width=".3" stroke-dasharray="1 .7"/>`;}
+        s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#5B9BE0" fill-opacity=".38"/>`;
+        for(const ld of (b.side==='E'||b.side==='D'?[b.side]:['E','D']))
+          for(const[u,v]of livres(a,e,ld))s+=`<rect x="${X(u)}" y="${ld==='E'?yR:yR+hL}" width="${Math.max(X(v)-X(u),.25)}" height="${hL}" fill="#5B9BE0"/>`;
+        s+=`<rect x="${x+.15}" y="${y+.15}" width="${Math.max(w-.3,.1)}" height="${h-.3}" fill="none" stroke="#9CC6F2" stroke-width=".3" stroke-dasharray="1 .7"/>`;}
       for(const b of vis_.filter(b=>b.lay==='capa')){const[a,e]=cl(b),w=X(e)-X(a);if(w<11)continue;
         const cy=b.side==='E'?yR+hL/2:b.side==='D'?yR+hL*1.5:yR+hL/2;
         s+=`<text x="${X(a)+w/2}" y="${cy+.9}" text-anchor="middle" font-size="2.6" fill="#fff" font-weight="700">${fdc(b.data)}</text>`;}
@@ -78,7 +85,7 @@ body{font-family:Arial,'Liberation Sans','Helvetica Neue',sans-serif;color:#0F17
     const resumo=[nCapa?`${fm(nCapa)} trechos de CBUQ · ${fm(kmCapa,1)} km`:'',nRec?`${fm(nRec)} de reciclagem · ${fm(kmRec,1)} km`:''].filter(Boolean).join(' · ')||'Nenhum trecho no filtro';
     const conta=(sg,id)=>B.filter(b=>b.lay===id&&b.b>sg[0]&&b.a<sg[1]).length;
     const lg=[tem('capa')||!tem('rec')?`<span><i style="background:${COR('capa')}"></i>Revestimento (CBUQ), com a data de execução</span>`:'',
-      tem('rec')?`<span><i style="background:rgba(91,155,224,.5);outline:.3mm dashed #9CC6F2;outline-offset:-.5mm"></i>Reciclagem (véu azul no local executado)</span>`:'',
+      tem('rec')?`<span><i style="background:#5B9BE0;outline:.3mm dashed #9CC6F2;outline-offset:-.5mm"></i>Reciclagem sem CBUQ por cima (azul sólido)</span><span><i style="background:#2B3E57;outline:.3mm dashed #9CC6F2;outline-offset:-.5mm"></i>Reciclagem com CBUQ por cima (véu azul)</span>`:'',
       `<span><i style="background:#B4B8BF"></i>Sem o serviço</span>`,`<span>E = lado esquerdo (acima) · D = lado direito (abaixo) · km crescendo para a direita · km de pista inteira equivalente</span>`].join('');
     return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Mapa Linear ${esc(c.br)} - Revestimento e Reciclagem</title><style>
 @page{size:A4 landscape;margin:0}${CSS_BASE}
