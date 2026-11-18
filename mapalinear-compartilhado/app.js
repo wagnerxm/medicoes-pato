@@ -56,6 +56,9 @@ let M0=1e9,M1=-1;
 REP.forEach(r=>{const m=mAbs(r[2]);if(m<M0)M0=m;if(m>M1)M1=m;});
 TRE.forEach(t=>{const m=mAbs(t[3]);if(m<M0)M0=m;if(m>M1)M1=m;});
 ATE.forEach(a=>{const m=mAbs(a[1]);if(m<M0)M0=m;if(m>M1)M1=m;});
+/* versão compartilhada: o período cobre o contrato inteiro (cadastro.periodo), não só os meses com revestimento ou reciclagem */
+if(CAD.periodo&&CAD.periodo.inicio)M0=Math.min(M0,mAbs(CAD.periodo.inicio+'-01'));
+if(CAD.periodo&&CAD.periodo.fim)M1=Math.max(M1,mAbs(CAD.periodo.fim+'-01'));
 const NM=M1-M0+1;
 const mLab=i=>MESN[(M0+i)%12]+'/'+Math.floor((M0+i)/12);
 mTo=NM-1;
