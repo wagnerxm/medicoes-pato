@@ -717,4 +717,5 @@ document.getElementById('tb').addEventListener('click',e=>{
 })();
 
 /* ═══════════ Boot ═══════════ */
-ocultaReparos();render();buildTable();syncTabs();fA();fitMap();
+/* versão compartilhada: abre como a casinha (início do trecho, zoom inicial) */
+ocultaReparos();render();buildTable();syncTabs();goStart();fitMap();
