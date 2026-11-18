@@ -64,7 +64,7 @@ body{font-family:Arial,'Liberation Sans','Helvetica Neue',sans-serif;color:#0F17
         const y=b.side==='D'?yR+hL:yR,h=b.side==='D/E'||b.side==='C'?RH:hL;
         s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#5B9BE0" fill-opacity=".38"/>`;
         for(const ld of (b.side==='E'||b.side==='D'?[b.side]:['E','D']))
-          for(const[u,v]of livres(a,e,ld))s+=`<rect x="${X(u)}" y="${ld==='E'?yR:yR+hL}" width="${Math.max(X(v)-X(u),.25)}" height="${hL}" fill="#5B9BE0"/>`;
+          for(const[u,v]of livres(a,e,ld))s+=`<rect x="${X(u)}" y="${ld==='E'?yR:yR+hL}" width="${Math.max(X(v)-X(u),.25)}" height="${hL}" fill="${COR('rec')}"/>`;
         s+=`<rect x="${x+.15}" y="${y+.15}" width="${Math.max(w-.3,.1)}" height="${h-.3}" fill="none" stroke="#9CC6F2" stroke-width=".3" stroke-dasharray="1 .7"/>`;}
       for(const b of vis_.filter(b=>b.lay==='capa')){const[a,e]=cl(b),w=X(e)-X(a);if(w<11)continue;
         const cy=b.side==='E'?yR+hL/2:b.side==='D'?yR+hL*1.5:yR+hL/2;
@@ -85,7 +85,7 @@ body{font-family:Arial,'Liberation Sans','Helvetica Neue',sans-serif;color:#0F17
     const resumo=[nCapa?`${fm(nCapa)} trechos de CBUQ · ${fm(kmCapa,1)} km`:'',nRec?`${fm(nRec)} de reciclagem · ${fm(kmRec,1)} km`:''].filter(Boolean).join(' · ')||'Nenhum trecho no filtro';
     const conta=(sg,id)=>B.filter(b=>b.lay===id&&b.b>sg[0]&&b.a<sg[1]).length;
     const lg=[tem('capa')||!tem('rec')?`<span><i style="background:${COR('capa')}"></i>Revestimento (CBUQ), com a data de execução</span>`:'',
-      tem('rec')?`<span><i style="background:#5B9BE0;outline:.3mm dashed #9CC6F2;outline-offset:-.5mm"></i>Reciclagem sem CBUQ por cima (azul sólido)</span><span><i style="background:#2B3E57;outline:.3mm dashed #9CC6F2;outline-offset:-.5mm"></i>Reciclagem com CBUQ por cima (véu azul)</span>`:'',
+      tem('rec')?`<span><i style="background:${COR('rec')};outline:.3mm dashed #9CC6F2;outline-offset:-.5mm"></i>Reciclagem sem CBUQ por cima (azul sólido, cor do mapa)</span><span><i style="background:#2B3E57;outline:.3mm dashed #9CC6F2;outline-offset:-.5mm"></i>Reciclagem com CBUQ por cima (véu azul)</span>`:'',
       `<span><i style="background:#B4B8BF"></i>Sem o serviço</span>`,`<span>E = lado esquerdo (acima) · D = lado direito (abaixo) · km crescendo para a direita · km de pista inteira equivalente</span>`].join('');
     return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Mapa Linear ${esc(c.br)} - Revestimento e Reciclagem</title><style>
 @page{size:A4 landscape;margin:0}${CSS_BASE}
