@@ -502,6 +502,11 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
 #carga .cg-l small{display:block;font-weight:400;color:var(--tx3);}
 /* ── Versão compartilhada: só revestimento e reciclagem ── */
 .kpis{grid-template-columns:repeat(2,minmax(0,320px));}
+/* barra de rolagem do mapa: mais larga e verde (cor do acostamento) */
+.road-scroll{scrollbar-width:auto;scrollbar-color:#86ADA3 var(--mm-bg);}
+.road-scroll::-webkit-scrollbar{height:16px;}
+.road-scroll::-webkit-scrollbar-thumb{background:#86ADA3;border-radius:8px;border:3px solid var(--mm-bg);}
+.road-scroll::-webkit-scrollbar-thumb:hover{background:#6E9A8F;}
 .pdfw{position:relative;}
 #bPdf,#bPdf.on{background:rgba(63,85,103,.82);border-color:rgba(63,85,103,.9);color:#fff;box-shadow:none;}
 #bPdf:hover,#bPdf.on{background:rgba(63,85,103,.95);}
@@ -703,7 +708,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
     const la=null; /* versão compartilhada: sem link para a versão anterior (completa) */if(la&&la.url){const a=$('hAnt');a.href=la.url;a.title=la.titulo||'';a.querySelector('.x-d').textContent=la.texto||'Voltar';a.querySelector('.x-m').textContent=la.textoCurto||la.texto||'Voltar';a.hidden=false;}
     $('ftTxt').innerHTML=[cad.fonteDados?esc(cad.fonteDados):'','Contrato '+esc(cad.contrato||id)+(br?' — '+esc(br):''),cad.sigla?esc(cad.sigla):''].filter(Boolean).join(' <span>&middot;</span> ');
     if(cts.length>1){const s=$('ctSel');s.innerHTML=cts.map(c=>'<option value="'+esc(c.id)+'"'+(c.id===id?' selected':'')+'>'+esc(c.nome||c.id)+'</option>').join('');s.onchange=()=>{location.search='?contrato='+encodeURIComponent(s.value);};s.hidden=false;}
-    const sc=document.createElement('script');sc.src='app.js?v=20261118d'; /* troque o v= a cada mudança no app.js, senão o navegador pode usar a cópia antiga */
+    const sc=document.createElement('script');sc.src='app.js?v=20261118e'; /* troque o v= a cada mudança no app.js, senão o navegador pode usar a cópia antiga */
     sc.onload=()=>$('carga').remove();
     sc.onerror=()=>tela('Falha ao iniciar','<p>Não foi possível carregar <b>app.js</b>.</p>');
     document.body.appendChild(sc);
@@ -714,6 +719,6 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
   });
 })();
 </script>
-<script src="pdf.js?v=20261118d"></script>
+<script src="pdf.js?v=20261118e"></script>
 </body>
 </html>

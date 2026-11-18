@@ -40,9 +40,10 @@ body{font-family:Arial,'Liberation Sans','Helvetica Neue',sans-serif;color:#0F17
     const kmCapa=B.filter(b=>b.lay==='capa').reduce((s,b)=>s+eq(b),0)/1000,kmRec=B.filter(b=>b.lay==='rec').reduce((s,b)=>s+eq(b),0)/1000;
     const nCapa=B.filter(b=>b.lay==='capa').length,nRec=B.filter(b=>b.lay==='rec').length;
     const segs=[];for(let k=KM0;k<KM1-1e-9;k+=SEG)segs.push([k,Math.min(k+SEG,KM1)]);
-    /* medidas em mm: pista (CBUQ, E acima e D abaixo) e, embaixo dela, a faixa estreita da reciclagem */
-    const W=262,GR=3,ED=.45,RH=16,RC=4.2,GAP=1.2,H=GR*2+ED*2+RH;
-    const yR=GR+ED,hL=RH/2,yRec=H+GAP;
+    /* medidas em mm: pista com o lado E acima e o D abaixo. A reciclagem vai no local exato, como um véu azul
+       translúcido com contorno tracejado por cima do CBUQ (assim aparece mesmo onde depois veio o revestimento) */
+    const W=262,GR=3,ED=.45,RH=16,H=GR*2+ED*2+RH;
+    const yR=GR+ED,hL=RH/2;
     function svg([k0,k1]){
       const sc=W/(k1-k0),X=k=>(k-k0)*sc;let s='';
       const vis_=B.filter(b=>b.b>k0&&b.a<k1),cl=b=>[Math.max(b.a,k0),Math.min(b.b,k1)];
@@ -55,18 +56,13 @@ body{font-family:Arial,'Liberation Sans','Helvetica Neue',sans-serif;color:#0F17
         s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${COR('capa')}"/>`;}
       for(const b of vis_.filter(b=>b.lay==='capa')){const[a,e]=cl(b);
         s+=`<line x1="${X(a)}" x2="${X(e)}" y1="${yR+hL}" y2="${yR+hL}" stroke="#FBBF24" stroke-width=".4" stroke-dasharray="1.8 1.4"/>`;}
+      for(const b of vis_.filter(b=>b.lay==='rec')){const[a,e]=cl(b),x=X(a),w=Math.max(X(e)-x,.25);
+        const y=b.side==='D'?yR+hL:yR,h=b.side==='D/E'||b.side==='C'?RH:hL;
+        s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#5B9BE0" fill-opacity=".38"/><rect x="${x+.15}" y="${y+.15}" width="${Math.max(w-.3,.1)}" height="${h-.3}" fill="none" stroke="#9CC6F2" stroke-width=".3" stroke-dasharray="1 .7"/>`;}
       for(const b of vis_.filter(b=>b.lay==='capa')){const[a,e]=cl(b),w=X(e)-X(a);if(w<11)continue;
         const cy=b.side==='E'?yR+hL/2:b.side==='D'?yR+hL*1.5:yR+hL/2;
         s+=`<text x="${X(a)+w/2}" y="${cy+.9}" text-anchor="middle" font-size="2.6" fill="#fff" font-weight="700">${fdc(b.data)}</text>`;}
-      if(tem('rec')){
-        s+=`<rect x="0" y="${yRec}" width="${W}" height="${RC}" fill="#E2E8F0"/>`;
-        s+=`<line x1="0" x2="${W}" y1="${yRec+RC/2}" y2="${yRec+RC/2}" stroke="#fff" stroke-width=".25"/>`;
-        for(const b of vis_.filter(b=>b.lay==='rec')){const[a,e]=cl(b),x=X(a),w=Math.max(X(e)-x,.25);
-          const y=b.side==='D'?yRec+RC/2:yRec,h=b.side==='D/E'||b.side==='C'?RC:RC/2;
-          s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${COR('rec')}"/>`;}
-        s+=`<text x="-1.3" y="${yRec+RC/2+.8}" text-anchor="end" font-size="2.2" fill="#64748B" font-weight="700">REC</text>`;
-      }
-      const yA=(tem('rec')?yRec+RC:H)+.8;
+      const yA=H+.8;
       s+=`<line x1="0" x2="${W}" y1="${yA}" y2="${yA}" stroke="#334155" stroke-width=".3"/>`;
       for(let k=Math.ceil(k0*10-1e-9)/10;k<=k1+1e-9;k=Math.round((k+.1)*10)/10){
         const x=X(k),int=Math.abs(k-Math.round(k))<1e-9,meio=Math.abs(k*2-Math.round(k*2))<1e-9;
@@ -82,7 +78,7 @@ body{font-family:Arial,'Liberation Sans','Helvetica Neue',sans-serif;color:#0F17
     const resumo=[nCapa?`${fm(nCapa)} trechos de CBUQ · ${fm(kmCapa,1)} km`:'',nRec?`${fm(nRec)} de reciclagem · ${fm(kmRec,1)} km`:''].filter(Boolean).join(' · ')||'Nenhum trecho no filtro';
     const conta=(sg,id)=>B.filter(b=>b.lay===id&&b.b>sg[0]&&b.a<sg[1]).length;
     const lg=[tem('capa')||!tem('rec')?`<span><i style="background:${COR('capa')}"></i>Revestimento (CBUQ), com a data de execução</span>`:'',
-      tem('rec')?`<span><i style="background:${COR('rec')}"></i>Reciclagem (faixa REC, abaixo da pista)</span>`:'',
+      tem('rec')?`<span><i style="background:rgba(91,155,224,.5);outline:.3mm dashed #9CC6F2;outline-offset:-.5mm"></i>Reciclagem (véu azul no local executado)</span>`:'',
       `<span><i style="background:#B4B8BF"></i>Sem o serviço</span>`,`<span>E = lado esquerdo (acima) · D = lado direito (abaixo) · km crescendo para a direita · km de pista inteira equivalente</span>`].join('');
     return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Mapa Linear ${esc(c.br)} - Revestimento e Reciclagem</title><style>
 @page{size:A4 landscape;margin:0}${CSS_BASE}
