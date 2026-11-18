@@ -1,7 +1,7 @@
 {
   "name": "Mapa Linear",
   "short_name": "Mapa Linear",
-  "description": "Mapa linear dos reparos executados por contrato (versão compartilhada).",
+  "description": "Mapa linear de revestimento (CBUQ) e reciclagem por contrato.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

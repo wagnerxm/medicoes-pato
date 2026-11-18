@@ -500,6 +500,9 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
 #carga .cg-l{display:grid;gap:.4rem;width:100%;}
 #carga .cg-l a{display:block;padding:.6rem .8rem;border:1px solid var(--bd);border-radius:10px;background:var(--card);text-decoration:none;text-align:left;}
 #carga .cg-l small{display:block;font-weight:400;color:var(--tx3);}
+/* ── Versão compartilhada: só revestimento e reciclagem ── */
+.kpis{grid-template-columns:repeat(2,minmax(0,320px));}
+.m-t-dst,.fbar .tgs,.fbar .dm,.fbar .lgs,.fbar .cb-sep,.tab[data-t="rep"],.tab[data-t="ov"]{display:none!important;}
 </style>
 </head>
 <body>
@@ -521,9 +524,12 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
 
 <div class="wrap" id="kpiWrap">
   <div class="kpis">
+    <div class="kpi"><div class="kpi-val" id="k3">&mdash;</div><div class="kpi-lab">Revestimento (CBUQ)</div><div class="kpi-sub" id="k3s"></div></div>
+    <div class="kpi"><div class="kpi-val" id="k6">&mdash;</div><div class="kpi-lab">Reciclagem</div><div class="kpi-sub" id="k6s"></div></div>
+  </div>
+  <div hidden>
     <div class="kpi"><div class="kpi-val" id="k1">&mdash;</div><div class="kpi-lab">Reparos localizados</div><div class="kpi-sub" id="k1s"></div></div>
     <div class="kpi"><div class="kpi-val" id="k2">&mdash;</div><div class="kpi-lab">Remendos profundos</div><div class="kpi-sub" id="k2s"></div></div>
-    <div class="kpi"><div class="kpi-val" id="k3">&mdash;</div><div class="kpi-lab">Revestimento (CBUQ)</div><div class="kpi-sub" id="k3s"></div></div>
     <div class="kpi"><div class="kpi-val" id="k4">&mdash;</div><div class="kpi-lab">Reparos sobrepostos</div><div class="kpi-sub" id="k4s"></div></div>
     <div class="kpi"><div class="kpi-val" id="k5">&mdash;</div><div class="kpi-lab">Reparos sobre revestimento novo</div><div class="kpi-sub" id="k5s"></div></div>
   </div>
@@ -664,6 +670,8 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
     const base=DADOS+id+'/';
     const [cad,dados,geo]=await Promise.all([lerJson(base+'cadastro.json'),lerJson(base+'dados.json'),lerJson(base+'geo.json').catch(e=>e.status===404?[]:Promise.reject(e))]);
     const nd=normaliza(dados);
+    /* versão compartilhada: só revestimento (CBUQ) e reciclagem; reparos, remendos, aterro e fresagem ficam de fora */
+    nd.REP=[];nd.ATE=[];nd.TRE=nd.TRE.filter(t=>t[0]==='CAPA'||t[0]==='REC');
     if(nd.erros.length)return tela('Dados com problema','<p>Corrija em <b>'+esc(base)+'dados.json</b>:</p><ul>'+nd.erros.map(e=>'<li>'+esc(e)+'</li>').join('')+'</ul>');
     if(!(cad.kmFinal>cad.kmInicial))return tela('Cadastro com problema','<p><b>'+esc(base)+'cadastro.json</b>: kmInicial e kmFinal devem existir e kmFinal ser maior.</p>');
     if(!nd.REP.length&&!nd.TRE.length&&!nd.ATE.length)return tela('Contrato sem dados','<p><b>'+esc(base)+'dados.json</b> não tem nenhum registro.</p>');
@@ -675,7 +683,7 @@ tbody tr:hover td:first-child,tbody tr.hi td:first-child{box-shadow:inset 2px 0 
     const ki=cad.kmObraInicial!=null?cad.kmObraInicial:cad.kmInicial,kf=cad.kmObraFinal!=null?cad.kmObraFinal:cad.kmFinal,p=cad.periodo;
     $('hMeta').innerHTML=[cad.contrato?esc(cad.contrato):'','km '+km3(ki)+' &rarr; '+km3(kf),m.de!=null&&m.ate!=null?esc(rot)+' '+m.de+' a '+m.ate:'',p&&p.inicio&&p.fim?esc(mes(p.inicio+'-01')+' a '+mes(p.fim+'-01')):''].filter(Boolean).join(' <span class="sep">&middot;</span> ');
     $('hTag').textContent=pt(kf-ki,2)+' km';
-    const la=cad.linkAnterior;if(la&&la.url){const a=$('hAnt');a.href=la.url;a.title=la.titulo||'';a.querySelector('.x-d').textContent=la.texto||'Voltar';a.querySelector('.x-m').textContent=la.textoCurto||la.texto||'Voltar';a.hidden=false;}
+    const la=null; /* versão compartilhada: sem link para a versão anterior (completa) */if(la&&la.url){const a=$('hAnt');a.href=la.url;a.title=la.titulo||'';a.querySelector('.x-d').textContent=la.texto||'Voltar';a.querySelector('.x-m').textContent=la.textoCurto||la.texto||'Voltar';a.hidden=false;}
     $('ftTxt').innerHTML=[cad.fonteDados?esc(cad.fonteDados):'','Contrato '+esc(cad.contrato||id)+(br?' — '+esc(br):''),cad.sigla?esc(cad.sigla):''].filter(Boolean).join(' <span>&middot;</span> ');
     if(cts.length>1){const s=$('ctSel');s.innerHTML=cts.map(c=>'<option value="'+esc(c.id)+'"'+(c.id===id?' selected':'')+'>'+esc(c.nome||c.id)+'</option>').join('');s.onchange=()=>{location.search='?contrato='+encodeURIComponent(s.value);};s.hidden=false;}
     const sc=document.createElement('script');sc.src='app.js';

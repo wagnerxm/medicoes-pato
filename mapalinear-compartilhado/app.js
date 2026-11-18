@@ -18,7 +18,7 @@ function kmToCoord(km){
 function mapsUrl(km){const c=kmToCoord(km);return c?`https://www.google.com/maps?q=${c.lat},${c.lng}&z=17`:null;}
 
 /* ═══════════ Estado e camadas ═══════════ */
-let pk=500,sf=null,asg=null,tab='rep',catFilter=null,lim=200;
+let pk=500,sf=null,asg=null,tab='tre',catFilter=null,lim=200;
 let mt='map',mapScroll=0;
 document.body.dataset.mt='map';
 const hid=new Set();
@@ -42,7 +42,9 @@ const LAYS=[
   {id:'rl',nm:'Reparo localizado',cor:'#F59E0B',k:'p'},
   {id:'rp',nm:'Remendo profundo',cor:'#EF4444',k:'p'},
   {id:'cd',nm:'Correção de defeitos',cor:'#38BDF8',k:'p'},
-].filter(l=>!(ATERRO_COMO_RP&&l.id==='ater'));
+].filter(l=>!(ATERRO_COMO_RP&&l.id==='ater'))
+ /* versão compartilhada: só revestimento (CBUQ) e reciclagem */
+ .filter(l=>l.id==='capa'||l.id==='rec');
 const LM={};LAYS.forEach(l=>LM[l.id]=l);
 const BORD=['rec','fres','ater','capa']; /* ordem de desenho das faixas: o revestimento fica por cima */
 
@@ -201,12 +203,13 @@ function render(){
 
 /* ═══════════ KPIs e chips ═══════════ */
 function kpis(){
-  let rl=0,rlA=0,rp=0,rpV=0,cd=0,cdV=0,capaKm=0,capaN=0;
+  let rl=0,rlA=0,rp=0,rpV=0,cd=0,cdV=0,capaKm=0,capaN=0,recKm=0,recN=0;
   PT.forEach(p=>{
     if(!inRange(p))return;
     if(p.tipo===0){rl++;rlA+=p.ext*p.larg;}else if(p.tipo===1){rp++;rpV+=p.qtd;}else{cd++;cdV+=p.qtd;}
   });
   BANDS.forEach(b=>{if(b.lay==='capa'&&inRange(b)){capaN++;capaKm+=b.ext*(b.side==='D/E'?1:.5);}});
+  BANDS.forEach(b=>{if(b.lay==='rec'&&inRange(b)){recN++;recKm+=b.ext*(b.side==='D/E'?1:.5);}});
   const oc1=new Set(),op1=new Set();let pc=0,pp=0;
   OV.forEach(o=>{
     if(o.dd>dMax||!inRange(o.a)||!inRange(o.b))return;
@@ -221,6 +224,7 @@ function kpis(){
   const ateN=PT.filter(p=>p.ate&&inRange(p)).length;
   set('k2',fm(rp),`${fm(rpV,1)} m³`+(ateN?` · inclui ${fm(ateN)} de aterro${ITEM_ATE?` (item ${ITEM_ATE})`:''}`:''));
   set('k3',fm(capaKm/1000,1)+' km',`${fm(capaN)} trechos · equivalente a pista inteira`);
+  set('k6',fm(recKm/1000,1)+' km',`${fm(recN)} trechos · equivalente a pista inteira`);
   const lab=dMax>=99999?'sem limite de prazo':'em até '+document.getElementById('dMax').selectedOptions[0].text;
   set('k4',fm(oc1.size),`${fm(pc)} pares certos · + ${fm(op1.size)} reparos com sobreposição possível · ${lab}`);
   set('k5',fm(sc.size),`+ ${fm(sp.size)} possíveis (estaca arredondada) · ${lab}`);
@@ -256,7 +260,7 @@ function tC(id){
   render();buildTable();
 }
 /* Visão de abertura (página e casinha): só as soluções em trecho; os reparos individuais ficam desligados e são ligados pelos chips */
-const REP_OFF=['rl','rp','cd'];
+const REP_OFF=['rl','rp','cd'].filter(id=>LM[id]); /* na versão compartilhada esses chips não existem */
 function ocultaReparos(){
   REP_OFF.forEach(id=>{hid.add(id);const c=document.querySelector(`.chip[data-cat="${id}"]`);if(c)c.classList.add('off');});
 }
@@ -618,7 +622,7 @@ const TBL={
     rows:()=>BANDS.filter(b=>vis(b)&&(!catFilter||b.lay===catFilter)),
     val:(b,k)=>k==='lay'?LAYS.findIndex(l=>l.id===b.lay):b[k]??0,
     tr:(b,i)=>`<tr data-k="${b.k}"><td><span class="t-cat"><span class="t-dot" style="background:${LM[b.lay].cor}"></span>${LM[b.lay].nm}</span></td><td class="t-mono">${fD(b.data)}</td><td class="t-mono">${b.mp}</td><td class="t-mono">${b.item}</td><td class="t-mono">${fK(b.km0)}</td><td class="t-mono">${fK(b.km1)}</td><td class="t-mono t-right">${fm(b.ext,0)}</td><td class="t-mono t-right">${b.larg?fm(b.larg,2):'—'}</td><td class="t-mono t-right">${b.esp?fm(b.esp*100,1):'—'}</td><td><span class="t-side">${b.side}</span></td><td class="t-mono t-right">${b.qtd?fm(b.qtd,3)+(b.lay==='capa'?' T':' m³'):'—'}</td><td>${b.ponto?'extensão estimada':b.inf?'lado deduzido':'—'}</td></tr>`,
-    cap:`Faixas contínuas: revestimento${ITENS_CAPA.length?` (${ITENS_CAPA.length>1?'itens':'item'} ${ITENS_CAPA.join(' e ')})`:''} separado de reciclagem, fresagem${ATERRO_COMO_RP?'':' e recomposição de aterro'}.`},
+    cap:`Faixas contínuas: revestimento${ITENS_CAPA.length?` (${ITENS_CAPA.length>1?'itens':'item'} ${ITENS_CAPA.join(' e ')})`:''} e reciclagem${itemDe('REC',1e9)?` (item ${itemDe('REC',1e9)})`:''}.`},
 };
 /* Celular: cada registro vira uma linha de 2-3 textos, sem rolagem lateral */
 const mistNm=m=>m===1?'CBUQ':m===0?'PMF':'—';
@@ -699,16 +703,15 @@ document.getElementById('tb').addEventListener('click',e=>{
 (function(){
   /* Notas deste contrato vêm do cadastro (notas); as de baixo valem para qualquer contrato */
   const maxA=ATE.reduce((m,a)=>a[7]>m[7]?a:m,[0,'',0,'',0,0,0,0]),altA=Math.max(0,...ATE.map(a=>a[6]));
+  /* versão compartilhada: só notas de revestimento e reciclagem */
   const n=[
-    ATERRO_COMO_RP&&ATE.length?`Provisório: os ${ATE.length} registros de ${descDe('ATERRO').toLowerCase()}${ITEM_ATE?` (item ${ITEM_ATE})`:''}, antes “troca de solo”, estão tratados como remendo profundo, com a altura do aterro no lugar da espessura. Marcados com “${ITEM_ATE?'item '+ITEM_ATE+' · ':''}aterro” na tabela. Altura de até ${fm(altA,1)} m (maior volume: ${fm(maxA[7])} m³ em ${fD(maxA[1])}, estaca ${fm(maxA[2])}), bem além de um remendo de pavimento.`:'',
-    ...(CAD.notas||[]),
-    `Estaca: quando a medição informa só a estaca inteira, a posição vale ±20 m. Por isso a sobreposição só é “certa” quando os dois reparos têm posição exata; nos demais casos é “possível”.`,
-    `Desenho: o reparo parte da estaca informada e cresce no sentido do KM. A posição na largura da pista não consta nas medições, então o retângulo fica no centro da faixa do lado informado.`,
-    `Reparo coberto: reparo feito antes de um revestimento novo no mesmo trecho e lado fica esmaecido no mapa, porque hoje está por baixo do asfalto novo. O botão “Esmaecer” desliga isso; o período escolhido define quais revestimentos já existiam.`,
-    FORA.length?`Fora do trecho do contrato (não plotado): ${FORA.length} reparo(s), por exemplo ${CAD.medicoes&&CAD.medicoes.rotulo||'medição'} ${FORA[0][0]}, ${fD(FORA[0][2])}, estaca ${fm(FORA[0][3])}. Confira a estaca na medição.`:'',
+    CAD.fonteDados?`Fonte: ${CAD.fonteDados}.`:'',
+    `Revestimento (CBUQ) e reciclagem: cada faixa vai da estaca inicial à final informadas na medição, no lado indicado (E, D ou pista inteira).`,
+    `Pista inteira equivalente: trecho executado em um lado só (E ou D) conta como meia pista.`,
+    ...(CAD.notas||[]).filter(t=>/revestimento|reciclagem/i.test(t)&&!/reparo|remendo|corre[çc][ãa]o de defeitos/i.test(t)),
   ].filter(Boolean);
   document.getElementById('notesList').innerHTML=n.map(t=>{const i=t.indexOf(':');return i>0&&i<=28?`<li><span class="n-t">${t.slice(0,i+1)}</span><span class="n-b">${t.slice(i+1)}</span></li>`:`<li>${t}</li>`;}).join('');
 })();
 
 /* ═══════════ Boot ═══════════ */
-ocultaReparos();render();buildTable();goHome();fitMap();
+ocultaReparos();render();buildTable();syncTabs();fA();fitMap();
